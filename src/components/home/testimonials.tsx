@@ -44,6 +44,11 @@ const neonColors = {
 };
 
 export default function TestimonialsCarousel() {
+  // Note: When accessing event.target properties like nextElementSibling,
+  // always cast EventTarget to Element or HTMLElement:
+  // const element = event.target as Element;
+  // console.log(element.nextElementSibling);
+  
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
 

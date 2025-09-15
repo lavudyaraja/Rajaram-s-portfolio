@@ -1,12 +1,12 @@
 import Header from "@/components/layout/FuturisticNavbar";
 import Hero from "@/components/home/hero";
-import { AboutPreview } from "@/components/home/about-preview";
-import  ProjectsPreview  from "@/components/home/projects-preview";
-import SkillsPreview from "@/components/home/skills-preview";
+import About from "@/components/home/About";
+import CombinedProjects from "@/components/home/combined-projects";
+import SkillsPreview from "@/components/home/combined-skills";
 import Testimonials from "@/components/home/testimonials";
 import ContactCTA from "@/components/home/contact-cta";
-import { Footer } from "@/components/layout/footer";
-import CertificationSection from "@/components/home/CertificationSection";
+import  Footer  from "@/components/layout/footer";
+import CertificationSectionPage from "@/components/home/CertificationSection";
 import BlogSection from "@/components/home/BlogSection";
 
 export default function HomePage() {// get current theme
@@ -16,13 +16,26 @@ export default function HomePage() {// get current theme
       <Header />
       <main className="flex-1">
         <Hero />
-        <AboutPreview />
-        <SkillsPreview />
-        <CertificationSection />
-        <ProjectsPreview />
-        <BlogSection />
-        <Testimonials />
-        <ContactCTA />
+        <div id="about">
+          <About />
+        </div>
+       
+        <div id="skills">
+          <SkillsPreview />
+        </div>
+        <div id="projects">
+          <CombinedProjects />
+        </div>
+        <div id="blog">
+         <BlogSection />
+        </div>
+        <div id="certificates">
+          <CertificationSectionPage />
+        </div>
+        {/* <Testimonials /> */}
+        <div id="contact">
+          <ContactCTA />
+        </div>
       </main>
       <Footer />
     </div>

@@ -1,5 +1,25 @@
 {
-  "name": "shadcnui",
+  "name": "developer-portfolio",
+  "version": "1.0.0",
+  "description": "A modern, responsive developer portfolio website built with React, TypeScript, and TailwindCSS",
+  "author": "Lavudya Raja <codeml862@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lavudyaraja/developer-portfolio.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lavudyaraja/developer-portfolio/issues"
+  },
+  "homepage": "https://github.com/lavudyaraja/developer-portfolio#readme",
+  "keywords": [
+    "portfolio",
+    "developer",
+    "react",
+    "typescript",
+    "tailwindcss",
+    "vite"
+  ],
   "type": "module",
   "packageManager": "npm@9.8.1",
   "scripts": {
