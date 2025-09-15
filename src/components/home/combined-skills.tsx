@@ -187,11 +187,49 @@ const skillCategories = [
       // { name: "Keras", icon: <img src={getRealIconUrl("Keras")} alt="Keras" className="w-8 h-8 md:w-10 md:h-10" /> },
       { name: "NumPy", icon: <img src={getRealIconUrl("NumPy")} alt="NumPy" className="w-8 h-8 md:w-10 md:h-10" /> },
       { name: "Pandas", icon: <img src={getRealIconUrl("Pandas")} alt="Pandas" className="w-8 h-8 md:w-10 md:h-10" /> },
-      { name: "SciPy", icon: <img src={getRealIconUrl("SciPy")} alt="SciPy" className="w-8 h-8 md:w-10 md:h-10" /> },
-      { name: "NLTK", icon: <img src={getRealIconUrl("NLTK")} alt="NLTK" className="w-8 h-8 md:w-10 md:h-10" /> },
-      { name: "spaCy", icon: <img src={getRealIconUrl("spaCy")} alt="spaCy" className="w-8 h-8 md:w-10 md:h-10" /> },
-      { name: "Transformers", icon: <img src={getRealIconUrl("Transformers")} alt="Transformers" className="w-8 h-8 md:w-10 md:h-10" /> },
-      { name: "TextBlob", icon: <img src={getRealIconUrl("TextBlob")} alt="TextBlob" className="w-8 h-8 md:w-10 md:h-10" /> },
+      // { name: "SciPy", icon: <img src={getRealIconUrl("SciPy")} alt="SciPy" className="w-8 h-8 md:w-10 md:h-10" /> },
+      // { name: "NLTK", icon: <img src={getRealIconUrl("NLTK")} alt="NLTK" className="w-8 h-8 md:w-10 md:h-10" /> },
+       { 
+        name: "NLP", 
+        icon: (
+          <img 
+            src="/NLTK.png" 
+            alt="NLTK" 
+            className="w-8 h-8 md:w-10 md:h-10" 
+          />
+        ) 
+      },
+      // { name: "spaCy", icon: <img src={getRealIconUrl("spaCy")} alt="spaCy" className="w-8 h-8 md:w-10 md:h-10" /> },
+       { 
+        name: "sciPy", 
+        icon: (
+          <img 
+            src="/sciPy.png" 
+            alt="sciPy" 
+            className="w-8 h-8 md:w-10 md:h-10" 
+          />
+        ) 
+      },
+       { 
+        name: "Transformer", 
+        icon: (
+          <img 
+            src="/Transformers.png" 
+            alt="Transformer" 
+            className="w-8 h-8 md:w-10 md:h-10" 
+          />
+        ) 
+      },
+      //  { 
+      //   name: "TextBlow", 
+      //   icon: (
+      //     <img 
+      //       src="/neon.png" 
+      //       alt="neon" 
+      //       className="w-8 h-8 md:w-10 md:h-10" 
+      //     />
+      //   ) 
+      // },
       { name: "OpenCV", icon: <img src={getRealIconUrl("OpenCV")} alt="OpenCV" className="w-8 h-8 md:w-10 md:h-10" /> },
       { name: "Matplotlib", icon: <img src={getRealIconUrl("Matplotlib")} alt="Matplotlib" className="w-8 h-8 md:w-10 md:h-10" /> }
     ]
