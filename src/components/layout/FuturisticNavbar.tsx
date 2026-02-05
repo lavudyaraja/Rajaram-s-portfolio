@@ -1,3 +1,6 @@
+
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { 
   Home, 
@@ -12,10 +15,11 @@ import {
   Menu,
   X,
   Sun,
-  Moon
+  Moon,
+  GraduationCap
 } from 'lucide-react';
 import { FolderKanban } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
 interface NavItem {
   id: string;
@@ -29,10 +33,17 @@ interface NavItem {
 const EnhancedFuturisticNavbar: React.FC = () => {
   const [activeItem, setActiveItem] = useState<string>('home');
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
-  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
-  const navigate = useNavigate();
+  const [particles, setParticles] = useState<Array<{
+    left: string;
+    top: string;
+    animationDelay: string;
+    animationDuration: string;
+    size: string;
+    color: string;
+  }>>([]);
+  const router = useRouter();
 
   const navItems: NavItem[] = [
     { 
@@ -50,6 +61,14 @@ const EnhancedFuturisticNavbar: React.FC = () => {
       neonColor: 'text-yellow-400',
       link: '#about',
       description: 'Learn more about me'
+    },
+    { 
+      id: 'education', 
+      name: 'Education', 
+      icon: GraduationCap, 
+      neonColor: 'text-indigo-400',
+      link: '/education',
+      description: 'My academic background'
     },
     { 
       id: 'skills', 
@@ -93,16 +112,47 @@ const EnhancedFuturisticNavbar: React.FC = () => {
     },
   ];
 
+  // Generate particles only on client side to avoid hydration mismatch
+  useEffect(() => {
+    const colors = ['bg-pink-400', 'bg-yellow-400', 'bg-cyan-400', 'bg-blue-400', 'bg-purple-400', 'bg-green-400'];
+    const sizes = ['w-0.5 h-0.5', 'w-1 h-1', 'w-1.5 h-1.5'];
+    
+    const generatedParticles = Array.from({ length: 15 }, (_, i) => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      animationDelay: `${Math.random() * 3}s`,
+      animationDuration: `${2 + Math.random() * 3}s`,
+      size: sizes[i % sizes.length],
+      color: colors[i % colors.length]
+    }));
+    
+    setParticles(generatedParticles);
+  }, []);
+
   // Set active item based on current URL
   useEffect(() => {
-    const currentPath = window.location.pathname;
-    const matchedItem = navItems.find(item => 
-      item.link === currentPath || 
-      (currentPath !== '/' && item.link !== '/' && currentPath.includes(item.link))
-    );
-    
-    if (matchedItem) {
-      setActiveItem(matchedItem.id);
+    if (typeof window !== 'undefined') {
+      const currentPath = window.location.pathname;
+      const hash = window.location.hash;
+      
+      // Check for hash routes first
+      if (hash) {
+        const matchedItem = navItems.find(item => item.link === hash);
+        if (matchedItem) {
+          setActiveItem(matchedItem.id);
+          return;
+        }
+      }
+      
+      // Check for regular routes
+      const matchedItem = navItems.find(item => 
+        item.link === currentPath || 
+        (currentPath !== '/' && item.link !== '/' && currentPath.includes(item.link))
+      );
+      
+      if (matchedItem) {
+        setActiveItem(matchedItem.id);
+      }
     }
   }, []);
 
@@ -130,7 +180,7 @@ const EnhancedFuturisticNavbar: React.FC = () => {
     }
   };
 
-  // Navigation handler using React Router
+  // Navigation handler using Next.js router
   const handleNavigation = (item: NavItem) => {
     setActiveItem(item.id);
     setIsMobileMenuOpen(false);
@@ -142,8 +192,8 @@ const EnhancedFuturisticNavbar: React.FC = () => {
         element.scrollIntoView({ behavior: 'smooth' });
       }
     } else {
-      // For regular routes, use React Router navigation
-      navigate(item.link);
+      // For regular routes, use Next.js router
+      router.push(item.link);
     }
     
     console.log(`Navigating to: ${item.name} (${item.link})`);
@@ -238,8 +288,6 @@ const EnhancedFuturisticNavbar: React.FC = () => {
                       <div key={item.id} className="relative group">
                         <button
                           onClick={() => handleNavigation(item)}
-                          onMouseEnter={() => setHoveredItem(item.id)}
-                          onMouseLeave={() => setHoveredItem(null)}
                           aria-label={`Navigate to ${item.name}`}
                           className={`
                             relative flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95
@@ -275,28 +323,6 @@ const EnhancedFuturisticNavbar: React.FC = () => {
                             <div className={`absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 ${item.neonColor.replace('text-', 'bg-')} rounded-full animate-pulse`}></div>
                           )}
                         </button>
-
-                        {/* Enhanced Tooltip */}
-                        {hoveredItem === item.id && !isActive && (
-                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-50">
-                            <div className={`transition-all duration-300 ${
-                              isDarkMode 
-                                ? 'bg-slate-800/95 border-white/20' 
-                                : 'bg-white/95 border-slate-200/50'
-                            } backdrop-blur-xl border rounded-xl px-3 py-2 shadow-2xl`}>
-                              <div className={`text-sm font-medium ${item.neonColor}`}>{item.name}</div>
-                              {item.description && (
-                                <div className={`text-xs mt-1 ${
-                                  isDarkMode ? 'text-slate-400' : 'text-slate-600'
-                                }`}>{item.description}</div>
-                              )}
-                              <div className={`text-xs mt-1 font-mono ${
-                                isDarkMode ? 'text-slate-500' : 'text-slate-500'
-                              }`}>{item.link}</div>
-                              <div className={`absolute bottom-full left-1/2 transform -translate-x-1/2 w-2 h-2 ${item.neonColor.replace('text-', 'bg-')} rotate-45 -mb-1`}></div>
-                            </div>
-                          </div>
-                        )}
                       </div>
                     );
                   })}
@@ -461,25 +487,18 @@ const EnhancedFuturisticNavbar: React.FC = () => {
 
       {/* Enhanced Particle System */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {Array.from({ length: 15 }, (_, i) => {
-          const colors = ['bg-pink-400', 'bg-yellow-400', 'bg-cyan-400', 'bg-blue-400', 'bg-purple-400', 'bg-green-400'];
-          const sizes = ['w-0.5 h-0.5', 'w-1 h-1', 'w-1.5 h-1.5'];
-          const colorIndex = i % colors.length;
-          const sizeIndex = i % sizes.length;
-          
-          return (
-            <div
-              key={i}
-              className={`absolute ${sizes[sizeIndex]} ${colors[colorIndex]} rounded-full animate-pulse opacity-30`}
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${2 + Math.random() * 3}s`
-              }}
-            />
-          );
-        })}
+        {particles.map((particle, i) => (
+          <div
+            key={i}
+            className={`absolute ${particle.size} ${particle.color} rounded-full animate-pulse opacity-30`}
+            style={{
+              left: particle.left,
+              top: particle.top,
+              animationDelay: particle.animationDelay,
+              animationDuration: particle.animationDuration
+            }}
+          />
+        ))}
       </div>
 
       {/* Custom Animations */}

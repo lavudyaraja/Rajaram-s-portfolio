@@ -5,9 +5,9 @@ import { useTheme } from "@/hooks/use-theme";
 import { Sun, Moon, Monitor, ChevronDown } from "lucide-react";
 
 const ThemeDropdown = () => {
-  const { theme, resolvedTheme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const themeColors = {
     dark: {
@@ -63,13 +63,13 @@ const ThemeDropdown = () => {
     }
   ];
 
-  const currentTheme = themes.find(t => t.key === theme) || themes[2];
+  const currentTheme = themes.find(t => t.key === resolvedTheme) || themes[2];
   const currentColors = themeColors[resolvedTheme] || themeColors.system;
 
   // Close dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
@@ -78,7 +78,7 @@ const ThemeDropdown = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleThemeSelect = (themeKey) => {
+  const handleThemeSelect = (themeKey: any) => {
     setTheme(themeKey);
     setIsOpen(false);
   };
@@ -110,7 +110,7 @@ const ThemeDropdown = () => {
         `}>
           {themes.map((themeOption) => {
             const ThemeIcon = themeOption.icon;
-            const isSelected = theme === themeOption.key;
+            const isSelected = resolvedTheme === themeOption.key;
             
             return (
               <button

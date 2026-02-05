@@ -1,7 +1,9 @@
+"use client";
+
 import {
-  Github, Linkedin, Twitter, Instagram, Send, MapPin, Mail, Phone, Heart, ExternalLink, Code2, Palette, Cpu, Globe, Sparkles, Zap, Star, Brain
+  Github, Linkedin, Twitter, Instagram, Send, MapPin, Mail, Phone, Heart, ExternalLink, Code2, Palette, Cpu, Globe, Sparkles, Zap, Star, Brain, Clock
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const techStack = [
   { name: "React", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg", color: "cyan" },
@@ -25,17 +27,36 @@ const quickLinks = [
   { name: "Contact", path: "#contact", icon: <Mail className="w-4 h-4" /> },
 ];
 
+type NeonColor = 'neon-yellow' | 'neon-blue' | 'neon-red' | 'neon-orange' | 'neon-pink' | 'neon-cyan' | 'neon-green';
+
 const services = [
-  { name: "Web Development", icon: <Globe className="w-5 h-5" />, color: "neon-blue" },
-  { name: "Mobile Apps", icon: <Phone className="w-5 h-5" />, color: "neon-pink" },
-  { name: "UI/UX Design", icon: <Palette className="w-5 h-5" />, color: "neon-yellow" },
-  { name: "API Development", icon: <Cpu className="w-5 h-5" />, color: "neon-orange" },
-  { name: "DevOps & Cloud", icon: <Zap className="w-5 h-5" />, color: "neon-cyan" },
+  { name: "Machine Learning", icon: <Brain className="w-5 h-5" />, color: "neon-blue" as NeonColor },
+  { name: "Deep Learning", icon: <Zap className="w-5 h-5" />, color: "neon-pink" as NeonColor },
+  { name: "RAG Systems", icon: <Cpu className="w-5 h-5" />, color: "neon-yellow" as NeonColor },
+  { name: "Vector Databases", icon: <Globe className="w-5 h-5" />, color: "neon-orange" as NeonColor },
+  { name: "Hybrid ViT Models", icon: <Sparkles className="w-5 h-5" />, color: "neon-cyan" as NeonColor },
 ];
 
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
+  const [currentQuote, setCurrentQuote] = useState(0);
+
+  const quotes = [
+    "The best way to predict the future is to invent it.",
+    "Code is like humor. When you have to explain it, it's bad.",
+    "Simplicity is the soul of efficiency.",
+    "First, solve the problem. Then, write the code.",
+    "Experience is the name everyone gives to their mistakes."
+  ];
+
+  useEffect(() => {
+    const quoteInterval = setInterval(() => {
+      setCurrentQuote((prev) => (prev + 1) % quotes.length);
+    }, 8000);
+
+    return () => clearInterval(quoteInterval);
+  }, [quotes.length]);
 
   const handleQuickContact = () => {
     setShowSuccess(true);
@@ -43,7 +64,7 @@ export default function Footer() {
     setTimeout(() => setShowSuccess(false), 3000);
   };
 
-  const handleNavClick = (path) => {
+  const handleNavClick = (path: string) => {
     if (path.startsWith('#')) {
       // Smooth scroll to section
       const element = document.querySelector(path);
@@ -59,7 +80,7 @@ export default function Footer() {
     }
   };
 
-  const neonColors = {
+  const neonColors: Record<NeonColor, string> = {
     'neon-yellow': 'text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]',
     'neon-blue': 'text-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]',
     'neon-red': 'text-red-400 drop-shadow-[0_0_8px_rgba(248,113,113,0.8)]',
@@ -70,7 +91,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative overflow-hidden bg-gray-900 text-white">
+    <footer className="relative overflow-hidden bg-black text-white">
       {/* Animated Background Orbs */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-10 -left-10 sm:-top-20 sm:-left-20 w-20 h-20 sm:w-40 sm:h-40 bg-yellow-500 rounded-full filter blur-[50px] sm:blur-[100px] opacity-30 animate-pulse"></div>
@@ -221,6 +242,22 @@ export default function Footer() {
               </div>
               <div className="absolute inset-0 bg-gradient-to-br from-orange-400/10 to-red-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
             </a>
+          </div>
+        </div>
+
+        {/* Inspirational Quote Section */}
+        <div className="text-center mb-8 sm:mb-12">
+          <div className="relative inline-block w-full max-w-2xl">
+            <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl md:rounded-2xl p-5 md:p-8 max-w-2xl mx-auto">
+              <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-blue-400 mx-auto mb-3 md:mb-4" />
+              <p className="text-base md:text-lg md:text-xl font-medium text-gray-300 italic mb-3 md:mb-4 leading-relaxed">
+                "{quotes[currentQuote]}"
+              </p>
+              <div className="flex items-center justify-center gap-2 text-xs md:text-sm text-gray-500">
+                <Clock className="w-3 h-3 md:w-4 md:h-4" />
+                <span>Inspiration updates every 8 seconds</span>
+              </div>
+            </div>
           </div>
         </div>
 
