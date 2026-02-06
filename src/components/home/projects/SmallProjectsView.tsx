@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Github, ExternalLink, Calendar, Star, Code, Globe, Smartphone, Database, Zap, ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { Github, ExternalLink, Calendar, Star, Code, Globe, Smartphone, Database, Zap, ChevronLeft, ChevronRight, Search, ArrowRight, Eye, GitBranch } from 'lucide-react';
 import { Project } from '@/types/project';
 import { PROJECTS } from '@/data/projects';
 import { categoryIcons, categoryColors, statusColors } from '@/constants/projectConstants';
@@ -15,10 +15,17 @@ export default function SmallProjectsView() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 100, y: 100 });
-  const carouselRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsVisible(true);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const filteredProjects = PROJECTS.filter(project => {
@@ -28,22 +35,26 @@ export default function SmallProjectsView() {
     return matchesCategory && matchesSearch;
   });
 
-  const { currentIndex, setCurrentIndex, isPaused, setIsPaused, goToSlide } = useCarousel(filteredProjects.length, 4000);
-
-  const visibleProjects = filteredProjects.slice(currentIndex, currentIndex + 3);
-  const hasMoreProjects = filteredProjects.length > 3;
-
   const handleProjectClick = (project: Project, e: React.MouseEvent) => {
     const rect = (e.target as HTMLElement).getBoundingClientRect();
-    const x = Math.max(20, Math.min(rect.left, window.innerWidth - 720));
-    const y = Math.max(20, Math.min(rect.bottom + 10, window.innerHeight - 620));
-    
-    setTooltipPosition({ x, y });
+    // Adjust tooltip positioning for mobile
+    if (isMobile) {
+      setTooltipPosition({ x: 10, y: 10 });
+    } else {
+      const x = Math.max(20, Math.min(rect.left, window.innerWidth - 720));
+      const y = Math.max(20, Math.min(rect.bottom + 10, window.innerHeight - 620));
+      setTooltipPosition({ x, y });
+    }
     setSelectedProject(project);
   };
 
   const handleCloseTooltip = () => {
     setSelectedProject(null);
+  };
+
+  // Create staggered animation delays for cards
+  const getAnimationDelay = (index: number) => {
+    return `${400 + (index * 100)}ms`;
   };
 
   return (
@@ -99,87 +110,139 @@ export default function SmallProjectsView() {
           </div>
         </div>
 
-        {/* Carousel Container */}
+        {/* Modern Masonry Grid */}
         <div className={`relative ${isVisible ? 'animate-fade-in-up animation-delay-400' : 'opacity-0'}`}>
           {filteredProjects.length > 0 ? (
-            <>
-              {/* Carousel */}
-              <div
-                ref={carouselRef}
-                className="relative overflow-hidden py-2 sm:py-4"
-                onMouseEnter={() => setIsPaused(true)}
-                onMouseLeave={() => setIsPaused(false)}
-              >
-                <div className="flex gap-4 sm:gap-6 transition-transform duration-500 ease-in-out">
-                  {visibleProjects.map((project, index) => {
-                    const Icon = categoryIcons[project.category];
-                    const colorClass = categoryColors[project.category];
+            <div 
+              ref={gridRef}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+            >
+              {filteredProjects.map((project, index) => {
+                const Icon = categoryIcons[project.category];
+                const colorClass = categoryColors[project.category];
+                const isEven = index % 2 === 0;
+                
+                return (
+                  <div
+                    key={project.id}
+                    className={`group relative bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-5 sm:p-6 cursor-pointer transition-all duration-500 hover:scale-[1.02] hover:border-gray-600/70 hover:shadow-2xl hover:shadow-gray-900/20 ${
+                      isVisible ? 'animate-fade-in-up' : 'opacity-0'
+                    }`}
+                    style={{ animationDelay: getAnimationDelay(index) }}
+                    onClick={(e) => handleProjectClick(project, e)}
+                  >
+                    {/* Animated Background Gradient */}
+                    <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${colorClass} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
                     
-                    return (
-                      <div
-                        key={project.id}
-                        className={`bg-gray-900 border-2 border-gray-800 rounded-lg sm:rounded-xl p-4 sm:p-5 cursor-pointer transition-all duration-300 hover:border-gray-600 hover:scale-105 min-w-[300px] sm:min-w-[380px] ${
-                          isVisible ? 'animate-fade-in-up' : 'opacity-0'
-                        }`}
-                        style={{ animationDelay: `${600 + index * 100}ms` }}
-                        onClick={(e) => handleProjectClick(project, e)}
-                      >
-                        {/* Header */}
-                        <div className="flex items-center justify-between mb-3 sm:mb-4">
-                          <div className="flex items-center gap-2 sm:gap-3">
-                            <div className={`w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r ${colorClass} rounded-lg flex items-center justify-center`}>
-                              <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                            </div>
-                            <h3 className="text-white font-bold text-sm sm:text-base lg:text-lg">{project.title}</h3>
-                          </div>
-                          {project.featured && (
-                            <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-500 fill-yellow-500" />
-                          )}
+                    {/* Featured Badge */}
+                    {project.featured && (
+                      <div className="absolute -top-2 -right-2 z-10">
+                        <div className="relative">
+                          <Star className="w-6 h-6 text-yellow-500 fill-yellow-500" />
+                          <div className="absolute inset-0 w-6 h-6 bg-yellow-500/30 rounded-full animate-ping" />
                         </div>
-                        
-                        {/* Description */}
-                        <p className="text-gray-400 text-xs sm:text-sm leading-relaxed mb-3 sm:mb-4 line-clamp-2 min-h-[32px] sm:min-h-[40px]">
-                          {project.description}
-                        </p>
-                        
-                        {/* Footer */}
-                        <div className="flex items-center justify-between pt-2 sm:pt-3 border-t-2 border-gray-800">
-                          <div className="flex items-center gap-1.5 sm:gap-2">
-                            <span className={`px-2 sm:px-3 py-1 ${statusColors[project.status || 'completed']} border rounded-full text-xs font-bold uppercase`}>
+                      </div>
+                    )}
+
+                    {/* Project Header */}
+                    <div className="relative z-10 mb-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 bg-gradient-to-r ${colorClass} rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                            <Icon className="w-5 h-5 text-white" />
+                          </div>
+                          <div>
+                            <h3 className="text-white font-bold text-base sm:text-lg mb-1 group-hover:text-gray-100 transition-colors">
+                              {project.title}
+                            </h3>
+                            <span className={`inline-block px-2 py-1 text-xs font-bold rounded-full ${statusColors[project.status || 'completed']} border`}>
                               {project.status?.replace('-', ' ')}
                             </span>
-                            <span className="text-xs text-gray-500 font-medium hidden sm:inline">{project.date}</span>
-                          </div>
-                          <div className="flex items-center gap-1.5 text-sm text-gray-500">
-                            {project.stats && (
-                              <>
-                                <Star className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-500" />
-                                <span className="font-semibold text-xs sm:text-sm">{project.stats.stars}</span>
-                              </>
-                            )}
                           </div>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-              </div>
+                    </div>
 
-              {/* Dots Indicator */}
-              {hasMoreProjects && (
-                <div className="flex justify-center gap-1.5 sm:gap-2 mt-6 sm:mt-8">
-                  {Array.from({ length: Math.min(filteredProjects.length, 5) }).map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => goToSlide(index)}
-                      className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all ${
-                        currentIndex === index ? 'bg-blue-500 w-4 sm:w-8' : 'bg-gray-700 hover:bg-gray-600'
-                      }`}
-                    />
-                  ))}
-                </div>
-              )}
-            </>
+                    {/* Project Description */}
+                    <div className="relative z-10 mb-4">
+                      <p className="text-gray-300 text-sm leading-relaxed line-clamp-3 min-h-[60px]">
+                        {project.description}
+                      </p>
+                    </div>
+
+                    {/* Tech Stack */}
+                    <div className="relative z-10 mb-4">
+                      <div className="flex flex-wrap gap-1.5">
+                        {project.tags.slice(0, 3).map((tag, tagIndex) => (
+                          <div
+                            key={tag}
+                            className="flex items-center gap-1 px-2 py-1 bg-gray-700/50 border border-gray-600/50 rounded-lg text-xs text-gray-300 group-hover:bg-gray-600/50 transition-colors"
+                          >
+                            <img
+                              src={getRealIconUrl(tag)}
+                              alt={tag}
+                              className="w-3 h-3"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                              }}
+                            />
+                            <span>{tag}</span>
+                          </div>
+                        ))}
+                        {project.tags.length > 3 && (
+                          <span className="px-2 py-1 bg-gray-700/50 border border-gray-600/50 rounded-lg text-xs text-gray-400">
+                            +{project.tags.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Project Footer */}
+                    <div className="relative z-10 pt-3 border-t border-gray-700/50">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3 text-xs text-gray-400">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-3 h-3" />
+                            <span>{project.date}</span>
+                          </div>
+                          {project.stats && (
+                            <div className="flex items-center gap-1">
+                              <Star className="w-3 h-3 text-yellow-500" />
+                              <span className="font-semibold">{project.stats.stars}</span>
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={project.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 bg-gray-700/50 hover:bg-gray-600/50 border border-gray-600/50 rounded-lg transition-all duration-200 group-hover:scale-110"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Github className="w-4 h-4 text-gray-300" />
+                          </a>
+                          <a
+                            href={project.demoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`p-2 bg-gradient-to-r ${colorClass} hover:opacity-80 rounded-lg transition-all duration-200 group-hover:scale-110`}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <ExternalLink className="w-4 h-4 text-white" />
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Hover Effect Overlay */}
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-gray-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                  </div>
+                );
+              })}
+            </div>
           ) : (
             <div className={`text-center py-12 sm:py-20 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
               <div className="text-gray-400 text-lg sm:text-xl mb-4 sm:mb-6">No projects found matching your criteria</div>
@@ -197,7 +260,7 @@ export default function SmallProjectsView() {
         </div>
 
         {/* View All Button */}
-        <div className={`text-center mt-12 sm:mt-16 ${isVisible ? 'animate-fade-in-up animation-delay-600' : 'opacity-0'}`}>
+        {/* <div className={`text-center mt-12 sm:mt-16 ${isVisible ? 'animate-fade-in-up animation-delay-600' : 'opacity-0'}`}>
           <a
             href="/projects"
             className="inline-flex items-center gap-2 sm:gap-3 px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg sm:rounded-xl text-white font-bold text-sm sm:text-base lg:text-lg transition-transform hover:scale-105"
@@ -205,7 +268,7 @@ export default function SmallProjectsView() {
             View All Projects
             <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
           </a>
-        </div>
+        </div> */}
       </div>
 
       {/* Draggable Tooltip */}

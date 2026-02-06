@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Github, ExternalLink, Calendar, Star, Code, Globe, Smartphone, Database, Zap, X, Users, Clock, Award, ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { Github, ExternalLink, Calendar, Star, Code, Globe, Smartphone, Database, Zap, X, Users, Clock, Award, Search } from 'lucide-react';
 import { Project } from '@/types/project';
 import { PROJECTS } from '@/data/projects';
 import { categoryIcons, categoryColors, statusColors } from '@/constants/projectConstants';
@@ -255,10 +255,17 @@ export default function CarouselProjectsView() {
   const [hoveredProject, setHoveredProject] = useState<string | null>(null);
   const [clickedProject, setClickedProject] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsVisible(true);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const filteredProjects = PROJECTS.filter(project => {
@@ -270,8 +277,10 @@ export default function CarouselProjectsView() {
 
   const { currentIndex, setCurrentIndex, isPaused, setIsPaused, goToSlide } = useCarousel(filteredProjects.length, 4000);
 
-  const visibleProjects = filteredProjects.slice(currentIndex, currentIndex + 3);
-  const hasMoreProjects = filteredProjects.length > 3;
+  // Show 1 project on mobile, 3 on desktop
+  const visibleCount = isMobile ? 1 : 3;
+  const visibleProjects = filteredProjects.slice(currentIndex, currentIndex + visibleCount);
+  const hasMoreProjects = filteredProjects.length > visibleCount;
 
   const handleProjectClick = (projectId: string) => {
     setClickedProject(clickedProject === projectId ? null : projectId);
@@ -345,7 +354,9 @@ export default function CarouselProjectsView() {
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
               >
-                <div className="flex gap-4 sm:gap-6 transition-transform duration-500 ease-in-out">
+                <div className={`flex gap-4 sm:gap-6 transition-transform duration-500 ease-in-out ${
+                  isMobile ? 'justify-center' : ''
+                }`}>
                   {visibleProjects.map((project, index) => {
                     const Icon = categoryIcons[project.category];
                     const colorClass = categoryColors[project.category];
@@ -360,7 +371,9 @@ export default function CarouselProjectsView() {
                         onClick={() => handleProjectClick(project.id)}
                       >
                         <div
-                          className={`bg-gray-900 border-2 border-gray-800 rounded-lg sm:rounded-xl p-4 sm:p-6 cursor-pointer transition-all duration-300 hover:border-gray-600 hover:scale-105 min-w-[300px] sm:min-w-[400px] ${
+                          className={`bg-gray-900 border-2 border-gray-800 rounded-lg sm:rounded-xl p-4 sm:p-6 cursor-pointer transition-all duration-300 hover:border-gray-600 hover:scale-105 ${
+                            isMobile ? 'min-w-[calc(100vw-80px)] max-w-[400px]' : 'min-w-[300px] sm:min-w-[400px]'
+                          } ${
                             isVisible ? 'animate-fade-in-up' : 'opacity-0'
                           }`}
                           style={{ animationDelay: `${600 + index * 100}ms` }}

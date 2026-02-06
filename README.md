@@ -1,11 +1,12 @@
-# 🚀 Lavudya Raja - Next-Gen Developer Portfolio
+# 🚀 Lavudya Raja - Next.js Developer Portfolio
 
-A cutting-edge, fully responsive portfolio website showcasing modern web development capabilities with stunning animations, interactive components, and exceptional user experience. Built with Next.js 14, TypeScript, and TailwindCSS.
+A cutting-edge, fully responsive portfolio website showcasing modern web development capabilities with stunning animations, interactive components, and exceptional user experience. Built with Next.js 16, TypeScript, and TailwindCSS.
 
 ## ✨ Key Features
 
 ### 🎨 Advanced UI/UX Design
-- **Futuristic Navigation Bar** with animated particles and hover effects
+- **Multiple Navigation Themes** - Choose from Futuristic, Quantum, Cyberpunk, Minimalist, and Hidden navbar designs
+- **Hidden Navbar with Welcome Message** - Elegant horizontal scrolling animation with multi-color gradients
 - **Interactive Skills Section** with tabbed categories and real technology icons
 - **Animated Hero Section** with floating elements and dynamic backgrounds
 - **Responsive Timeline** for education and experience
@@ -13,32 +14,26 @@ A cutting-edge, fully responsive portfolio website showcasing modern web develop
 - **Dark Theme** optimized for all viewing conditions
 
 ### 🚀 Performance & Architecture
-- **Next.js 14** with App Router for optimal performance
+- **Next.js 16** with App Router for optimal performance
 - **TypeScript** for type-safe development
 - **TailwindCSS** for utility-first styling
 - **Component-Based Architecture** for maintainability
 - **Responsive Design** optimized for all devices
 - **SEO Optimized** with proper meta tags and structure
-
-### 🎯 Interactive Components
-- **Tabbed Skills Display** - Click categories to view specific skill sets
-- **Animated Navigation** with smooth transitions and micro-interactions
-- **Timeline-Based Education** section with alternating layouts
-- **Hover Effects** throughout the interface
 - **Scroll Animations** for engaging user experience
 
 ## 🛠️ Technology Stack
 
 ### Frontend Framework
-- **[Next.js 14](https://nextjs.org/)** - React framework with App Router
+- **[Next.js 16](https://nextjs.org/)** - React framework with App Router
 - **[React 18](https://reactjs.org/)** - Component-based UI library
 - **[TypeScript](https://www.typescriptlang.org/)** - Static type checking and enhanced developer experience
 
 ### Styling & Design
 - **[TailwindCSS](https://tailwindcss.com/)** - Utility-first CSS framework
 - **[Lucide React](https://lucide.dev/)** - Beautiful, consistent icon library
-- **CSS Animations** - Custom keyframes and transitions
-- **Responsive Grid Systems** - Mobile-first design approach
+- **[Framer Motion](https://www.framer.com/motion/)** - Custom keyframes and transitions
+- **[Responsive Grid Systems](https://tailwindcss.com/)** - Mobile-first design approach
 
 ### Development Tools
 - **[ESLint](https://eslint.org/)** - Code quality and consistency
@@ -66,11 +61,17 @@ portfolio/
 │   │   │   ├── about/      # About section components
 │   │   │   ├── education/  # Education timeline
 │   │   │   ├── hero/       # Hero section
-│   │   │   └── skills/     # Skills showcase
+│   │   │   ├── skills/     # Skills showcase
+│   │   │   └── projects/   # Project displays
 │   │   ├── layout/         # Layout components
 │   │   │   ├── footer.tsx  # Footer component
-│   │   │   └── FuturisticNavbar.tsx
-│   │   └── theme/          # Theme-related components
+│   │   │   ├── FuturisticNavbar.tsx  # Original futuristic navbar
+│   │   │   ├── QuantumNavbar.tsx     # Quantum-themed navbar
+│   │   │   ├── CyberpunkNavbar.tsx    # Cyberpunk neon grid navbar
+│   │   │   ├── MinimalistNavbar.tsx   # Clean minimalist navbar
+│   │   │   └── HiddenNavbar.tsx      # Hidden navbar with welcome message
+│   │   ├── theme/          # Theme-related components
+│   │   └── ui/             # Reusable UI components
 │   ├── constants/           # Project and data constants
 │   ├── data/               # Static data files
 │   └── index.css          # Additional global styles
@@ -87,39 +88,27 @@ portfolio/
 
 ## 🎨 Component Showcase
 
-### 🧭 Futuristic Navigation Bar
-- **Animated Background** with floating gradient orbs
-- **Interactive Menu Items** with hover states and active indicators
-- **Mobile-Responsive** hamburger menu
-- **Particle Effects** for visual enhancement
-- **Smooth Transitions** between sections
+### 🧭 Navigation Components
+- **FuturisticNavbar** - Original futuristic design with animated particles
+- **HiddenNavbar** - Hidden navbar with welcome message and scroll behavior
 
 ### 💫 Hero Section
-- **Dynamic Background** with animated grid patterns
-- **Profile Card** with hover effects
-- **Call-to-Action Buttons** with micro-interactions
-- **Responsive Typography** scaling across devices
-- **Floating Elements** for depth and movement
+- **ModernHero** - Dynamic background with floating elements and interactive terminal
+- Matrix rain effects and neural network visualizations
+- Quantum orbs and floating hexagons with animations
 
-### 🎯 Skills Section
-- **Tabbed Interface** for skill categories
-- **Real Technology Icons** from Devicon
-- **Color-Coded Categories** (Frontend, Backend, Database, etc.)
-- **Interactive Cards** with hover animations
-- **Responsive Grid Layout** adapting to screen size
+### 🎯 Skills & Projects
+- **CombinedSkills** - Tabbed interface with technology icons and search
+- **SmallProjectsView** - Carousel display with auto-play functionality
+- **CombinedProjects** - Grid/carousel toggle with 3D effects
 
-### 📚 Education Timeline
-- **Timeline Design** with vertical connecting line
-- **Alternating Layout** on desktop screens
-- **Responsive Cards** with education details
-- **Achievement Highlights** and coursework display
-- **Mobile-Optimized** single-column layout
+### 📚 Education & About
+- **Education** - Timeline with alternating layouts and achievement displays
+- **AboutPreview** - Interactive hexagon grid with floating tech icons
 
-### 🦶 Footer Section
-- **Multi-Column Layout** with services and tech stack
-- **Inspirational Quotes** with auto-rotation
-- **Social Media Links** with hover effects
-- **Quick Navigation** menu
+### 🦶 Footer
+- **Footer** - Multi-column layout with rotating inspirational quotes
+- Social media links with hover effects and quick navigation
 
 ## 🚀 Getting Started
 
@@ -172,46 +161,53 @@ yarn start
 ## 🎯 Customization
 
 ### Updating Personal Information
-1. Modify the hero section in `src/components/home/hero.tsx`
-2. Update social media links in the same file
-3. Customize the profile image in `public/Rajaimage.jpg`
+1. **Profile Details** - Modify hero section in `src/components/home/hero.tsx`
+2. **Social Media Links** - Update links in the same file
+3. **Contact Information** - Update email and contact details
 
 ### Adding Projects
-1. Edit the `PROJECTS` array in `src/components/home/combined-projects.tsx`
-2. Add project details including title, description, tags, and links
+1. **Edit Project Array** - Update `PROJECTS` array in `src/components/home/combined-projects.tsx`
+2. **Add Project Details** - Include title, description, tags, and links
 
 ### Modifying Skills
-1. Update the `skillCategories` array in `src/components/home/combined-skills.tsx`
-2. Add new technology icons to the `iconMap` in the same file
+1. **Update Skill Categories** - Modify `skillCategories` array in `src/components/home/combined-skills.tsx`
+2. **Add Technology Icons** - Update the `iconMap` in the same file
 
-### Changing Theme
-1. Modify theme configurations in `src/components/ThemeProvider.tsx`
-2. Update color schemes in `tailwind.config.ts`
+### Changing Navigation Theme
+The project includes **5 different navbar designs** that can be easily switched:
+
+1. **FuturisticNavbar** - Original design with particle effects
+5. **HiddenNavbar** - Hidden navbar with welcome message
+
+**To switch themes:** Update the import in `src/components/home/index-page.tsx`:
+```typescript
+import Header from "@/components/layout/[ThemeName]Navbar";
+```
 
 ## 📱 Responsive Design
 
 The portfolio is fully responsive and optimized for:
-- Mobile devices (320px and above)
-- Tablets (768px and above)
-- Desktops (1024px and above)
-- Large screens (1440px and above)
+- **Mobile devices** (320px and above)
+- **Tablets** (768px and above)
+- **Desktops** (1024px and above)
+- **Large screens** (1440px and above)
 
 ## 🎨 Animations & Effects
 
-- Smooth page transitions
-- Hover animations on interactive elements
-- Scroll-triggered animations
-- Floating background elements
-- 3D project carousel (desktop)
-- Theme transition animations
+- **Smooth page transitions** - CSS transitions between sections
+- **Hover animations** on interactive elements
+- **Scroll-triggered animations** for engaging user experience
+- **Floating background elements** for depth and movement
+- **3D project carousel** (desktop) with smooth sliding
+- **Theme transition animations** with color shifts
 
 ## 🔧 Performance Optimizations
 
-- Code splitting for faster initial loads
-- Lazy loading for images and components
-- Optimized bundle size with Vite
-- Efficient re-rendering with React.memo
-- Proper image optimization
+- **Code splitting** for faster initial loads
+- **Lazy loading** for images and components
+- **Optimized bundle size** with Next.js optimizations
+- **Efficient re-rendering** with React.memo
+- **Proper image optimization** and compression
 
 ## 📝 License
 
@@ -221,11 +217,11 @@ This project is licensed under the [MIT License](LICENSE) - see the [LICENSE](LI
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. **Fork the repository**
+2. **Create your feature branch** (`git checkout -b feature/AmazingFeature`)
+3. **Commit your changes** (`git commit -m 'Add some AmazingFeature'`)
+4. **Push to the branch** (`git push origin feature/AmazingFeature`)
+5. **Open a Pull Request**
 
 ## 📧 Contact
 

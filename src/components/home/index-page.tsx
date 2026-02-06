@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react';
-import Header from "@/components/layout/FuturisticNavbar";
+import Header from "@/components/layout/HiddenNavbar";
 import Hero from '@/components/home/hero/Hero'
 import AboutPreview from '@/components/home/about/AboutPreview'
 import CombinedSkills from '@/components/home/skills/CombinedSkills'
