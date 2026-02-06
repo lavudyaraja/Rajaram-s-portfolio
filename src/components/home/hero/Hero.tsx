@@ -26,7 +26,7 @@ export default function ModernHero() {
   const [hoveredStat, setHoveredStat] = useState<number | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<any[]>([]);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | undefined>(undefined);
 
   const rotatingTexts = [
     "Full-Stack Architect",
