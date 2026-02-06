@@ -2,11 +2,21 @@
 
 import { GraduationCap, Calendar, MapPin, Award, BookOpen } from "lucide-react";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 export default function Education() {
   const [isVisible, setIsVisible] = useState(false);
+  const pathname = usePathname();
+  const isEducationPage = pathname === "/education";
 
   useEffect(() => {
+    // If it's a dedicated education page, show content immediately
+    if (isEducationPage) {
+      setIsVisible(true);
+      return;
+    }
+
+    // Otherwise, use intersection observer for home page section
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -28,7 +38,7 @@ export default function Education() {
         observer.unobserve(element);
       }
     };
-  }, []);
+  }, [isEducationPage]);
 
   const education = [
     {
@@ -96,7 +106,7 @@ export default function Education() {
   ];
 
   return (
-    <section id="education-section" className="py-12 sm:py-16 lg:py-20 bg-black">
+    <section id={isEducationPage ? undefined : 'education-section'} className="py-12 sm:py-16 lg:py-20 bg-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className={`text-center mb-12 sm:mb-16 lg:mb-20 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
