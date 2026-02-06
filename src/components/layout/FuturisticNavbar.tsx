@@ -67,7 +67,7 @@ const EnhancedFuturisticNavbar: React.FC = () => {
       name: 'Education', 
       icon: GraduationCap, 
       neonColor: 'text-indigo-400',
-      link: '/education',
+      link: '#education',
       description: 'My academic background'
     },
     { 
