@@ -9,6 +9,7 @@ pnpm-debug.log*
 /dist
 /build
 /out
+/.next
 
 # Misc
 .DS_Store
