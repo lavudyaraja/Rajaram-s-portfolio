@@ -17,15 +17,6 @@ export interface ChatResponse {
   responseTime?: number;
 }
 
-export interface ConversationMetadata {
-  id: string;
-  title: string;
-  createdAt: number;
-  updatedAt: number;
-  messageCount: number;
-  tags?: string[];
-}
-
 export interface StreamOptions {
   onChunk?: (chunk: string) => void;
   onComplete?: (fullMessage: string) => void;
@@ -43,10 +34,9 @@ interface CacheEntry {
 export class ChatbotService {
   private isInitialized = true;
   private messageCache: Map<string, CacheEntry> = new Map();
-  private rateLimitQueue: number[] = [];
   private readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutes
   private readonly MAX_RETRIES = 3;
-  private readonly RETRY_DELAY = 1000; // 1 second
+  private readonly RETRY_DELAY = 1000;
   private conversationHistory: Map<string, ChatMessage[]> = new Map();
   private currentConversationId: string | null = null;
   private analytics: {
@@ -70,7 +60,7 @@ export class ChatbotService {
     this.loadAnalyticsFromStorage();
     this.startCacheCleanup();
     this.initializeCurrentConversation();
-    console.log('✅ Enhanced Chatbot service initialized');
+    console.log('✅ Chatbot service initialized');
   }
 
   // ==================== INITIALIZATION ====================
@@ -138,7 +128,7 @@ export class ChatbotService {
     } catch (error: any) {
       if (retries === 0) throw error;
       
-      // Don't retry on 4xx errors (client errors)
+      // Don't retry on 4xx errors
       if (error.status >= 400 && error.status < 500) {
         throw error;
       }
@@ -176,46 +166,6 @@ export class ChatbotService {
 
   loadConversation(conversationId: string): ChatMessage[] | null {
     return this.conversationHistory.get(conversationId) || null;
-  }
-
-  getAllConversations(): ConversationMetadata[] {
-    const conversations: ConversationMetadata[] = [];
-    
-    for (const [id, messages] of this.conversationHistory.entries()) {
-      const firstUserMessage = messages.find(m => m.role === 'user');
-      const title = firstUserMessage?.content.slice(0, 50) || 'New Conversation';
-      const createdAt = messages[0]?.timestamp || Date.now();
-      const updatedAt = messages[messages.length - 1]?.timestamp || Date.now();
-      
-      // Auto-tag conversations based on content
-      const tags = this.generateTags(messages);
-      
-      conversations.push({
-        id,
-        title,
-        createdAt,
-        updatedAt,
-        messageCount: messages.length,
-        tags
-      });
-    }
-    
-    return conversations.sort((a, b) => b.updatedAt - a.updatedAt);
-  }
-
-  private generateTags(messages: ChatMessage[]): string[] {
-    const tags: string[] = [];
-    const content = messages.map(m => m.content.toLowerCase()).join(' ');
-    
-    if (content.includes('project')) tags.push('Projects');
-    if (content.includes('skill') || content.includes('technology')) tags.push('Skills');
-    if (content.includes('certification')) tags.push('Certifications');
-    if (content.includes('blog') || content.includes('article')) tags.push('Blog');
-    if (content.includes('react') || content.includes('frontend')) tags.push('Frontend');
-    if (content.includes('backend') || content.includes('api')) tags.push('Backend');
-    if (content.includes('ai') || content.includes('ml') || content.includes('machine learning')) tags.push('AI/ML');
-    
-    return tags;
   }
 
   deleteConversation(conversationId: string): boolean {
@@ -300,7 +250,7 @@ export class ChatbotService {
 
       const preparedMessages = this.prepareMessages(messages);
 
-      // Retry with backoff
+      // Make API call with retry
       const data = await this.retryWithBackoff(async () => {
         const response = await fetch('/api/chatbot', {
           method: 'POST',
@@ -315,8 +265,14 @@ export class ChatbotService {
         });
 
         if (!response.ok) {
-          const errorData = await response.json();
-          const error: any = new Error(errorData.error || 'Failed to get response from AI');
+          let errorMessage = 'Failed to get response';
+          try {
+            const errorData = await response.json();
+            errorMessage = errorData.error || errorMessage;
+          } catch {
+            errorMessage = `Server error (${response.status})`;
+          }
+          const error: any = new Error(errorMessage);
           error.status = response.status;
           throw error;
         }
@@ -337,7 +293,7 @@ export class ChatbotService {
 
       this.saveAnalyticsToStorage();
 
-      // Cache the response
+      // Cache response
       if (options?.useCache !== false && data.message) {
         const cacheKey = this.getCacheKey(messages);
         this.setCachedResponse(cacheKey, data.message);
@@ -377,7 +333,6 @@ export class ChatbotService {
     try {
       const preparedMessages = this.prepareMessages(messages);
 
-      // Make API call with retry
       await this.retryWithBackoff(async () => {
         const response = await fetch('/api/chatbot', {
           method: 'POST',
@@ -393,18 +348,22 @@ export class ChatbotService {
         });
 
         if (!response.ok) {
-          const errorData = await response.json();
-          const error: any = new Error(errorData.error || 'Failed to get response from AI');
+          let errorMessage = 'Failed to get response';
+          try {
+            const errorData = await response.json();
+            errorMessage = errorData.error || errorMessage;
+          } catch {
+            errorMessage = `Server error (${response.status})`;
+          }
+          const error: any = new Error(errorMessage);
           error.status = response.status;
           throw error;
         }
 
-        // Check if streaming is supported
         if (!response.body) {
           throw new Error('Streaming not supported');
         }
 
-        // Handle streaming response
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let fullMessage = '';
@@ -455,15 +414,11 @@ export class ChatbotService {
   getSuggestedPrompts(): string[] {
     return [
       "What are Rajaram's main technical skills?",
-      "Tell me about the Real-time Collaborative IDE project",
-      "What certifications does Rajaram have?",
-      "Show me Rajaram's AI/ML projects",
-      "What blog articles has Rajaram written?",
-      "What's Rajaram's experience with React?",
-      "Tell me about the Computer Vision project",
-      "What database technologies does Rajaram work with?",
-      "Describe Rajaram's DevOps skills",
-      "What full-stack projects has Rajaram built?"
+      "Tell me about his projects",
+      "What certifications does he have?",
+      "What's his experience with React and Next.js?",
+      "Tell me about his AI/ML projects",
+      "What database technologies does he work with?",
     ];
   }
 
@@ -474,8 +429,8 @@ export class ChatbotService {
 
     if (lowercaseMsg.includes('project')) {
       return [
-        "Tell me more about the technical challenges",
-        "What other similar projects has Rajaram built?",
+        "Tell me more about the technical details",
+        "What other projects has he built?",
         "What was the impact of this project?"
       ];
     }
@@ -483,16 +438,16 @@ export class ChatbotService {
     if (lowercaseMsg.includes('skill') || lowercaseMsg.includes('technology')) {
       return [
         "What projects use this technology?",
-        "Does Rajaram have certifications in this area?",
-        "What's Rajaram's proficiency level?"
+        "Does he have certifications in this area?",
+        "What's his proficiency level?"
       ];
     }
 
     if (lowercaseMsg.includes('certification')) {
       return [
-        "What skills did this certification cover?",
-        "What other certifications does Rajaram have?",
-        "How does this apply to real projects?"
+        "What skills did this cover?",
+        "What other certifications does he have?",
+        "How does this apply to projects?"
       ];
     }
 
@@ -554,57 +509,10 @@ export class ChatbotService {
     } catch {
       return {
         initialized: true,
-        message: 'Chatbot service is ready (API health check failed)',
+        message: 'Chatbot service is ready',
         analytics: this.getAnalytics()
       };
     }
-  }
-
-  // ==================== EXPORT/IMPORT ====================
-  exportConversation(conversationId: string): string | null {
-    const messages = this.loadConversation(conversationId);
-    if (!messages) return null;
-
-    const metadata = this.getAllConversations().find(c => c.id === conversationId);
-
-    return JSON.stringify({
-      conversationId,
-      metadata,
-      messages,
-      exportedAt: new Date().toISOString()
-    }, null, 2);
-  }
-
-  importConversation(jsonData: string): boolean {
-    try {
-      const data = JSON.parse(jsonData);
-      if (data.conversationId && Array.isArray(data.messages)) {
-        this.saveConversation(data.conversationId, data.messages);
-        return true;
-      }
-      return false;
-    } catch {
-      return false;
-    }
-  }
-
-  exportAllConversations(): string {
-    const allConversations: any[] = [];
-    
-    for (const [id, messages] of this.conversationHistory.entries()) {
-      const metadata = this.getAllConversations().find(c => c.id === id);
-      allConversations.push({
-        conversationId: id,
-        metadata,
-        messages
-      });
-    }
-
-    return JSON.stringify({
-      conversations: allConversations,
-      analytics: this.analytics,
-      exportedAt: new Date().toISOString()
-    }, null, 2);
   }
 }
 
@@ -612,14 +520,6 @@ export class ChatbotService {
 export const chatbotService = new ChatbotService();
 
 // Export helper functions
-export const formatMessageForDisplay = (message: ChatMessage) => ({
-  ...message,
-  displayTime: new Date(message.timestamp || Date.now()).toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-});
-
 export const createUserMessage = (content: string): ChatMessage => ({
   role: 'user',
   content,
