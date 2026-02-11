@@ -407,10 +407,10 @@ const neuralSkills = [
         />
         
         {/* Quantum Orbs */}
-        <div className={`absolute ${isMobile ? 'top-10 left-10 w-48 h-48' : 'top-20 left-20 w-96 h-96'} bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full blur-3xl animate-quantum-float`}></div>
-        <div className={`absolute ${isMobile ? 'top-20 right-16 w-48 h-48' : 'top-40 right-32 w-96 h-96'} bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full blur-3xl animate-quantum-float-delay`}></div>
-        <div className={`absolute ${isMobile ? 'bottom-16 left-1/4 w-48 h-48' : 'bottom-32 left-1/3 w-96 h-96'} bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full blur-3xl animate-quantum-float-slow`}></div>
-        <div className={`absolute ${isMobile ? 'bottom-20 right-10 w-48 h-48' : 'bottom-40 right-20 w-96 h-96'} bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-full blur-3xl animate-quantum-float-delay-slow`}></div>
+        <div className={`absolute ${isMobile ? 'top-10 left-10 w-48 h-48' : 'top-20 left-20 w-96 h-96'} bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full blur-3xl ${!isMobile ? 'animate-quantum-float' : ''}`}></div>
+        <div className={`absolute ${isMobile ? 'top-20 right-16 w-48 h-48' : 'top-40 right-32 w-96 h-96'} bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full blur-3xl ${!isMobile ? 'animate-quantum-float-delay' : ''}`}></div>
+        <div className={`absolute ${isMobile ? 'bottom-16 left-1/4 w-48 h-48' : 'bottom-32 left-1/3 w-96 h-96'} bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full blur-3xl ${!isMobile ? 'animate-quantum-float-slow' : ''}`}></div>
+        <div className={`absolute ${isMobile ? 'bottom-20 right-10 w-48 h-48' : 'bottom-40 right-20 w-96 h-96'} bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-full blur-3xl ${!isMobile ? 'animate-quantum-float-delay-slow' : ''}`}></div>
         
         {/* Neural Network Visualization */}
         {neuralNetworkActive && (
@@ -419,7 +419,7 @@ const neuralSkills = [
               {[...Array(12)].map((_, i) => (
                 <div
                   key={i}
-                  className="absolute w-4 h-4 bg-cyan-400 rounded-full animate-pulse"
+                  className={`absolute w-4 h-4 bg-cyan-400 rounded-full ${!isMobile ? 'animate-pulse' : ''}`}
                   style={{
                     left: `${Math.random() * 100}%`,
                     top: `${Math.random() * 100}%`,
@@ -436,15 +436,15 @@ const neuralSkills = [
         {!isMobile && (
           <>
             <div 
-              className="absolute top-1/4 left-1/4 w-32 h-32 border-2 border-cyan-400/30 rotate-45 animate-rotate-3d"
+              className={`absolute top-1/4 left-1/4 w-32 h-32 border-2 border-cyan-400/30 rotate-45 ${!isMobile ? 'animate-rotate-3d' : ''}`}
               style={{ transform: `rotate(45deg) rotateX(${scrollY * 0.2}deg) rotateY(${scrollY * 0.1}deg)` }}
             ></div>
             <div 
-              className="absolute top-1/3 right-1/4 w-24 h-24 border-2 border-purple-400/30 animate-rotate-3d"
+              className={`absolute top-1/3 right-1/4 w-24 h-24 border-2 border-purple-400/30 ${!isMobile ? 'animate-rotate-3d' : ''}`}
               style={{ transform: `rotate(${scrollY * 0.15}deg) rotateY(${scrollY * 0.2}deg)` }}
             ></div>
             <div 
-              className="absolute bottom-1/3 left-1/3 w-28 h-28 border-2 border-green-400/30 rotate-45 animate-rotate-3d"
+              className={`absolute bottom-1/3 left-1/3 w-28 h-28 border-2 border-green-400/30 rotate-45 ${!isMobile ? 'animate-rotate-3d' : ''}`}
               style={{ transform: `rotate(45deg) rotateY(${scrollY * 0.2}deg) rotateX(${scrollY * 0.1}deg)` }}
             ></div>
           </>
@@ -461,16 +461,16 @@ const neuralSkills = [
             
             {/* Left Content - Quantum Enhanced */}
             <div className={`space-y-6 md:space-y-8 ${
-              isVisible ? 'animate-quantum-slide-in-left' : 'opacity-0'
+              !isMobile && isVisible ? 'animate-quantum-slide-in-left' : ''
             }`}>
               {/* Quantum Status Badge */}
               <div className={`inline-flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2 md:py-3 rounded-full border border-cyan-400/30 backdrop-blur-sm relative overflow-hidden group ${
-                glitchEffect ? 'animate-glitch' : ''
+                !isMobile && glitchEffect ? 'animate-glitch' : ''
               }`}>
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-purple-400/20 animate-pulse"></div>
+                <div className={`absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-purple-400/20 ${!isMobile ? 'animate-pulse' : ''}`}></div>
                 <div className="relative flex items-center gap-2 md:gap-3">
                   <div className="relative">
-                    <div className="w-2 h-2 md:w-3 md:h-3 bg-cyan-400 rounded-full animate-pulse"></div>
+                    <div className={`w-2 h-2 md:w-3 md:h-3 bg-cyan-400 rounded-full ${!isMobile ? 'animate-pulse' : ''}`}></div>
                     <div className="absolute inset-0 bg-cyan-400 rounded-full blur-md"></div>
                   </div>
                   <span className="text-cyan-400 font-medium text-xs md:text-sm tracking-wider">QUANTUM ACTIVE</span>
@@ -482,18 +482,18 @@ const neuralSkills = [
               <div className="space-y-4 md:space-y-6">
                 <div className="flex items-center gap-3 md:gap-4">
                   <div className="flex items-center gap-1.5 md:gap-2">
-                    <div className="w-3 h-3 md:w-4 md:h-4 bg-cyan-400 rounded-full animate-pulse"></div>
-                    <div className="w-3 h-3 md:w-4 md:h-4 bg-purple-400 rounded-full animate-pulse delay-100"></div>
-                    <div className="w-3 h-3 md:w-4 md:h-4 bg-pink-400 rounded-full animate-pulse delay-200"></div>
+                    <div className={`w-3 h-3 md:w-4 md:h-4 bg-cyan-400 rounded-full ${!isMobile ? 'animate-pulse' : ''}`}></div>
+                    <div className={`w-3 h-3 md:w-4 md:h-4 bg-purple-400 rounded-full ${!isMobile ? 'animate-pulse delay-100' : ''}`}></div>
+                    <div className={`w-3 h-3 md:w-4 md:h-4 bg-pink-400 rounded-full ${!isMobile ? 'animate-pulse delay-200' : ''}`}></div>
                   </div>
-                  <Activity className="w-4 h-4 md:w-5 md:h-5 text-cyan-400 animate-pulse" />
+                  <Activity className={`w-4 h-4 md:w-5 md:h-5 text-cyan-400 ${!isMobile ? 'animate-pulse' : ''}`} />
                 </div>
                 
                 <h1 className={`font-black leading-tight ${
                   isMobile ? 'text-4xl sm:text-5xl' : 'text-6xl md:text-7xl lg:text-8xl'
-                } ${hologramActive ? 'animate-hologram' : ''}`}>
+                } ${!isMobile && hologramActive ? 'animate-hologram' : ''}`}>
                   <span className="block text-white mb-2">Welcome to the</span>
-                  <span className="block bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-quantum-gradient">
+                  <span className={`block bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent ${!isMobile ? 'animate-quantum-gradient' : ''}`}>
                     Builder’s Realm
                   </span>
                 </h1>
@@ -506,7 +506,7 @@ const neuralSkills = [
                     <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
                       {typedText}
                     </span>
-                    <span className="absolute -right-4 md:-right-6 top-0 w-3 h-3 md:w-4 md:h-4 bg-cyan-400 rounded-full animate-pulse"></span>
+                    <span className={`absolute -right-4 md:-right-6 top-0 w-3 h-3 md:w-4 md:h-4 bg-cyan-400 rounded-full ${!isMobile ? 'animate-pulse' : ''}`}></span>
                   </div>
                 </div>
               </div>
@@ -520,7 +520,7 @@ const neuralSkills = [
                   I architect digital solutions that push the boundaries of what's possible. 
                   Welcome to a world where code meets consciousness.
                 </p>
-                <div className="absolute left-0 md:-left-4 top-0 w-1 h-full bg-gradient-to-b from-cyan-400 to-purple-400 rounded-full animate-pulse"></div>
+                <div className={`absolute left-0 md:-left-4 top-0 w-1 h-full bg-gradient-to-b from-cyan-400 to-purple-400 rounded-full ${!isMobile ? 'animate-pulse' : ''}`}></div>
               </div>
 
               {/* Neural Skills Display */}
@@ -581,7 +581,7 @@ const neuralSkills = [
                   }`}>
                   <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-xl md:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <span className="relative flex items-center justify-center gap-2 md:gap-3">
-                    <Download className="w-5 h-5 md:w-6 md:h-6 text-cyan-400 group-hover:animate-bounce" />
+                    <Download className={`w-5 h-5 md:w-6 md:h-6 text-cyan-400 ${!isMobile ? 'group-hover:animate-bounce' : ''}`} />
                     Download Matrix
                   </span>
                 </button>
@@ -617,7 +617,7 @@ const neuralSkills = [
 
             {/* Right Content - Quantum Terminal */}
             <div className={`flex items-center justify-center ${
-              isVisible ? 'animate-quantum-slide-in-right' : 'opacity-0'
+              !isMobile && isVisible ? 'animate-quantum-slide-in-right' : ''
             } ${isMobile ? 'mt-8' : ''}`}>
               <div className={`relative w-full ${
                 isMobile ? 'max-w-none' : 'max-w-lg'
@@ -626,7 +626,7 @@ const neuralSkills = [
                 {/* Quantum Terminal */}
                 <div className={`relative bg-black/90 backdrop-blur-2xl border border-cyan-400/30 rounded-2xl md:rounded-3xl overflow-hidden ${
                   isMobile ? 'p-4' : 'p-6 md:p-8'
-                } ${hologramActive ? 'animate-hologram-glow' : ''}`}>
+                } ${!isMobile && hologramActive ? 'animate-hologram-glow' : ''}`}>
                   <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 pointer-events-none"></div>
                   
                   {/* Enhanced Terminal Header */}
@@ -695,7 +695,7 @@ const neuralSkills = [
                           <span className="text-cyan-400">$</span>
                           <span className="text-gray-300 truncate">{command.cmd}</span>
                           {index === activeCommand && (
-                            <span className="w-1.5 h-3 md:w-2 md:h-4 bg-cyan-400 animate-pulse flex-shrink-0"></span>
+                            <span className={`w-1.5 h-3 md:w-2 md:h-4 bg-cyan-400 ${!isMobile ? 'animate-pulse' : ''} flex-shrink-0`}></span>
                           )}
                         </div>
                         <div className="ml-4 md:ml-6 text-cyan-400 text-[10px] md:text-xs break-words">{command.output}</div>
@@ -703,37 +703,37 @@ const neuralSkills = [
                     ))}
                     
                     <div className="flex items-center gap-2">
-                      <span className="text-cyan-400 animate-pulse">$</span>
-                      <span className="text-gray-300 animate-pulse">_</span>
+                      <span className={`text-cyan-400 ${!isMobile ? 'animate-pulse' : ''}`}>$</span>
+                      <span className={`text-gray-300 ${!isMobile ? 'animate-pulse' : ''}`}>_</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Quantum Floating Elements */}
-                <div className={`absolute ${isMobile ? '-top-6 -left-6 w-12 h-12' : '-top-12 -left-12 w-20 h-20'} bg-gradient-to-br from-cyan-500 to-blue-500 rounded-2xl md:rounded-3xl flex items-center justify-center animate-quantum-float-slow`}>
+                <div className={`absolute ${isMobile ? '-top-6 -left-6 w-12 h-12' : '-top-12 -left-12 w-20 h-20'} bg-gradient-to-br from-cyan-500 to-blue-500 rounded-2xl md:rounded-3xl flex items-center justify-center ${!isMobile ? 'animate-quantum-float-slow' : ''}`}>
                   <Atom className={`${isMobile ? 'w-6 h-6' : 'w-10 h-10'} text-white`} />
                 </div>
                 
-                <div className={`absolute ${isMobile ? '-top-4 -right-4 w-10 h-10' : '-top-8 -right-8 w-16 h-16'} bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl md:rounded-2xl flex items-center justify-center animate-quantum-float`}>
+                <div className={`absolute ${isMobile ? '-top-4 -right-4 w-10 h-10' : '-top-8 -right-8 w-16 h-16'} bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl md:rounded-2xl flex items-center justify-center ${!isMobile ? 'animate-quantum-float' : ''}`}>
                   <Brain className={`${isMobile ? 'w-5 h-5' : 'w-8 h-8'} text-white`} />
                 </div>
                 
-                <div className={`absolute ${isMobile ? '-bottom-6 -left-6 w-11 h-11' : '-bottom-10 -left-10 w-18 h-18'} bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl md:rounded-3xl flex items-center justify-center animate-quantum-float-delay`}>
+                <div className={`absolute ${isMobile ? '-bottom-6 -left-6 w-11 h-11' : '-bottom-10 -left-10 w-18 h-18'} bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl md:rounded-3xl flex items-center justify-center ${!isMobile ? 'animate-quantum-float-delay' : ''}`}>
                   <Cpu className={`${isMobile ? 'w-5 h-5' : 'w-9 h-9'} text-white`} />
                 </div>
                 
-                <div className={`absolute ${isMobile ? '-bottom-4 -right-6 w-9 h-9' : '-bottom-8 -right-12 w-14 h-14'} bg-gradient-to-br from-orange-500 to-red-500 rounded-xl md:rounded-2xl flex items-center justify-center animate-quantum-float-slow`}>
+                <div className={`absolute ${isMobile ? '-bottom-4 -right-6 w-9 h-9' : '-bottom-8 -right-12 w-14 h-14'} bg-gradient-to-br from-orange-500 to-red-500 rounded-xl md:rounded-2xl flex items-center justify-center ${!isMobile ? 'animate-quantum-float-slow' : ''}`}>
                   <Terminal className={`${isMobile ? 'w-4 h-4' : 'w-7 h-7'} text-white`} />
                 </div>
 
                 {/* Additional Quantum Elements */}
                 {!isMobile && (
                   <>
-                    <div className="absolute top-1/2 -left-16 w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center animate-rotate-3d">
+                    <div className={`absolute top-1/2 -left-16 w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center ${!isMobile ? 'animate-rotate-3d' : ''}`}>
                       <Hexagon className="w-6 h-6 text-white" />
                     </div>
                     
-                    <div className="absolute top-1/3 -right-16 w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-500 rounded-lg flex items-center justify-center animate-quantum-float">
+                    <div className={`absolute top-1/3 -right-16 w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-500 rounded-lg flex items-center justify-center ${!isMobile ? 'animate-quantum-float' : ''}`}>
                       <Globe className="w-5 h-5 text-white" />
                     </div>
                   </>
@@ -894,6 +894,8 @@ const neuralSkills = [
           .animate-quantum-float-slow { animation: quantum-float-slow 10s ease-in-out infinite; }
           .animate-quantum-float-delay-slow { animation: quantum-float-delay-slow 11s ease-in-out infinite; }
         }
+
+        
       `}</style>
     </section>
   );

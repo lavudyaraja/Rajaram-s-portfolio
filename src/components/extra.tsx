@@ -224,7 +224,7 @@ export default function Education() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header Section */}
-        <div className={`text-center mb-16 sm:mb-20 lg:mb-24 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+        <div className={`text-center mb-16 sm:mb-20 lg:mb-24 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'translate-y-10'}`}>
           <div className="inline-flex items-center justify-center gap-3 mb-6">
             <div className="w-12 h-[2px] bg-gradient-to-r from-transparent via-cyan-500 to-transparent animate-shimmer" />
             <div className="relative">
@@ -254,7 +254,7 @@ export default function Education() {
             return (
               <div
                 key={edu.id}
-                className={`transition-all duration-700 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
+                className={`transition-all duration-700 ${isVisible ? 'opacity-100 translate-x-0' : '-translate-x-10'}`}
                 style={{ transitionDelay: `${index * 200}ms` }}
               >
                 <div 
@@ -307,7 +307,7 @@ export default function Education() {
                     </div>
 
                     {/* Expandable Content */}
-                    <div className={`overflow-hidden transition-all duration-500 ${selectedCard === edu.id ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+                    <div className={`overflow-hidden transition-all duration-500 ${selectedCard === edu.id ? 'max-h-96' : 'max-h-0'}`}>
                       <div className="pt-4 border-t border-gray-800 space-y-4">
                         {/* Highlights */}
                         <div>
@@ -378,7 +378,7 @@ export default function Education() {
               return (
                 <div
                   key={edu.id}
-                  className={`relative ${isVisible ? 'opacity-100' : 'opacity-0'} transition-all duration-1000`}
+                  className={`relative ${isVisible ? 'opacity-100' : ''} transition-all duration-1000`}
                   style={{ transitionDelay: `${index * 300}ms` }}
                   onMouseEnter={() => setHoveredCard(edu.id)}
                   onMouseLeave={() => setHoveredCard(null)}
@@ -443,7 +443,7 @@ export default function Education() {
                           </div>
 
                           {/* Expandable Section */}
-                          <div className={`overflow-hidden transition-all duration-500 ${selectedCard === edu.id ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+                          <div className={`overflow-hidden transition-all duration-500 ${selectedCard === edu.id ? 'max-h-96' : 'max-h-0'}`}>
                             <div className="pt-6 border-t border-gray-800 space-y-4">
                               {/* Highlights */}
                               <div>
@@ -519,7 +519,7 @@ export default function Education() {
         </div>
 
         {/* Stats Section */}
-        <div className={`mt-24 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+        <div className={`mt-24 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'translate-y-10'}`}
              style={{ transitionDelay: '1000ms' }}>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[

@@ -1,197 +1,211 @@
 import { Project } from '../types/project';
 
 export const PROJECTS: Project[] = [
-  {
-    id: '1',
-    title: "Chat Assistant Platform",
-    description: "Multi-provider AI conversation system integrating OpenAI, Anthropic, and Google APIs.",
-    longDescription: "A comprehensive AI chat platform that integrates multiple AI providers including OpenAI GPT models, Anthropic Claude, and Google's Gemini. Features include persistent conversation history, real-time collaboration, advanced prompt engineering, custom AI model training, and enterprise-grade security.",
-    tags: ["Next.js", "TypeScript", "PostgreSQL", "Neon", "AI/ML"],
-    githubUrl: "https://github.com/lavudyaraja/nextgenai",
-    demoUrl: "https://nextgenai-three.vercel.app/",
-    imageUrl: "./images/nextgen.png",
-    category: "ai",
-    featured: true,
-    stats: { stars: 145, forks: 23, issues: 5 },
-    date: "2024-01",
-    status: "completed",
-    duration: "3 months",
-    teamSize: 2,
-    achievements: [
-      "Integrated 3 major AI providers",
-      "Achieved 99.9% uptime",
-      "Processed 1M+ conversations"
-    ],
-    technologies: {
-      frontend: ["Next.js", "React", "TypeScript", "TailwindCSS"],
-      backend: ["Node.js", "Express", "PostgreSQL", "Redis"],
-      database: ["PostgreSQL", "Redis"],
-      tools: ["Docker", "AWS", "Vercel", "OpenAI API"]
-    }
-  },
-  {
-    id: '2',
-    title: "Portfolio Website",
-    description: "Personal portfolio showcasing projects, blogs, and contact information.",
-    longDescription: "A modern, high-performance portfolio website built with Next.js 14, featuring server-side rendering, optimal SEO, and exceptional performance scores. Includes a blog system with MDX support and comprehensive analytics dashboard.",
-    tags: ["Next.js", "TailwindCSS", "TypeScript", "Framer Motion"],
-    githubUrl: "https://github.com/lavudyaraja/portfolio",
-    demoUrl: "https://lavudyaraja.dev",
-    imageUrl: "./images/ContentGeneration.jpg",
-    category: "web",
-    featured: true,
-    stats: { stars: 89, forks: 12, issues: 2 },
-    date: "2024-02",
-    status: "completed",
-    duration: "2 months",
-    teamSize: 1,
-    achievements: [
-      "95+ Lighthouse performance score",
-      "100% responsive design",
-      "Optimized SEO implementation"
-    ],
-    technologies: {
-      frontend: ["Next.js", "React", "TypeScript", "TailwindCSS", "Framer Motion"],
-      backend: ["Next.js API Routes", "Node.js"],
-      database: ["SQLite", "Prisma"],
-      tools: ["Vercel", "Google Analytics", "MDX"]
-    }
-  },
-  {
-    id: '3',
-    title: "Task Management App",
-    description: "Collaborative task management with real-time updates and team features.",
-    longDescription: "A comprehensive task management platform designed for teams of all sizes. Features include real-time collaboration, drag-and-drop interface, kanban boards, Gantt charts, and automated workflows.",
-    tags: ["Vue.js", "Firebase", "Socket.io", "Vuetify"],
-    githubUrl: "https://github.com/lavudyaraja/taskmanager",
-    demoUrl: "https://taskmanager-demo.com",
-    imageUrl: "./images/FitnessTracker.jpg",
-    category: "fullstack",
-    stats: { stars: 234, forks: 45, issues: 8 },
-    date: "2023-12",
-    status: "completed",
-    duration: "4 months",
-    teamSize: 3,
-    achievements: [
-      "10K+ active users",
-      "Real-time sync across devices",
-      "50+ integrations"
-    ],
-    technologies: {
-      frontend: ["Vue.js", "Vuetify", "JavaScript", "Vuex"],
-      backend: ["Node.js", "Express", "Socket.io"],
-      database: ["Firebase", "MongoDB"],
-      tools: ["Docker", "AWS", "Firebase", "Socket.io"]
-    }
-  },
-  {
-    id: '4',
-    title: "Weather Dashboard",
-    description: "Interactive weather dashboard with real-time data and forecasts.",
-    longDescription: "An advanced weather analytics platform providing real-time weather data, detailed forecasts, and beautiful visualizations. Features include location-based weather alerts and historical weather patterns.",
-    tags: ["React", "D3.js", "OpenWeather API", "Chart.js"],
-    githubUrl: "https://github.com/lavudyaraja/weather-dashboard",
-    demoUrl: "https://weather-dashboard.com",
-    imageUrl: "./images/AIContentGenerator.jpg",
-    category: "web",
-    stats: { stars: 167, forks: 34, issues: 3 },
-    date: "2023-11",
-    status: "completed",
-    duration: "2 months",
-    teamSize: 2,
-    achievements: [
-      "Real-time weather updates",
-      "Advanced data visualizations",
-      "Mobile-responsive design"
-    ],
-    technologies: {
-      frontend: ["React", "D3.js", "Chart.js", "Material-UI"],
-      backend: ["Node.js", "Express"],
-      database: ["MongoDB"],
-      tools: ["OpenWeather API", "D3.js", "Chart.js", "Heroku"]
-    }
-  },
-  {
-    id: '5',
-    title: "Social Media Analytics",
-    description: "Comprehensive analytics platform tracking engagement and trends.",
-    longDescription: "A powerful social media analytics platform that provides deep insights into social media performance across multiple platforms. Features include sentiment analysis and trend prediction.",
-    tags: ["Angular", "Python", "FastAPI", "PostgreSQL"],
-    githubUrl: "https://github.com/lavudyaraja/social-analytics",
-    demoUrl: "https://social-analytics-demo.com",
-    imageUrl: "./images/ContentGeneration.jpg",
-    category: "fullstack",
-    stats: { stars: 298, forks: 67, issues: 12 },
-    date: "2023-10",
-    status: "maintenance",
-    duration: "5 months",
-    teamSize: 4,
-    achievements: [
-      "1M+ posts analyzed daily",
-      "95% accuracy in sentiment analysis",
-      "Real-time trend detection"
-    ],
-    technologies: {
-      frontend: ["Angular", "TypeScript", "RxJS", "NgRx"],
-      backend: ["Python", "FastAPI", "Celery"],
-      database: ["PostgreSQL", "Redis", "Elasticsearch"],
-      tools: ["Docker", "Kubernetes", "Apache Kafka", "TensorFlow"]
-    }
-  },
-  {
-    id: '6',
-    title: "Mobile Banking App",
-    description: "Secure mobile banking with biometric authentication and real-time transactions.",
-    longDescription: "A comprehensive mobile banking application featuring enterprise-grade security, biometric authentication, real-time transaction processing, and AI-powered financial insights.",
-    tags: ["React Native", "Node.js", "MongoDB", "JWT"],
-    githubUrl: "https://github.com/lavudyaraja/mobile-banking",
-    demoUrl: "https://mobile-banking-demo.com",
-    imageUrl: "./images/FitnessTracker.jpg",
-    category: "mobile",
-    stats: { stars: 412, forks: 89, issues: 15 },
-    date: "2023-09",
-    status: "in-progress",
-    duration: "6 months",
-    teamSize: 5,
-    achievements: [
-      "Bank-level security implementation",
-      "Biometric authentication",
-      "Real-time transaction processing"
-    ],
-    technologies: {
-      frontend: ["React Native", "TypeScript", "Redux"],
-      backend: ["Node.js", "Express", "JWT"],
-      database: ["MongoDB", "Redis"],
-      tools: ["Docker", "AWS", "Stripe API", "Twilio"]
-    }
+ {
+  id: '1',
+  title: "EvalAI - AI Assisted Semester Exam Evaluation System",
+  description: "AI-powered semester exam evaluation platform with OCR, LLM-based grading, and teacher review workflows.",
+  longDescription: "EvalAI is a comprehensive AI-assisted exam evaluation system built with Next.js 14 and TypeScript. It enables teachers to upload student answer PDFs, extract handwritten text using OCR, evaluate answers using LLMs via Groq, and review results through an advanced split-screen approval interface. The platform features dashboard analytics, confidence scoring, teacher overrides, and scalable cloud deployment.",
+  tags: ["Next.js", "TypeScript", "MongoDB", "PostgreSQL", "Groq", "OCR", "AI/ML"],
+  githubUrl: "https://github.com/lavudyaraja/Evaluation-paper-assignment.git",
+  demoUrl: "https://evaluation-paper-assignment.vercel.app/",
+  imageUrl: "./images/evalai.png",
+  category: "ai",
+  featured: true,
+  stats: { stars: 0, forks: 0, issues: 0 },
+  date: "2026-02",
+  status: "in-progress",
+  duration: "4 months",
+  teamSize: 1,
+  achievements: [
+    "Built AI-assisted exam evaluation workflow",
+    "Implemented split-screen teacher review system",
+    "Integrated OCR pipeline for PDF answer sheets",
+    "Designed scalable multi-phase AI evaluation architecture"
+  ],
+  technologies: {
+    frontend: ["Next.js 14", "React 18", "TypeScript", "TailwindCSS", "Radix UI"],
+    backend: ["Node.js", "API Routes", "Groq SDK"],
+    database: ["PostgreSQL (Neon)", "MongoDB"],
+    ai: ["Groq LLM", "Tesseract.js", "EasyOCR", "PDF.js"],
+    tools: ["Vercel", "ESLint", "Prettier"]
   }
+},
+
+ {
+  id: '2',
+  title: "Machine Learning Framework Setup",
+  description: "A comprehensive full-stack machine learning platform with preprocessing pipeline, model training, evaluation, and deployment using Next.js and FastAPI.",
+  longDescription: "A production-ready full-stack ML framework that enables dataset upload, automated preprocessing, model training, evaluation, and deployment. Built with Next.js 16 and FastAPI, it provides a complete end-to-end machine learning workflow including missing value handling, feature engineering, hyperparameter tuning, cross-validation, ROC/AUC analysis, and real-time inference APIs.",
+  tags: ["Next.js", "TypeScript", "FastAPI", "Scikit-learn", "Machine Learning"],
+  githubUrl: "https://github.com/lavudyaraja/Machine-learning-platform.git",
+  demoUrl: "https://ml-framework-demo.vercel.app",
+  imageUrl: "./images/mlframework.png",
+  category: "ai",
+  stats: { stars: 120, forks: 18, issues: 4 },
+  date: "2026-01",
+  status: "completed",
+  duration: "4 months",
+  teamSize: 1,
+  achievements: [
+    "Built end-to-end ML pipeline with 7-step preprocessing workflow",
+    "Implemented automated model training and hyperparameter tuning",
+    "Developed real-time inference API using FastAPI",
+    "Created interactive dataset upload and exploration system"
+  ],
+  technologies: {
+    frontend: ["Next.js 16", "TypeScript", "TailwindCSS", "Framer Motion", "Shadcn/ui"],
+    backend: ["FastAPI", "Python", "REST API"],
+    database: ["Local Storage / Optional PostgreSQL"],
+    ai: ["Scikit-learn", "Pandas", "NumPy"],
+    tools: ["Docker", "Vercel", "Git", "Joblib"]
+  }
+},
+ {
+  id: '8',
+  title: "UniBrain - Comprehensive Educational Management System",
+  description: "A full-scale educational management and LMS platform with multi-role access including students, teachers, department admins, and super admins built using Next.js and PostgreSQL.",
+  longDescription: "UniBrain is a modern full-stack educational management system designed to streamline academic operations for colleges and universities. It provides role-based dashboards for students, teachers, department administrators, college admins, and super admins. Features include learning dashboards, assessment management, real-time communication, analytics reporting, LMS content delivery, and institutional management powered by Next.js, PostgreSQL, and NextAuth.js.",
+  tags: ["Next.js", "TypeScript", "PostgreSQL", "NextAuth", "LMS"],
+  githubUrl: "https://github.com/lavudyaraja/Education-platform.git",
+  demoUrl: "https://education-platform-lilac-five.vercel.app/",
+  imageUrl: "./images/unibrain.png",
+  category: "web",
+  stats: { stars: 210, forks: 35, issues: 9 },
+  date: "2026-02",
+  status: "completed",
+  duration: "5 months",
+  teamSize: 1,
+  achievements: [
+    "Built multi-role educational platform with 5 user hierarchies",
+    "Implemented full LMS with assessments, analytics, and messaging",
+    "Developed secure authentication using NextAuth.js",
+    "Designed scalable academic management architecture"
+  ],
+  technologies: {
+    frontend: ["Next.js 16", "React", "TypeScript", "TailwindCSS", "Radix UI"],
+    backend: ["Next.js API Routes", "Node.js"],
+    database: ["PostgreSQL", "Drizzle ORM"],
+    auth: ["NextAuth.js"],
+    tools: ["Supabase", "Recharts", "React Hook Form", "Zod", "ESLint"]
+  }
+},
+  {
+  id: '9',
+  title: "Maternal Health Risk Predictor",
+  description: "A machine learning-powered healthcare web application that predicts maternal pregnancy risk levels using patient vitals and medical history.",
+  longDescription: "Maternal Health Risk Predictor is a machine learning-based healthcare application that classifies pregnancy risk into Low, Mid, and High categories using multiple ML algorithms. Built with Streamlit, Scikit-learn, and TensorFlow, the system enables real-time predictions, probability analysis, and clinical recommendations based on patient medical data. The platform supports multiple models including Logistic Regression, SVM, Decision Tree, Random Forest, and MLP neural networks with interactive dashboards and model comparison features.",
+  tags: ["Python", "Machine Learning", "Streamlit", "TensorFlow", "Scikit-learn", "Healthcare AI"],
+  githubUrl: "https://github.com/lavudyaraja/Maternal_Health_Risk_Predictor_Hackathon.git",
+  demoUrl: "https://maternalhealthriskpredictorhackathon-kup8dpffq3nxqfsqfh4o.streamlit.app/",
+  imageUrl: "./images/maternalhealth.png",
+  category: "ai",
+  stats: { stars: 95, forks: 12, issues: 2 },
+  date: "2025-12",
+  status: "completed",
+  duration: "2 months",
+  teamSize: 1,
+  achievements: [
+    "Developed multi-model maternal risk prediction system",
+    "Achieved ~97% accuracy using Logistic Regression and SVM",
+    "Implemented real-time clinical risk assessment dashboard",
+    "Built interactive healthcare UI with Streamlit"
+  ],
+  technologies: {
+    frontend: ["Streamlit"],
+    backend: ["Python"],
+    ai: ["Scikit-learn", "TensorFlow", "Random Forest", "SVM", "MLP"],
+    database: ["Local Dataset"],
+    tools: ["Pandas", "NumPy", "Matplotlib", "Seaborn", "Joblib"]
+  }
+},
+  {
+  id: '10',
+  title: "Community Hub - Data Submission & Validation Platform",
+  description: "A full-stack data submission and moderation platform with automated validation workflows, admin dashboards, and secure authentication built using Next.js and PostgreSQL.",
+  longDescription: "Community Hub is a scalable full-stack platform designed for managing community-driven data submissions with automated and manual validation workflows. Built with Next.js 16, TypeScript, and PostgreSQL (Neon), it features role-based dashboards, secure authentication, file uploads (images, audio, video, documents), and an admin moderation system. The platform enables structured data collection, approval pipelines, and efficient content governance through modern web architecture.",
+  tags: ["Next.js", "TypeScript", "PostgreSQL", "Neon", "Full Stack"],
+  githubUrl: "https://github.com/lavudyaraja/community-hub.git",
+  demoUrl: "https://community-hub-cyan.vercel.app",
+  imageUrl: "./images/communityhub.png",
+  category: "web",
+  stats: { stars: 0, forks: 0, issues: 0 },
+  date: "2026-01",
+  status: "completed",
+  duration: "2 months",
+  teamSize: 1,
+  achievements: [
+    "Built role-based data submission and validation system",
+    "Implemented admin moderation workflows with approval pipeline",
+    "Integrated PostgreSQL database using Neon for scalable storage",
+    "Developed secure authentication and protected API routes"
+  ],
+  technologies: {
+    frontend: ["Next.js 16", "React", "TypeScript", "TailwindCSS", "Shadcn UI"],
+    backend: ["Next.js API Routes", "Node.js"],
+    database: ["PostgreSQL (Neon)"],
+    auth: ["Custom Auth / Secure Sessions"],
+    tools: ["Vercel", "Lucide React", "Turbopack"]
+  }
+},
+ {
+  id: '11',
+  title: "Lavudya Raja - Next.js Developer Portfolio",
+  description: "A modern, high-performance developer portfolio with advanced UI animations, multiple navigation themes, and interactive project showcases built using Next.js 16.",
+  longDescription: "A cutting-edge fully responsive developer portfolio showcasing modern web engineering and AI project experience. Built with Next.js 16, TypeScript, and TailwindCSS, the platform features multiple futuristic navigation themes, animated hero sections, interactive skills visualization, 3D project displays, and optimized performance architecture. Designed with advanced UI/UX principles, smooth animations, SEO optimization, and scalable component-based structure for professional branding.",
+  tags: ["Next.js", "TypeScript", "TailwindCSS", "Framer Motion", "Portfolio"],
+  githubUrl: "https://github.com/lavudyaraja/Rajaram-s-portfolio.git",
+  demoUrl: "https://www.lavudyaraja.in/",
+  imageUrl: "./images/portfolio.png",
+  category: "web",
+  stats: { stars: 60, forks: 8, issues: 1 },
+  date: "2026-02",
+  status: "completed",
+  duration: "2 months",
+  teamSize: 1,
+  achievements: [
+    "Designed multi-theme futuristic portfolio with 5 navigation styles",
+    "Built interactive project and skills visualization system",
+    "Implemented advanced animations using Framer Motion",
+    "Optimized performance with Next.js App Router architecture"
+  ],
+  technologies: {
+    frontend: ["Next.js 16", "React", "TypeScript", "TailwindCSS", "Framer Motion"],
+    backend: ["Next.js API Routes"],
+    database: ["Static Data / Optional APIs"],
+    design: ["Lucide React", "Responsive Grid Systems"],
+    tools: ["Vercel", "ESLint", "PostCSS"]
+  }
+}
 ];
 
 export const SIMPLE_PROJECTS = [
+ {
+  id: '7',
+  title: "EVALAI - AI ASSISTED SEMESTER EXAM EVALUATION SYSTEM",
+  description: "A comprehensive AI-powered exam evaluation platform that allows teachers to upload answer PDFs, extract text using OCR, generate AI-based marks with confidence scoring, and review evaluations through an intuitive split-screen workflow.",
+  tags: ["Nextjs", "Typescript", "Groq", "OCR", "MongoDB", "PostgreSQL"],
+  githubUrl: "https://github.com/your-repo/evalai-exam-system",
+  demoUrl: "https://your-evalai-demo.vercel.app/",
+  imageUrl: "./images/evalai.png",
+  color: "indigo",
+  featured: true
+},
+
+ {
+  id: '8',
+  title: "MACHINE LEARNING FRAMEWORK SETUP - FULL STACK ML PIPELINE",
+  description: "A full-stack machine learning framework built with Next.js, TypeScript, and FastAPI providing complete ML workflow including preprocessing, model training, evaluation, and real-time deployment.",
+  tags: ["Nextjs", "Typescript", "FastAPI", "Scikit-learn", "Pandas", "ML"],
+  githubUrl: "https://github.com/your-repo/ml-framework",
+  demoUrl: "https://your-ml-framework.vercel.app/",
+  imageUrl: "./images/mlframework.png",
+  color: "green",
+  featured: true
+},
+
   {
-    id: '1',
-    title: "CHAT ASSISTANT PLATFORM - A MULTI-PROVIDER INTELLIGENT CONVERSATION SYSTEM",
-    description: "A scalable and user-friendly chat application that integrates multiple AI providers (OpenAI, Anthropic, Google) into a single platform. persistent history, and seamless provider switching. concepts with real-world AI applications.",
-    tags: ["Nextjs", "Typescript", "PostgreSQL", "Neon"],
-    githubUrl: "https://github.com/lavudyaraja/nextgenai",
-    demoUrl: "https://nextgenai-three.vercel.app/",
-    imageUrl: "./images/nextgen.png",
-    color: "yellow",
-    featured: true
-  },
-  {
-    id: '2',
-    title: "Portfolio Website",
-    description: "A personal portfolio site showcasing projects, blogs, and contact info. Built using Next.js and TailwindCSS with optimal performance and SEO.",
-    tags: ["Next.js", "TailwindCSS", "TypeScript"],
-    githubUrl: "https://github.com/your/portfolio",
-    demoUrl: "https://your-portfolio.com",
-    imageUrl: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&h=400&fit=crop&crop=center",
-    color: "pink",
-    featured: true
-  },
-  {
-    id: '3',
+    id: '9',
     title: "Task Management App",
     description: "A collaborative task management application with real-time updates, team collaboration features, and advanced project tracking capabilities.",
     tags: ["Vue.js", "Firebase", "Socket.io", "Vuetify"],
@@ -201,7 +215,7 @@ export const SIMPLE_PROJECTS = [
     color: "orange"
   },
   {
-    id: '4',
+    id: '10',
     title: "Weather Dashboard",
     description: "An interactive weather dashboard providing real-time weather data, forecasts, and climate analytics with beautiful data visualizations.",
     tags: ["React", "D3.js", "OpenWeather API", "Chart.js"],
@@ -211,7 +225,7 @@ export const SIMPLE_PROJECTS = [
     color: "cyan"
   },
   {
-    id: '5',
+    id: '11',
     title: "Social Media Analytics",
     description: "A comprehensive social media analytics platform that tracks engagement, analyzes trends, and provides actionable insights for content creators.",
     tags: ["Angular", "Python", "FastAPI", "PostgreSQL"],

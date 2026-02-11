@@ -294,7 +294,7 @@ export default function CarouselProjectsView() {
     <section className="py-12 sm:py-16 lg:py-20 bg-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Header */}
-        <div className={`text-center mb-8 sm:mb-12 lg:mb-16 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
+        <div className={`text-center mb-8 sm:mb-12 lg:mb-16 ${!isMobile && isVisible ? 'animate-fade-in-up' : ''}`}>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4">My Projects</h2>
           <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base lg:text-lg">
             Hover over projects to explore detailed information
@@ -302,7 +302,7 @@ export default function CarouselProjectsView() {
         </div>
 
         {/* Search and Filters */}
-        <div className={`flex flex-col gap-4 sm:gap-6 items-center justify-between mb-8 sm:mb-12 ${isVisible ? 'animate-fade-in-up animation-delay-200' : 'opacity-0'}`}>
+        <div className={`flex flex-col gap-4 sm:gap-6 items-center justify-between mb-8 sm:mb-12 ${!isMobile && isVisible ? 'animate-fade-in-up animation-delay-200' : ''}`}>
           {/* Search */}
           <div className="relative w-full sm:w-auto lg:w-96">
             <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-500" />
@@ -344,7 +344,7 @@ export default function CarouselProjectsView() {
         </div>
 
         {/* Carousel Container */}
-        <div className={`relative ${isVisible ? 'animate-fade-in-up animation-delay-400' : 'opacity-0'}`}>
+        <div className={`relative ${!isMobile && isVisible ? 'animate-fade-in-up animation-delay-400' : ''}`}>
           {filteredProjects.length > 0 ? (
             <>
               {/* Carousel */}
@@ -374,7 +374,7 @@ export default function CarouselProjectsView() {
                           className={`bg-gray-900 border-2 border-gray-800 rounded-lg sm:rounded-xl p-4 sm:p-6 cursor-pointer transition-all duration-300 hover:border-gray-600 hover:scale-105 ${
                             isMobile ? 'min-w-[calc(100vw-80px)] max-w-[400px]' : 'min-w-[300px] sm:min-w-[400px]'
                           } ${
-                            isVisible ? 'animate-fade-in-up' : 'opacity-0'
+                            !isMobile && isVisible ? 'animate-fade-in-up' : ''
                           }`}
                           style={{ animationDelay: `${600 + index * 100}ms` }}
                         >
@@ -455,7 +455,7 @@ export default function CarouselProjectsView() {
               )}
             </>
           ) : (
-            <div className={`text-center py-12 sm:py-20 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
+            <div className={`text-center py-12 sm:py-20 ${!isMobile && isVisible ? 'animate-fade-in-up' : ''}`}>
               <div className="text-gray-400 text-lg sm:text-xl mb-4 sm:mb-6">No projects found matching your criteria</div>
               <button
                 onClick={() => {
@@ -471,7 +471,7 @@ export default function CarouselProjectsView() {
         </div>
 
         {/* View All Button */}
-        <div className={`text-center mt-12 sm:mt-16 ${isVisible ? 'animate-fade-in-up animation-delay-600' : 'opacity-0'}`}>
+        <div className={`text-center mt-12 sm:mt-16 ${!isMobile && isVisible ? 'animate-fade-in-up animation-delay-600' : ''}`}>
           <a
             href="/projects"
             className="inline-flex items-center gap-2 sm:gap-3 px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg sm:rounded-xl text-white font-bold text-sm sm:text-base lg:text-lg transition-transform hover:scale-105"

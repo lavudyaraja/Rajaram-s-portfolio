@@ -23,6 +23,9 @@ export interface Project {
     frontend?: string[];
     backend?: string[];
     database?: string[];
+    ai?: string[];
+    auth?: string[];
+    design?: string[];
     tools?: string[];
   };
 }

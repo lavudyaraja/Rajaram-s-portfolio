@@ -42,9 +42,16 @@ export default function AboutPreview({ onExpand }: AboutPreviewProps) {
   const [hoveredSkill, setHoveredSkill] = useState<number | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [activeHexagon, setActiveHexagon] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
+    
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
     
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -57,6 +64,7 @@ export default function AboutPreview({ onExpand }: AboutPreviewProps) {
     }, 3000);
     
     return () => {
+      window.removeEventListener('resize', checkMobile);
       window.removeEventListener('mousemove', handleMouseMove);
       clearInterval(hexagonInterval);
     };
@@ -77,7 +85,7 @@ export default function AboutPreview({ onExpand }: AboutPreviewProps) {
             return (
               <div
                 key={i}
-                className="absolute animate-pulse"
+                className={`absolute ${!isMobile ? 'animate-pulse' : ''}`}
                 style={{
                   left: `${left}%`,
                   top: `${top}%`,
@@ -99,7 +107,7 @@ export default function AboutPreview({ onExpand }: AboutPreviewProps) {
           return (
             <div
               key={index}
-              className="absolute animate-float-rotate"
+              className={`absolute ${!isMobile ? 'animate-float-rotate' : ''}`}
               style={{
                 left: `${15 + index * 15}%`,
                 top: `${20 + (index % 2) * 30}%`,
@@ -136,12 +144,12 @@ export default function AboutPreview({ onExpand }: AboutPreviewProps) {
             <div className="space-y-12">
               {/* Animated Badge */}
               <div className={`relative inline-flex items-center gap-3 px-6 py-3 rounded-full border border-cyan-400/30 backdrop-blur-sm overflow-hidden group ${
-                isVisible ? 'animate-slide-in-left' : 'opacity-0'
+                !isMobile && isVisible ? 'animate-slide-in-left' : ''
               }`}>
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-blue-400/20 animate-pulse"></div>
+                <div className={`absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-blue-400/20 ${!isMobile ? 'animate-pulse' : ''}`}></div>
                 <div className="relative flex items-center gap-3">
                   <div className="relative">
-                    <Sparkles className="w-5 h-5 text-cyan-400 animate-spin-slow" />
+                    <Sparkles className={`w-5 h-5 text-cyan-400 ${!isMobile ? 'animate-spin-slow' : ''}`} />
                     <div className="absolute inset-0 text-cyan-400 blur-md"></div>
                   </div>
                   <span className="text-cyan-400 font-medium tracking-wide">Digital Architect</span>
@@ -151,18 +159,18 @@ export default function AboutPreview({ onExpand }: AboutPreviewProps) {
               
               {/* Dynamic Title */}
               <div className={`space-y-4 ${
-                isVisible ? 'animate-slide-in-left animation-delay-200' : 'opacity-0'
+                !isMobile && isVisible ? 'animate-slide-in-left animation-delay-200' : ''
               }`}>
                 <div className="relative">
                   <h1 className="text-7xl md:text-8xl lg:text-9xl font-black leading-none">
                     <span className="block text-white mb-2">Rajaram</span>
-                    <span className="block bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent animate-gradient-shift">
+                    <span className="block bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent ${!isMobile ? 'animate-gradient-shift' : ''}">
                       Lavudya
                     </span>
                   </h1>
                   <div className="absolute -top-4 -right-4 w-20 h-20">
                     <div className="relative w-full h-full">
-                      <Hexagon className="w-full h-full text-cyan-400/30 animate-pulse" />
+                      <Hexagon className={`w-full h-full text-cyan-400/30 ${!isMobile ? 'animate-pulse' : ''}`} />
                       <div className="absolute inset-0 flex items-center justify-center">
                         <Code className="w-8 h-8 text-cyan-400" />
                       </div>
@@ -174,13 +182,13 @@ export default function AboutPreview({ onExpand }: AboutPreviewProps) {
                 <div className="flex items-center gap-6">
                   <div className="flex items-center gap-3">
                     <div className="relative">
-                      <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                      <div className={`w-3 h-3 bg-green-400 rounded-full ${!isMobile ? 'animate-pulse' : ''}`}></div>
                       <div className="absolute inset-0 bg-green-400 rounded-full blur-md"></div>
                     </div>
                     <span className="text-green-400 text-sm font-medium">Available for Work</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Activity className="w-5 h-5 text-blue-400 animate-pulse" />
+                    <Activity className={`w-5 h-5 text-blue-400 ${!isMobile ? 'animate-pulse' : ''}`} />
                     <span className="text-blue-400 text-sm">Active Developer</span>
                   </div>
                 </div>
@@ -188,7 +196,7 @@ export default function AboutPreview({ onExpand }: AboutPreviewProps) {
               
               {/* Enhanced Description */}
               <div className={`space-y-6 ${
-                isVisible ? 'animate-slide-in-left animation-delay-400' : 'opacity-0'
+                !isMobile && isVisible ? 'animate-slide-in-left animation-delay-400' : ''
               }`}>
                 <div className="relative">
                   <p className="text-2xl md:text-3xl text-gray-300 leading-relaxed font-light">
@@ -206,7 +214,7 @@ export default function AboutPreview({ onExpand }: AboutPreviewProps) {
 
               {/* Interactive Info Cards */}
               <div className={`grid grid-cols-3 gap-6 ${
-                isVisible ? 'animate-slide-in-left animation-delay-600' : 'opacity-0'
+                !isMobile && isVisible ? 'animate-slide-in-left animation-delay-600' : ''
               }`}>
                 <div className="group relative bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-xl border border-cyan-400/20 rounded-2xl p-6 hover:border-cyan-400/40 transition-all duration-300 hover:scale-105">
                   <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/10 to-blue-400/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -239,7 +247,7 @@ export default function AboutPreview({ onExpand }: AboutPreviewProps) {
               {/* Futuristic CTA Button */}
               <div
               className={`${
-                isVisible ? 'animate-slide-in-left animation-delay-800' : 'opacity-0'
+                !isMobile && isVisible ? 'animate-slide-in-left animation-delay-800' : ''
               }`}
             >
               <div className="relative inline-block">
@@ -257,11 +265,11 @@ export default function AboutPreview({ onExpand }: AboutPreviewProps) {
             <div className="space-y-8">
               {/* Central Hexagon with Orbiting Skills */}
               <div className={`relative h-96 flex items-center justify-center ${
-                isVisible ? 'animate-scale-in animation-delay-200' : 'opacity-0'
+                !isMobile && isVisible ? 'animate-scale-in animation-delay-200' : ''
               }`}>
                 {/* Central Hub */}
                 <div className="relative w-32 h-32">
-                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full animate-pulse"></div>
+                  <div className={`absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full ${!isMobile ? 'animate-pulse' : ''}`}></div>
                   <div className="absolute inset-2 bg-black rounded-full flex items-center justify-center">
                     <div className="text-center">
                       <Brain className="w-8 h-8 text-cyan-400 mx-auto mb-1" />
@@ -330,7 +338,7 @@ export default function AboutPreview({ onExpand }: AboutPreviewProps) {
 
               {/* Stats Dashboard */}
               <div className={`grid grid-cols-2 lg:grid-cols-4 gap-4 ${
-                isVisible ? 'animate-slide-in-up animation-delay-400' : 'opacity-0'
+                !isMobile && isVisible ? 'animate-slide-in-up animation-delay-400' : ''
               }`}>
                 {stats.map((stat, index) => {
                   const Icon = stat.icon;
@@ -355,10 +363,10 @@ export default function AboutPreview({ onExpand }: AboutPreviewProps) {
 
               {/* Achievement Matrix */}
               <div className={`${
-                isVisible ? 'animate-slide-in-up animation-delay-600' : 'opacity-0'
+                !isMobile && isVisible ? 'animate-slide-in-up animation-delay-600' : ''
               }`}>
                 <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-                  <div className="w-2 h-2 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full animate-pulse"></div>
+                  <div className={`w-2 h-2 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full ${!isMobile ? 'animate-pulse' : ''}`}></div>
                   Achievement Matrix
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
@@ -378,7 +386,7 @@ export default function AboutPreview({ onExpand }: AboutPreviewProps) {
                         <div className="relative flex items-center gap-4">
                           <div className={`relative w-12 h-12 bg-gradient-to-br ${glowColors[achievement.glow as keyof typeof glowColors]} rounded-xl flex items-center justify-center`}>
                             <Icon className="w-6 h-6 text-white" />
-                            <div className={`absolute inset-0 bg-gradient-to-br ${glowColors[achievement.glow as keyof typeof glowColors]} rounded-xl blur-lg opacity-50 animate-pulse`}></div>
+                            <div className={`absolute inset-0 bg-gradient-to-br ${glowColors[achievement.glow as keyof typeof glowColors]} rounded-xl blur-lg opacity-50 ${!isMobile ? 'animate-pulse' : ''}`}></div>
                           </div>
                           
                           <div>

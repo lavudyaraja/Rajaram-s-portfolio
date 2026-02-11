@@ -35,6 +35,7 @@ const EnhancedFuturisticNavbar: React.FC = () => {
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
   const [particles, setParticles] = useState<Array<{
     left: string;
     top: string;
@@ -168,6 +169,19 @@ const EnhancedFuturisticNavbar: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
+
   const toggleFullscreen = async () => {
     try {
       if (!document.fullscreenElement) {
@@ -219,7 +233,7 @@ const EnhancedFuturisticNavbar: React.FC = () => {
         {/* Animated Grid */}
         <div className="absolute inset-0 opacity-20">
           <div 
-            className="absolute inset-0 animate-pulse"
+            className={`absolute inset-0 ${!isMobile ? 'animate-pulse' : ''}`}
             style={{
               backgroundImage: `
                 linear-gradient(rgba(59, 130, 246, 0.3) 1px, transparent 1px),
@@ -232,9 +246,9 @@ const EnhancedFuturisticNavbar: React.FC = () => {
         </div>
 
         {/* Floating Gradient Orbs */}
-        <div className="absolute top-0 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute top-0 right-1/4 w-48 h-48 bg-pink-500/10 rounded-full blur-3xl animate-float-delayed"></div>
-        <div className="absolute bottom-0 left-1/3 w-56 h-56 bg-cyan-500/10 rounded-full blur-3xl animate-float-slow"></div>
+        <div className={`absolute top-0 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl ${!isMobile ? 'animate-float' : ''}`}></div>
+        <div className={`absolute top-0 right-1/4 w-48 h-48 bg-pink-500/10 rounded-full blur-3xl ${!isMobile ? 'animate-float-delayed' : ''}`}></div>
+        <div className={`absolute bottom-0 left-1/3 w-56 h-56 bg-cyan-500/10 rounded-full blur-3xl ${!isMobile ? 'animate-float-slow' : ''}`}></div>
       </div>
 
       {/* Main Navigation */}
@@ -256,9 +270,9 @@ const EnhancedFuturisticNavbar: React.FC = () => {
             >
               <div className="relative">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center border-2 border-pink-400/50 shadow-lg shadow-pink-500/25 group-hover:scale-110 transition-all duration-300">
-                  <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-white animate-pulse" />
+                  <Zap className={`w-5 h-5 sm:w-6 sm:h-6 text-white ${!isMobile ? 'animate-pulse' : ''}`} />
                 </div>
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-current animate-pulse"></div>
+                <div className={`absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-current ${!isMobile ? 'animate-pulse' : ''}`}></div>
               </div>
               <div className="hidden sm:block">
                 <div className="text-xl lg:text-2xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
@@ -320,7 +334,7 @@ const EnhancedFuturisticNavbar: React.FC = () => {
                           
                           {/* Active Indicator */}
                           {isActive && (
-                            <div className={`absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 ${item.neonColor.replace('text-', 'bg-')} rounded-full animate-pulse`}></div>
+                            <div className={`absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 ${item.neonColor.replace('text-', 'bg-')} rounded-full ${!isMobile ? 'animate-pulse' : ''}`}></div>
                           )}
                         </button>
                       </div>
@@ -391,8 +405,8 @@ const EnhancedFuturisticNavbar: React.FC = () => {
         {/* Enhanced Mobile Menu */}
         <div className={`lg:hidden transition-all duration-500 ease-out ${
           isMobileMenuOpen 
-            ? 'max-h-screen opacity-100' 
-            : 'max-h-0 opacity-0 overflow-hidden'
+            ? 'max-h-screen' 
+            : 'max-h-0 overflow-hidden'
         }`}>
           <div className={`transition-all duration-300 border-t ${
             isDarkMode 
@@ -474,7 +488,7 @@ const EnhancedFuturisticNavbar: React.FC = () => {
                       
                       {/* Active Indicator */}
                       {isActive && (
-                        <div className={`absolute top-2 right-2 w-2 h-2 ${item.neonColor.replace('text-', 'bg-')} rounded-full animate-pulse`}></div>
+                        <div className={`absolute top-2 right-2 w-2 h-2 ${item.neonColor.replace('text-', 'bg-')} rounded-full ${!isMobile ? 'animate-pulse' : ''}`}></div>
                       )}
                     </button>
                   );
@@ -490,7 +504,7 @@ const EnhancedFuturisticNavbar: React.FC = () => {
         {particles.map((particle, i) => (
           <div
             key={i}
-            className={`absolute ${particle.size} ${particle.color} rounded-full animate-pulse opacity-30`}
+            className={`absolute ${particle.size} ${particle.color} rounded-full ${!isMobile ? 'animate-pulse' : ''} opacity-30`}
             style={{
               left: particle.left,
               top: particle.top,

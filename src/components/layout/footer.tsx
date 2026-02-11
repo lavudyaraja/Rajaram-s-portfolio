@@ -62,6 +62,7 @@ export default function Footer() {
   const [currentQuote, setCurrentQuote] = useState(0);
   const [currentRamQuote, setCurrentRamQuote] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const quotes = [
     "Innovation distinguishes between a leader and a follower.",
@@ -95,6 +96,19 @@ export default function Footer() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
+
   const handleQuickContact = () => {
     setShowSuccess(true);
     setEmail("");
@@ -124,9 +138,9 @@ export default function Footer() {
       
       {/* Floating Orbs */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-blue-500/20 rounded-full filter blur-3xl animate-pulse"></div>
-        <div className="absolute top-40 right-20 w-96 h-96 bg-purple-500/20 rounded-full filter blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute bottom-20 left-1/2 w-80 h-80 bg-pink-500/20 rounded-full filter blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className={`absolute top-20 left-20 w-72 h-72 bg-blue-500/20 rounded-full filter blur-3xl ${!isMobile ? 'animate-pulse' : ''}`}></div>
+        <div className={`absolute top-40 right-20 w-96 h-96 bg-purple-500/20 rounded-full filter blur-3xl ${!isMobile ? 'animate-pulse' : ''}`} style={{ animationDelay: '1s' }}></div>
+        <div className={`absolute bottom-20 left-1/2 w-80 h-80 bg-pink-500/20 rounded-full filter blur-3xl ${!isMobile ? 'animate-pulse' : ''}`} style={{ animationDelay: '2s' }}></div>
       </div>
 
       <div className="relative z-10 container mx-auto px-4 sm:px-6 py-16 sm:py-20">
@@ -284,7 +298,7 @@ export default function Footer() {
                 >
                   {showSuccess ? (
                     <>
-                      <Star className="w-4 h-4 animate-pulse" />
+                      <Star className={`w-4 h-4 ${!isMobile ? 'animate-pulse' : ''}`} />
                       <span>Subscribed!</span>
                     </>
                   ) : (

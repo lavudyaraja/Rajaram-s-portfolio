@@ -177,19 +177,19 @@
 
 .animate-gradient-shift {
   background-size: 200% 200%;
-  animation: gradient-shift 3s ease infinite;
+  /* animation: gradient-shift 3s ease infinite; */
 }
 
 .animate-glitch-1 {
-  animation: glitch-1 0.3s infinite;
+  /* animation: glitch-1 0.3s infinite; */
 }
 
 .animate-glitch-2 {
-  animation: glitch-2 0.4s infinite;
+  /* animation: glitch-2 0.4s infinite; */
 }
 
 .animate-scan {
-  animation: scan 2s linear infinite;
+  /* animation: none; */
 }
 
 /* Scrollbar hide utility */
