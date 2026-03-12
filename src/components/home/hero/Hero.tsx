@@ -24,12 +24,12 @@ const SKILLS = [
   { name: "PyTorch",         color: "bg-orange-500/10 text-orange-400 border border-orange-500/20" },
   { name: "TensorFlow",      color: "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20" },
   { name: "Computer Vision", color: "bg-purple-500/10 text-purple-400 border border-purple-500/20" },
-  { name: "LLMs / RAG",      color: "bg-lime-500/10   text-lime-400   border border-lime-500/20"   },
+  { name: "LLMs",      color: "bg-lime-500/10   text-lime-400   border border-lime-500/20"   },
   { name: "FastAPI",         color: "bg-green-500/10  text-green-400  border border-green-500/20"  },
   { name: "React / Next.js", color: "bg-sky-500/10    text-sky-400    border border-sky-500/20"    },
   { name: "Python",          color: "bg-blue-500/10   text-blue-300   border border-blue-500/20"   },
   { name: "TypeScript",      color: "bg-indigo-500/10 text-indigo-300 border border-indigo-500/20" },
-  { name: "Docker",          color: "bg-cyan-500/10   text-cyan-400   border border-cyan-500/20"   },
+  { name: "RAG",          color: "bg-cyan-500/10   text-cyan-400   border border-cyan-500/20"   },
   { name: "PostgreSQL",      color: "bg-pink-500/10   text-pink-400   border border-pink-500/20"   },
 ];
 

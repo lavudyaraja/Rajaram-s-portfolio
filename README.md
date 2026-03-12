@@ -1,6 +1,10 @@
-# 🚀 Lavudya Raja - Next.js Developer Portfolio
+# 🚀 Lavudya Raja - Full Stack Developer Portfolio
 
-A cutting-edge, fully responsive portfolio website showcasing modern web development capabilities with stunning animations, interactive components, and exceptional user experience. Built with Next.js 16, TypeScript, and TailwindCSS.
+A stunning, fully responsive portfolio website showcasing modern web development capabilities with cutting-edge animations, interactive components, and exceptional user experience. Built with Next.js, TypeScript, and TailwindCSS.
+
+## 🌟 Live Demo
+
+👉 **[View Live Portfolio](https://your-portfolio-url.vercel.app)**
 
 ## ✨ Key Features
 
@@ -11,10 +15,11 @@ A cutting-edge, fully responsive portfolio website showcasing modern web develop
 - **Animated Hero Section** with floating elements and dynamic backgrounds
 - **Responsive Timeline** for education and experience
 - **Modern Footer** with inspirational quotes and social links
-- **Dark Theme** optimized for all viewing conditions
+- **Custom 404 Page** with glitch effects and terminal-style interface
+- **Blog Coming Soon Page** with animated counters and newsletter signup
 
 ### 🚀 Performance & Architecture
-- **Next.js 16** with App Router for optimal performance
+- **Next.js 14+** with App Router for optimal performance
 - **TypeScript** for type-safe development
 - **TailwindCSS** for utility-first styling
 - **Component-Based Architecture** for maintainability
@@ -22,10 +27,18 @@ A cutting-edge, fully responsive portfolio website showcasing modern web develop
 - **SEO Optimized** with proper meta tags and structure
 - **Scroll Animations** for engaging user experience
 
+### 🎯 Interactive Elements
+- **Dynamic Background Animations** with particle systems
+- **Terminal-Style Interfaces** for tech showcase
+- **Animated Counters** and statistics
+- **Hover Effects** and micro-interactions
+- **Smooth Transitions** between sections
+- **Mobile-Optimized Navigation** with drawer and bottom dock
+
 ## 🛠️ Technology Stack
 
 ### Frontend Framework
-- **[Next.js 16](https://nextjs.org/)** - React framework with App Router
+- **[Next.js 14+](https://nextjs.org/)** - React framework with App Router
 - **[React 18](https://reactjs.org/)** - Component-based UI library
 - **[TypeScript](https://www.typescriptlang.org/)** - Static type checking and enhanced developer experience
 
@@ -53,8 +66,12 @@ portfolio/
 │   │   ├── about/           # About page
 │   │   ├── admin/           # Admin section
 │   │   ├── api/             # API routes
+│   │   ├── blog/            # Blog section with coming soon pages
+│   │   │   ├── page.tsx     # Blog main page
+│   │   │   └── [slug]/      # Dynamic blog routes
 │   │   ├── globals.css      # Global styles
 │   │   ├── layout.tsx       # Root layout
+│   │   ├── not-found.tsx    # Custom 404 page
 │   │   └── page.tsx        # Home page
 │   ├── components/          # Reusable components
 │   │   ├── home/           # Homepage sections
@@ -62,7 +79,9 @@ portfolio/
 │   │   │   ├── education/  # Education timeline
 │   │   │   ├── hero/       # Hero section
 │   │   │   ├── skills/     # Skills showcase
-│   │   │   └── projects/   # Project displays
+│   │   │   ├── projects/   # Project displays
+│   │   │   ├── blog/       # Blog components
+│   │   │   └── chatbot/    # Interactive chatbot
 │   │   ├── layout/         # Layout components
 │   │   │   ├── footer.tsx  # Footer component
 │   │   │   ├── FuturisticNavbar.tsx  # Original futuristic navbar
@@ -91,24 +110,37 @@ portfolio/
 ### 🧭 Navigation Components
 - **FuturisticNavbar** - Original futuristic design with animated particles
 - **HiddenNavbar** - Hidden navbar with welcome message and scroll behavior
+- **QuantumNavbar** - Quantum-themed with glowing effects
+- **CyberpunkNavbar** - Neon grid cyberpunk aesthetic
+- **MinimalistNavbar** - Clean, minimal design
 
 ### 💫 Hero Section
 - **ModernHero** - Dynamic background with floating elements and interactive terminal
 - Matrix rain effects and neural network visualizations
 - Quantum orbs and floating hexagons with animations
+- Responsive typography and call-to-action buttons
 
 ### 🎯 Skills & Projects
 - **CombinedSkills** - Tabbed interface with technology icons and search
 - **SmallProjectsView** - Carousel display with auto-play functionality
 - **CombinedProjects** - Grid/carousel toggle with 3D effects
+- **Interactive filtering** and category organization
 
 ### 📚 Education & About
 - **Education** - Timeline with alternating layouts and achievement displays
 - **AboutPreview** - Interactive hexagon grid with floating tech icons
+- **Animated statistics** and achievement counters
 
 ### 🦶 Footer
 - **Footer** - Multi-column layout with rotating inspirational quotes
 - Social media links with hover effects and quick navigation
+- Tech stack showcase with animated icons
+
+### 📝 Blog Section
+- **Coming Soon Page** - Professional blog landing with newsletter signup
+- **Article Pages** - Dynamic routing for individual articles
+- **Animated counters** showing blog statistics
+- **Newsletter integration** for reader notifications
 
 ## 🚀 Getting Started
 
@@ -121,7 +153,7 @@ portfolio/
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/lavudyaraja/Portfolio.git
+git clone https://github.com/lavudyaraja/Rajaram-s-portfolio.git
 cd Portfolio
 ```
 
@@ -161,36 +193,62 @@ yarn start
 ## 🎯 Customization
 
 ### Updating Personal Information
-1. **Profile Details** - Modify hero section in `src/components/home/hero.tsx`
+1. **Profile Details** - Modify hero section in `src/components/home/hero/Hero.tsx`
 2. **Social Media Links** - Update links in the same file
 3. **Contact Information** - Update email and contact details
 
 ### Adding Projects
-1. **Edit Project Array** - Update `PROJECTS` array in `src/components/home/combined-projects.tsx`
+1. **Edit Project Array** - Update `PROJECTS` array in `src/data/projects.ts`
 2. **Add Project Details** - Include title, description, tags, and links
+3. **Update Images** - Add project screenshots to `public/images/`
 
 ### Modifying Skills
-1. **Update Skill Categories** - Modify `skillCategories` array in `src/components/home/combined-skills.tsx`
-2. **Add Technology Icons** - Update the `iconMap` in the same file
+1. **Update Skill Categories** - Modify skill categories in `src/components/home/skills/CombinedSkills.tsx`
+2. **Add Technology Icons** - Update the icon mappings in the same file
+3. **Customize Colors** - Modify Tailwind color scheme in `tailwind.config.ts`
 
 ### Changing Navigation Theme
 The project includes **5 different navbar designs** that can be easily switched:
 
 1. **FuturisticNavbar** - Original design with particle effects
+2. **QuantumNavbar** - Quantum-themed with glowing elements
+3. **CyberpunkNavbar** - Neon grid cyberpunk aesthetic
+4. **MinimalistNavbar** - Clean, minimal design
 5. **HiddenNavbar** - Hidden navbar with welcome message
 
-**To switch themes:** Update the import in `src/components/home/index-page.tsx`:
+**To switch themes:** Update the import in your main page:
 ```typescript
 import Header from "@/components/layout/[ThemeName]Navbar";
+```
+
+### Customizing Colors
+Edit the color scheme in `tailwind.config.ts`:
+```typescript
+theme: {
+  extend: {
+    colors: {
+      lime: {
+        // Your custom lime colors
+      },
+      // Add more custom colors
+    }
+  }
+}
 ```
 
 ## 📱 Responsive Design
 
 The portfolio is fully responsive and optimized for:
-- **Mobile devices** (320px and above)
-- **Tablets** (768px and above)
-- **Desktops** (1024px and above)
-- **Large screens** (1440px and above)
+- **Mobile devices** (320px and above) - Touch-friendly navigation
+- **Tablets** (768px and above) - Adaptive layouts
+- **Desktops** (1024px and above) - Full feature experience
+- **Large screens** (1440px and above) - Enhanced spacing
+
+### Mobile-Specific Features
+- **Bottom Dock Navigation** for quick access
+- **Drawer Menu** with smooth slide-in animation
+- **Touch-Optimized** buttons and interactions
+- **Responsive Typography** scaling
 
 ## 🎨 Animations & Effects
 
@@ -200,6 +258,9 @@ The portfolio is fully responsive and optimized for:
 - **Floating background elements** for depth and movement
 - **3D project carousel** (desktop) with smooth sliding
 - **Theme transition animations** with color shifts
+- **Particle systems** for dynamic backgrounds
+- **Glitch effects** on 404 page
+- **Typing animations** for dynamic text
 
 ## 🔧 Performance Optimizations
 
@@ -208,6 +269,17 @@ The portfolio is fully responsive and optimized for:
 - **Optimized bundle size** with Next.js optimizations
 - **Efficient re-rendering** with React.memo
 - **Proper image optimization** and compression
+- **Static generation** for better performance
+- **Minimal JavaScript** for core functionality
+
+## 🌐 SEO Features
+
+- **Meta tags** optimization for search engines
+- **Open Graph** tags for social sharing
+- **Structured data** for better search visibility
+- **Semantic HTML** for accessibility
+- **Sitemap generation** (if configured)
+- **Robots.txt** configuration
 
 ## 📝 License
 
@@ -223,6 +295,13 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. **Push to the branch** (`git push origin feature/AmazingFeature`)
 5. **Open a Pull Request**
 
+### Development Guidelines
+- Follow the existing code style and conventions
+- Use TypeScript for type safety
+- Ensure responsive design for new components
+- Test on multiple devices and browsers
+- Update documentation for new features
+
 ## 📧 Contact
 
 For any inquiries, please reach out via:
@@ -231,6 +310,15 @@ For any inquiries, please reach out via:
 - **GitHub:** [lavudyaraja](https://github.com/lavudyaraja)
 - **Twitter:** [@LavudyaRaj22988](https://x.com/Lavudyaraja22988)
 
+## 🙏 Acknowledgments
+
+- **[Next.js Team](https://nextjs.org/)** - For the amazing framework
+- **[TailwindCSS](https://tailwindcss.com/)** - For the utility-first CSS framework
+- **[Lucide Icons](https://lucide.dev/)** - For the beautiful icon set
+- **[Vercel](https://vercel.com/)** - For the hosting platform
+
 ---
 
-⭐ If you find this portfolio useful, please consider giving it a star on [GitHub](https://github.com/lavudyaraja/Portfolio)!
+⭐ If you find this portfolio template useful, please consider giving it a star on [GitHub](https://github.com/lavudyaraja/Rajaram-s-portfolio)!
+
+🚀 **Built with passion and modern web technologies** 🚀

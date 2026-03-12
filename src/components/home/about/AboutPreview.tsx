@@ -35,13 +35,13 @@ const EXPERTISE = [
     icon: Database, title: "Backend / DB",
     desc: "FastAPI · Flask · PostgreSQL · Redis · Prisma",
     accent: { text: "text-emerald-400",border: "border-emerald-500/20",bg: "bg-emerald-500/8"},
-    tags: ["FastAPI", "PostgreSQL", "Redis", "Docker"],
+    tags: ["FastAPI", "PostgreSQL", "Redis"],
   },
   {
     icon: Cpu,      title: "DevOps",
-    desc: "Docker · Linux · GitHub Actions · n8n · CI/CD",
+    desc: "Vscode · Linux · GitHub Actions · n8n · CI/CD",
     accent: { text: "text-orange-400", border: "border-orange-500/20", bg: "bg-orange-500/8" },
-    tags: ["Docker", "Git", "Linux", "CI/CD"],
+    tags: ["Vscode", "Git","Github", "Linux", "CI/CD"],
   },
 ];
 

@@ -291,8 +291,8 @@ function MeetingPanel({ onClose }: { onClose: () => void }) {
 
           <div className="space-y-3">
             {[
-              { label: "Full Name *",      val: name,    set: setName,    ph: "e.g. Priya Sharma",             type: "text"  },
-              { label: "Your Email *",     val: email,   set: setEmail,   ph: "you@company.com",               type: "email" },
+              { label: "Full Name *",      val: name,    set: setName,    ph: "e.g. Rajaram Lavudya",             type: "text"  },
+              { label: "Your Email *",     val: email,   set: setEmail,   ph: "example@gmail.com",               type: "email" },
               { label: "Meeting Title *",  val: title,   set: setTitle,   ph: "e.g. Discussing ML role",       type: "text"  },
             ].map(({ label, val, set, ph, type }) => (
               <div key={label}>

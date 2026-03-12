@@ -97,7 +97,7 @@ const TypingText = ({ texts, className = "" }: { texts: string[]; className?: st
   return <span className={className}>{currentText}</span>;
 };
 
-export default function BlogComingSoon() {
+export default function BlogSlugComingSoon() {
   const [email, setEmail] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
   
@@ -143,6 +143,13 @@ export default function BlogComingSoon() {
         
         <div className="flex items-center gap-4">
           <Link 
+            href="/blog"
+            className="flex items-center gap-2 px-4 py-2 bg-lime-400/10 border border-lime-500/20 rounded-xl hover:bg-lime-400/20 transition-all duration-200"
+          >
+            <BookOpen className="w-4 h-4 text-lime-400" />
+            <span className="text-lime-400">Blog Home</span>
+          </Link>
+          <Link 
             href="#contact" 
             className="flex items-center gap-2 px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-xl hover:bg-zinc-800 transition-all duration-200"
           >
@@ -159,22 +166,22 @@ export default function BlogComingSoon() {
         <div className="space-y-6 mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-lime-400/10 border border-lime-500/20 rounded-full">
             <BookOpen className="w-4 h-4 text-lime-400" />
-            <span className="text-sm font-mono text-lime-400">Blog Section</span>
+            <span className="text-sm font-mono text-lime-400">Article Not Found</span>
           </div>
           
           <h1 className="font-black text-5xl md:text-7xl lg:text-8xl leading-none tracking-tighter">
-            <span className="text-zinc-800">Coming</span>
+            <span className="text-zinc-800">Article</span>
             <br />
-            <span className="text-white">Soon</span>
+            <span className="text-white">Coming Soon</span>
           </h1>
           
           <div className="text-xl md:text-2xl text-zinc-400 max-w-2xl mx-auto">
-            I'm crafting some amazing articles about{" "}
+            This article is still being crafted. I'm writing about{" "}
             <TypingText 
               texts={["ML Engineering", "Web Development", "Computer Vision", "System Design"]}
               className="text-lime-400 font-semibold"
             />
-            {" "}and more.
+            {" "}and more exciting topics.
           </div>
           
           <div className="flex items-center justify-center gap-2 text-zinc-600">
@@ -234,11 +241,11 @@ export default function BlogComingSoon() {
         <div className="bg-zinc-900/60 border border-zinc-800 rounded-3xl p-8 backdrop-blur-sm max-w-2xl mx-auto">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Bell className="w-5 h-5 text-lime-400" />
-            <h3 className="text-xl font-bold text-white">Get Notified</h3>
+            <h3 className="text-xl font-bold text-white">Get Notified When This Article Goes Live</h3>
           </div>
           
           <p className="text-zinc-400 mb-6">
-            Be the first to know when I publish new articles. No spam, just tech content.
+            Be the first to read this article and future tech content. No spam, just quality articles.
           </p>
           
           <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3">
@@ -272,15 +279,15 @@ export default function BlogComingSoon() {
         {/* Quick links */}
         <div className="mt-16 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
-            href="/"
+            href="/blog"
             className="flex items-center gap-2 px-6 py-3 bg-zinc-900/60 border border-zinc-800 rounded-xl hover:bg-zinc-800 transition-all duration-200"
           >
             <ArrowRight className="w-4 h-4 rotate-180" />
-            <span>Back to Home</span>
+            <span>Blog Home</span>
           </Link>
           
           <Link
-            href="#projects"
+            href="/"
             className="flex items-center gap-2 px-6 py-3 bg-lime-400 hover:bg-lime-300 text-black font-bold rounded-xl transition-all duration-200 hover:-translate-y-px hover:shadow-lg hover:shadow-lime-400/20"
           >
             <TrendingUp className="w-4 h-4" />
