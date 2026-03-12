@@ -1,430 +1,414 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { 
-  Mail, Github, Linkedin, Twitter, Calendar, MapPin, Globe, Zap, 
-  ChevronRight, Send, Phone, MessageCircle, ExternalLink, Rocket,
-  Terminal, Code, Database, Cloud, Shield, Cpu, Wifi, Star
-} from 'lucide-react';
-import { useRouter, usePathname } from 'next/navigation';
-import Link from 'next/link';
+import {
+  Mail, Phone, MessageCircle, Calendar,
+  Github, Linkedin, Twitter, Instagram,
+  ArrowUpRight, MapPin, Clock, CheckCircle,
+  Zap, Terminal, Send, ChevronRight,
+  Globe, Copy, ExternalLink, Coffee,
+  Users, Code2, GitCommit, Star
+} from "lucide-react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+
+// ─── Data ─────────────────────────────────────────────────────────────────────
+
+const CONTACT_METHODS = [
+  {
+    id: "email",
+    icon: Mail,
+    label: "Email",
+    value: "codeml862@gmail.com",
+    subtext: "Preferred channel · Reply within 24h",
+    href: "mailto:codeml862@gmail.com",
+    accent: "text-lime-400",
+    border: "border-lime-500/20",
+    bg: "bg-lime-500/8",
+    hoverBorder: "hover:border-lime-500/40",
+    copyable: true,
+  },
+  {
+    id: "phone",
+    icon: Phone,
+    label: "Phone",
+    value: "+91 70932 21536",
+    subtext: "Calls & SMS welcome",
+    href: "tel:+917093221536",
+    accent: "text-sky-400",
+    border: "border-sky-500/20",
+    bg: "bg-sky-500/8",
+    hoverBorder: "hover:border-sky-500/40",
+    copyable: true,
+  },
+  {
+    id: "whatsapp",
+    icon: MessageCircle,
+    label: "WhatsApp",
+    value: "Chat on WhatsApp",
+    subtext: "Instant · End-to-end encrypted",
+    href: "https://wa.me/917093221536?text=Hi%20Rajaram%2C%20I%20visited%20your%20portfolio%20and%20would%20like%20to%20connect!",
+    accent: "text-emerald-400",
+    border: "border-emerald-500/20",
+    bg: "bg-emerald-500/8",
+    hoverBorder: "hover:border-emerald-500/40",
+    copyable: false,
+  },
+  {
+    id: "schedule",
+    icon: Calendar,
+    label: "Schedule a Call",
+    value: "Book via Calendly",
+    subtext: "Pick a time that works for you",
+    href: "https://calendly.com/raja",
+    accent: "text-violet-400",
+    border: "border-violet-500/20",
+    bg: "bg-violet-500/8",
+    hoverBorder: "hover:border-violet-500/40",
+    copyable: false,
+  },
+];
+
+const SOCIALS = [
+  { icon: Github,    href: "https://github.com/lavudyaraja",               label: "GitHub",    sub: "19+ Repos"   },
+  { icon: Linkedin,  href: "https://www.linkedin.com/in/lavudyaraja5228/", label: "LinkedIn",  sub: "Connect"     },
+  { icon: Twitter,   href: "https://x.com/LavudyaRaj22988",               label: "Twitter",   sub: "@LavudyaRaj" },
+  { icon: Instagram, href: "https://www.instagram.com/u_no_me_1536",       label: "Instagram", sub: "Follow"      },
+];
+
+const AVAILABILITY = [
+  { label: "Full-Time Role",      dot: "bg-lime-400"    },
+  { label: "Internship",          dot: "bg-lime-400"    },
+  { label: "Freelance Project",   dot: "bg-lime-400"    },
+  { label: "Open Source Collab",  dot: "bg-lime-400"    },
+  { label: "Remote Work",         dot: "bg-lime-400"    },
+  { label: "Technical Consulting",dot: "bg-lime-400"    },
+];
+
+const TERMINAL_LINES = [
+  { prefix: "$",  text: "whoami",                        color: "text-zinc-300"  },
+  { prefix: ">",  text: "Lavudya Rajaram — ML & Full-Stack Engineer", color: "text-lime-400"  },
+  { prefix: "$",  text: "status --availability",         color: "text-zinc-300"  },
+  { prefix: ">",  text: "Open · Ready for immediate start", color: "text-emerald-400" },
+  { prefix: "$",  text: "contact --method email",        color: "text-zinc-300"  },
+  { prefix: ">",  text: "codeml862@gmail.com",           color: "text-sky-400"   },
+];
+
+// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function ContactCTA() {
-  const [activePortal, setActivePortal] = useState<number | null>(null);
-  const [hoveredMethod, setHoveredMethod] = useState<number | null>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [connectionStrength, setConnectionStrength] = useState(0);
-  const [typedText, setTypedText] = useState('');
-  const [isTyping, setIsTyping] = useState(true);
+  const [copied, setCopied]         = useState<string | null>(null);
+  const [clock,  setClock]          = useState("");
+  const [lineIdx, setLineIdx]       = useState(0);
+  const [visibleLines, setVisible]  = useState<number[]>([]);
 
-  const fullText = "PROJECT LAUNCH SEQUENCE";
-
-  // Typing effect
+  // Live clock
   useEffect(() => {
-    if (isTyping && typedText.length < fullText.length) {
-      const timeout = setTimeout(() => {
-        setTypedText(fullText.slice(0, typedText.length + 1));
-      }, 100);
-      return () => clearTimeout(timeout);
-    } else if (typedText.length === fullText.length) {
-      setIsTyping(false);
-    }
-  }, [typedText, isTyping]);
-
-  // Track mouse for parallax effect
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    const tick = () =>
+      setClock(new Date().toLocaleTimeString("en-US", { hour12: false, hour: "2-digit", minute: "2-digit" }));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
   }, []);
 
-  // Simulate connection strength animation
+  // Terminal line reveal — one line every 800ms
   useEffect(() => {
-    const interval = setInterval(() => {
-      setConnectionStrength(prev => (prev + 1) % 101);
-    }, 50);
-    return () => clearInterval(interval);
-  }, []);
-
-  const contactMethods = [
-    {
-      icon: Mail,
-      title: "Email",
-      subtitle: "Digital Mail",
-      value: "codeml862@gmail.com",
-      action: "mailto:codeml862@gmail.com",
-      color: "from-cyan-400 to-blue-500",
-      bgColor: "bg-cyan-500/10",
-      borderColor: "border-cyan-500/30",
-      protocol: "SMTP",
-      speed: "Light Speed"
-    },
-    {
-      icon: Phone,
-      title: "Call",
-      subtitle: "Voice Channel",
-      value: "+91 7093221536",
-      action: "tel:+91 7093221536",
-      color: "from-green-400 to-emerald-500",
-      bgColor: "bg-green-500/10",
-      borderColor: "border-green-500/30",
-      protocol: "GSM",
-      speed: "Real-time"
-    },
-    {
-      icon: MessageCircle,
-      title: "WhatsApp",
-      subtitle: "Instant Protocol",
-      value: "Chat Now",
-      action: "https://wa.me/917093221536?text=Hi%20Raja%2C%20I%20visited%20your%20portfolio%20and%20would%20like%20to%20connect!",
-      color: "from-purple-400 to-pink-500",
-      bgColor: "bg-purple-500/10",
-      borderColor: "border-purple-500/30",
-      protocol: "E2E Encrypted",
-      speed: "Instant"
-    },
-    {
-      icon: Calendar,
-      title: "Schedule",
-      subtitle: "Time Portal",
-      value: "Calendly",
-      action: "https://calendly.com/raja",
-      color: "from-orange-400 to-red-500",
-      bgColor: "bg-orange-500/10",
-      borderColor: "border-orange-500/30",
-      protocol: "Sync API",
-      speed: "Scheduled"
+    if (lineIdx < TERMINAL_LINES.length) {
+      const t = setTimeout(() => {
+        setVisible(p => [...p, lineIdx]);
+        setLineIdx(p => p + 1);
+      }, 800);
+      return () => clearTimeout(t);
     }
-  ];
+  }, [lineIdx]);
 
-  const pathname = usePathname();
-  const router = useRouter();
-  const isContactCTAPage = pathname === "/contact";
+  const copy = (value: string, id: string) => {
+    navigator.clipboard.writeText(value).then(() => {
+      setCopied(id);
+      setTimeout(() => setCopied(null), 2000);
+    });
+  };
 
   return (
-    <div className="relative bg-black overflow-hidden">
-      {/* Dynamic Background Grid */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Grid Pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-cyan-500/5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)
-            `,
-            backgroundSize: '50px 50px'
-          }}></div>
-        </div>
-        
-        {/* Animated Connection Lines */}
-        <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.3 }}>
-          <defs>
-            <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.5" />
-              <stop offset="50%" stopColor="#8b5cf6" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#ec4899" stopOpacity="0.5" />
-            </linearGradient>
-          </defs>
-          
-          {/* Dynamic connection lines */}
-          {[...Array(5)].map((_, i) => (
-            <line
-              key={i}
-              x1={`${20 + i * 15}%`}
-              y1="10%"
-              x2={`${30 + i * 12}%`}
-              y2="90%"
-              stroke="url(#lineGradient)"
-              strokeWidth="1"
-              strokeDasharray="5,5"
-              className="animate-pulse"
-              style={{ animationDelay: `${i * 0.5}s` }}
-            />
-          ))}
-        </svg>
+    <section id="contact" className="bg-black text-white min-h-screen">
 
-        {/* Floating Nodes */}
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-2 h-2 bg-cyan-400 rounded-full animate-pulse"
-            style={{
-              left: `${10 + i * 12}%`,
-              top: `${15 + (i % 3) * 25}%`,
-              animationDelay: `${i * 0.3}s`,
-              boxShadow: '0 0 10px rgba(6, 182, 212, 0.5)'
-            }}
-          ></div>
-        ))}
+      {/* Glow blobs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-60 right-0 w-[500px] h-[500px] rounded-full bg-lime-500/4 blur-3xl" />
+        <div className="absolute bottom-0 -left-60 w-[500px] h-[500px] rounded-full bg-sky-500/4  blur-3xl" />
       </div>
 
-      {/* Main Content */}
-      <main className="relative z-10 px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto">
-          
-          {/* Unique Header Section */}
-          <section className="text-center mb-12 sm:mb-16 lg:mb-20">
-            {/* Futuristic Title */}
-            <div className="relative mb-6 sm:mb-8">
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white">
-                <span className="relative">
-                  <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                    CONNECT
-                  </span>
-                  <span className="absolute -inset-1 bg-gradient-to-r from-cyan-400/20 via-purple-400/20 to-pink-400/20 rounded-lg blur-xl"></span>
-                </span>
-                <br />
-                <span className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-gray-400">WITH THE FUTURE</span>
-              </h1>
-            </div>
-            
-            <p className="text-base sm:text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto mb-8 sm:mb-12 px-4">
-              Initialize connection. Choose your protocol. Let's build something extraordinary together.
-            </p>
-          </section>
+      <div className="relative z-10 max-w-screen-xl mx-auto px-6 md:px-14 py-12 space-y-5">
 
-          {/* Unique Portal Design */}
-          <section className="mb-12 sm:mb-16 lg:mb-20">
-            <div className="relative">
-              {/* Central Hub */}
-              <div className="relative mx-auto w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 mb-8 sm:mb-12 lg:mb-16">
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full animate-pulse opacity-30"></div>
-                <div className="relative w-full h-full bg-gradient-to-r from-cyan-600 to-purple-600 rounded-full flex items-center justify-center border-4 border-white/20">
-                  <Rocket className="w-6 h-6 sm:w-8 sm:h-8 lg:w-12 lg:h-12 text-white animate-bounce" />
+        {/* ══════════════════════════════════════════
+            ROW 1 — Headline + status card
+        ══════════════════════════════════════════ */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+          {/* Giant headline — 2 cols */}
+          <div className="lg:col-span-2 bg-zinc-950 border border-zinc-800 rounded-3xl p-8 md:p-12 flex flex-col justify-between min-h-[260px] relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-br from-lime-500/0 via-lime-500/3 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none" />
+
+            <div className="flex items-center gap-3">
+              <div className="h-px w-8 bg-lime-400" />
+              <span className="font-mono text-xs text-zinc-600 tracking-widest uppercase">05 — Contact</span>
+            </div>
+
+            <div>
+              <h2 className="font-black tracking-tighter leading-none text-white text-5xl sm:text-6xl xl:text-7xl">
+                Let's build
+              </h2>
+              <h2 className="font-black tracking-tighter leading-none text-lime-400 text-5xl sm:text-6xl xl:text-7xl">
+                something great.
+              </h2>
+              <p className="text-zinc-500 text-sm mt-5 max-w-lg leading-7">
+                Have a project, a role, or just want to talk tech? 
+                Pick a channel and reach out — I respond within 24 hours.
+              </p>
+            </div>
+          </div>
+
+          {/* Status card — 1 col */}
+          <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-7 flex flex-col justify-between gap-5">
+            {/* Availability indicator */}
+            <div>
+              <div className="flex items-center justify-between mb-5 pb-5 border-b border-zinc-900">
+                <div className="flex items-center gap-2.5">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-400 opacity-50" />
+                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-lime-400" />
+                  </span>
+                  <span className="font-mono text-xs text-lime-400 uppercase tracking-widest">Available</span>
                 </div>
-                
-                {/* Connection Rings */}
-                {[...Array(3)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute inset-0 border-2 border-cyan-400/30 rounded-full animate-ping"
-                    style={{ animationDelay: `${i * 0.5}s`, animationDuration: '3s' }}
-                  ></div>
+                <span className="font-mono text-xs text-zinc-700 tabular-nums">{clock}</span>
+              </div>
+
+              <div className="space-y-2.5">
+                {[
+                  { ic: MapPin,  t: "Hyderabad, IN"             },
+                  { ic: Globe,   t: "Remote / Hybrid / On-site" },
+                  { ic: Coffee,  t: "Immediate start possible"  },
+                  { ic: Clock,   t: "Replies within 24h"        },
+                ].map(({ ic: Ic, t }) => (
+                  <div key={t} className="flex items-center gap-2.5">
+                    <Ic size={12} className="text-zinc-700 shrink-0" />
+                    <span className="font-mono text-xs text-zinc-500">{t}</span>
+                  </div>
                 ))}
               </div>
-
-              {/* Contact Portals arranged in responsive grid */}
-              <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
-                {contactMethods.map((method, index) => {
-                  const IconComponent = method.icon;
-                  const isActive = activePortal === index;
-                  const isHovered = hoveredMethod === index;
-                  
-                  return (
-                    <div
-                      key={index}
-                      className="relative group"
-                      onMouseEnter={() => {
-                        setHoveredMethod(index);
-                        setActivePortal(index);
-                      }}
-                      onMouseLeave={() => {
-                        setHoveredMethod(null);
-                        setActivePortal(null);
-                      }}
-                    >
-                      {/* Connection Line from Center - Only on larger screens */}
-                      {isActive && (
-                        <div className="hidden lg:block absolute top-1/2 left-1/2 w-full h-0.5 bg-gradient-to-r from-cyan-400 to-transparent transform -translate-x-1/2 -translate-y-1/2 origin-left animate-pulse"></div>
-                      )}
-                      
-                      {/* Portal Card */}
-                      <a
-                        href={method.action}
-                        className={`relative block ${method.bgColor} backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border ${method.borderColor} transition-all duration-500 transform hover:scale-105 hover:rotate-1 overflow-hidden`}
-                      >
-                        {/* Scanning Effect */}
-                        <div className={`absolute inset-0 bg-gradient-to-r ${method.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
-                        
-                        {/* Portal Ring */}
-                        <div className={`absolute -inset-1 sm:-inset-2 border-2 ${isActive ? 'border-cyan-400 animate-pulse' : 'border-transparent'} rounded-2xl sm:rounded-3xl transition-all duration-300`}></div>
-
-                        {/* Content */}
-                        <div className="relative z-10 text-center">
-                          {/* Icon Portal */}
-                          <div className={`relative w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 mx-auto mb-4 sm:mb-6 bg-gradient-to-r ${method.color} rounded-xl sm:rounded-2xl flex items-center justify-center transform transition-all duration-500 ${isHovered ? 'rotate-180 scale-110' : ''}`}>
-                            <IconComponent className="w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8 text-white" />
-                            {isActive && (
-                              <div className="absolute inset-0 border-2 border-white rounded-xl sm:rounded-2xl animate-ping"></div>
-                            )}
-                          </div>
-
-                          {/* Protocol Info */}
-                          <div className="mb-3 sm:mb-4">
-                            <div className="text-xs text-gray-400 mb-1">{method.protocol}</div>
-                            <h3 className="text-base sm:text-lg lg:text-xl font-bold text-white mb-1">{method.title}</h3>
-                            <div className="text-xs sm:text-sm text-gray-400">{method.subtitle}</div>
-                          </div>
-                          
-                          {/* Value */}
-                          <div className="text-sm sm:text-base font-medium text-white mb-2 sm:mb-3">{method.value}</div>
-                          
-                          {/* Speed Indicator */}
-                          <div className="flex items-center justify-center gap-2">
-                            <Zap className="w-3 h-3 text-yellow-400" />
-                            <span className="text-xs text-gray-400">{method.speed}</span>
-                          </div>
-
-                          {/* Hover Effects */}
-                          {isHovered && (
-                            <div className="absolute inset-0 pointer-events-none">
-                              <div className="absolute top-2 right-2">
-                                <Star className="w-3 h-3 sm:w-4 sm:h-4 text-cyan-400 animate-spin" style={{ animationDuration: '2s' }} />
-                              </div>
-                              <div className="absolute bottom-2 left-2">
-                                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-pulse"></div>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </a>
-                    </div>
-                  );
-                })}
-              </div>
             </div>
-          </section>
 
-          {/* Unique CTA Section */}
-          <section className="mb-16">
-            <div className="relative max-w-4xl mx-auto">
-              {/* Holographic Projector */}
-              <div className="relative">
-                {/* Projection Base */}
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-64 h-32 bg-gradient-to-t from-purple-600/20 to-transparent rounded-t-full blur-xl"></div>
-                
-                {/* Main Hologram Container */}
-                <div className="relative bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-xl rounded-3xl border border-white/20 p-12 overflow-hidden">
-                  
-                  {/* Holographic Grid Effect */}
-                  <div className="absolute inset-0 opacity-20">
-                    <div className="h-full w-full" style={{
-                      backgroundImage: `
-                        linear-gradient(rgba(0,255,255,0.1) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(0,255,255,0.1) 1px, transparent 1px)
-                      `,
-                      backgroundSize: '30px 30px',
-                      animation: 'grid-move 10s linear infinite'
-                    }}></div>
-                  </div>
-
-                  {/* Floating Particles */}
-                  {[...Array(6)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="absolute w-1 h-1 bg-cyan-400 rounded-full animate-pulse"
-                      style={{
-                        left: `${10 + i * 15}%`,
-                        top: `${20 + (i % 2) * 30}%`,
-                        animationDelay: `${i * 0.5}s`,
-                        boxShadow: '0 0 6px rgba(0, 255, 255, 0.8)'
-                      }}
-                    ></div>
-                  ))}
-
-                  {/* Content */}
-                  <div className="relative z-10 text-center">
-                    {/* Glitch Title */}
-                    <div className="relative mb-8">
-                      <h2 className="text-4xl font-bold text-white relative">
-                        <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                          {typedText}
-                          {isTyping && <span className="animate-pulse">|</span>}
-                        </span>
-                      </h2>
-                      
-                      {/* Scanning Line */}
-                      <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-scan"></div>
-                    </div>
-                    
-                    {/* Terminal-style Description */}
-                    <div className="mb-10 font-mono">
-                      <div className="text-green-400 text-sm mb-2">&gt; System ready...</div>
-                      <div className="text-cyan-300 text-sm mb-2">&gt; Vision detected: [USER_PROJECT]</div>
-                      <div className="text-purple-300 text-sm mb-2">&gt; Establishing secure connection...</div>
-                      <div className="text-pink-300 text-sm animate-pulse">&gt; Awaiting deployment command...</div>
-                    </div>
-
-                    {/* Interactive Command Console */}
-                    <div className="relative mb-8">
-                      <div className="bg-black/50 border border-cyan-500/30 rounded-xl p-4 font-mono text-sm">
-                        <div className="flex items-center gap-2 mb-3">
-                          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                          <span className="text-green-400">SYSTEM ONLINE</span>
-                          <span className="text-gray-400 ml-auto">v2.0.25</span>
-                        </div>
-                        
-                        <div className="text-left space-y-2">
-                          <div className="text-gray-300">
-                            <span className="text-cyan-400">$</span> deploy --mode=production --target=success
-                          </div>
-                          <div className="text-green-400 animate-pulse">
-                            ▸ Ready to execute deployment protocol
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Action Buttons as Command Keys */}
-                    <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                      {/* Deploy Button */}
-                      <Link href="/projects">
-                        <button className="group relative px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-green-500/25 transform hover:scale-105 overflow-hidden">
-                          {/* Button Content */}
-                          <span className="relative z-10 flex items-center justify-center gap-3">
-                            <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
-                              <span className="text-xs font-bold">▶</span>
-                            </div>
-                            <span>EXECUTE DEPLOY</span>
-                            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                          </span>
-                          
-                          {/* Hover Effects */}
-                          <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                          
-                          {/* Scanning Effect */}
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-400/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                        </button>
-                      </Link>
-                      
-                      {/* Schedule Button */}
-                      <button className="group relative px-8 py-4 border border-purple-500/50 text-purple-300 hover:border-purple-400 font-bold rounded-xl transition-all duration-300 transform hover:scale-105 backdrop-blur-sm overflow-hidden">
-                        <span className="relative z-10 flex items-center gap-3">
-                          <Calendar className="w-5 h-5 group-hover:animate-pulse" />
-                          <span>SCHEDULE SYNC</span>
-                          <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
-                        </span>
-                        
-                        {/* Hover Effect */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                      </button>
-                    </div>
-
-                    {/* System Metrics */}
-                    <div className="mt-8 grid grid-cols-3 gap-4 text-center">
-                      <div className="bg-white/5 rounded-lg p-3 border border-white/10">
-                        <div className="text-xs text-gray-400 mb-1">STATUS</div>
-                        <div className="text-sm font-bold text-green-400">READY</div>
-                      </div>
-                      <div className="bg-white/5 rounded-lg p-3 border border-white/10">
-                        <div className="text-xs text-gray-400 mb-1">UPTIME</div>
-                        <div className="text-sm font-bold text-cyan-400">99.9%</div>
-                      </div>
-                      <div className="bg-white/5 rounded-lg p-3 border border-white/10">
-                        <div className="text-xs text-gray-400 mb-1">QUEUE</div>
-                        <div className="text-sm font-bold text-purple-400">0</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {/* Primary CTA */}
+            <div className="flex flex-col gap-2">
+              <a href="mailto:codeml862@gmail.com"
+                className="group flex items-center justify-center gap-2 h-11 bg-lime-400 hover:bg-lime-300 text-black text-sm font-bold rounded-xl transition-all duration-200 hover:-translate-y-px hover:shadow-xl hover:shadow-lime-400/25">
+                <Mail size={14} />
+                Email Me Now
+                <ArrowUpRight size={13} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </a>
+              <Link href="/hireme"
+                className="group flex items-center justify-center gap-2 h-11 border border-zinc-800 hover:border-lime-500/30 hover:bg-lime-500/5 text-zinc-400 hover:text-white text-sm font-medium rounded-xl transition-all duration-200">
+                <Zap size={13} className="text-zinc-600 group-hover:text-lime-400 transition-colors" />
+                Why Hire Me
+                <ChevronRight size={12} className="text-zinc-700 group-hover:text-lime-400 transition-colors" />
+              </Link>
             </div>
-          </section>
-
           </div>
-      </main>
-    </div>
+        </div>
+
+        {/* ══════════════════════════════════════════
+            ROW 2 — 4 contact method cards
+        ══════════════════════════════════════════ */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {CONTACT_METHODS.map(({ id, icon: Ic, label, value, subtext, href, accent, border, bg, hoverBorder, copyable }) => (
+            <div key={id} className={`group bg-zinc-950 border border-zinc-800 ${hoverBorder} rounded-2xl p-6 flex flex-col gap-4 transition-all duration-200 hover:-translate-y-1`}>
+              {/* Icon */}
+              <div className={`w-10 h-10 rounded-xl ${bg} border ${border} flex items-center justify-center`}>
+                <Ic size={16} className={accent} />
+              </div>
+
+              {/* Label + value */}
+              <div className="flex-1">
+                <p className="font-mono text-xs text-zinc-600 uppercase tracking-widest mb-1">{label}</p>
+                <p className={`font-bold text-sm text-white leading-tight mb-1.5`}>{value}</p>
+                <p className="font-mono text-xs text-zinc-600 leading-5">{subtext}</p>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-2 mt-auto">
+                <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noreferrer"
+                  className={`group/btn flex-1 flex items-center justify-center gap-1.5 h-9 ${bg} border ${border} ${accent} rounded-xl text-xs font-bold transition-all duration-200 hover:opacity-80`}>
+                  {href.startsWith("http") ? <ExternalLink size={11} /> : <ArrowUpRight size={11} />}
+                  Open
+                </a>
+                {copyable && (
+                  <button
+                    onClick={() => copy(value, id)}
+                    className="w-9 h-9 bg-zinc-900 border border-zinc-800 hover:border-zinc-600 rounded-xl flex items-center justify-center text-zinc-500 hover:text-white transition-all duration-200"
+                    title="Copy">
+                    {copied === id
+                      ? <CheckCircle size={12} className="text-lime-400" />
+                      : <Copy size={12} />
+                    }
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ══════════════════════════════════════════
+            ROW 3 — Terminal + Availability + Socials
+        ══════════════════════════════════════════ */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+          {/* Terminal card */}
+          <div className="lg:col-span-1 bg-zinc-950 border border-zinc-800 rounded-2xl overflow-hidden">
+            {/* Chrome */}
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-zinc-900 bg-zinc-900/30">
+              <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
+              <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
+              <div className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
+              <div className="flex-1 flex items-center justify-center gap-2">
+                <Terminal size={10} className="text-zinc-600" />
+                <span className="font-mono text-xs text-zinc-600">rajaram — contact</span>
+              </div>
+            </div>
+            {/* Lines */}
+            <div className="p-5 space-y-3 min-h-[220px]">
+              {TERMINAL_LINES.map((line, i) => (
+                <div key={i}
+                  className={`flex gap-2 font-mono text-xs transition-all duration-300 ${
+                    visibleLines.includes(i) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1"
+                  }`}>
+                  <span className="text-lime-400 shrink-0">{line.prefix}</span>
+                  <span className={line.color}>{line.text}</span>
+                </div>
+              ))}
+              {lineIdx < TERMINAL_LINES.length && (
+                <div className="flex gap-2 font-mono text-xs">
+                  <span className="text-lime-400">$</span>
+                  <span className="inline-block w-0.5 h-3.5 bg-lime-400 animate-pulse" />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Availability */}
+          <div className="lg:col-span-1 bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-3">
+                <div className="h-px w-5 bg-lime-400" />
+                <span className="font-mono text-xs text-zinc-600 uppercase tracking-widest">Open To</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-400 opacity-50" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-lime-400" />
+                </span>
+                <span className="font-mono text-xs text-lime-400">Active</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              {AVAILABILITY.map(({ label, dot }) => (
+                <div key={label}
+                  className="group flex items-center gap-3 bg-zinc-900 border border-zinc-800 hover:border-lime-500/25 hover:bg-lime-500/5 rounded-xl px-4 py-2.5 transition-all duration-200 cursor-default">
+                  <div className={`w-1.5 h-1.5 rounded-full ${dot} shrink-0`} />
+                  <span className="text-zinc-400 group-hover:text-zinc-200 text-xs font-medium transition-colors">{label}</span>
+                  <CheckCircle size={10} className="text-lime-400 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Social links */}
+          <div className="lg:col-span-1 bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="h-px w-5 bg-lime-400" />
+              <span className="font-mono text-xs text-zinc-600 uppercase tracking-widest">Social Links</span>
+            </div>
+            <div className="flex flex-col gap-3">
+              {SOCIALS.map(({ icon: Ic, href, label, sub }) => (
+                <a key={label} href={href} target="_blank" rel="noreferrer"
+                  className="group flex items-center gap-3 bg-zinc-900 border border-zinc-800 hover:border-zinc-600 hover:bg-zinc-800/80 rounded-xl px-4 py-3 transition-all duration-200 hover:-translate-y-px">
+                  <div className="w-8 h-8 rounded-lg bg-zinc-800 group-hover:bg-zinc-700 flex items-center justify-center shrink-0 transition-colors">
+                    <Ic size={15} className="text-zinc-500 group-hover:text-white transition-colors" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-zinc-300 group-hover:text-white text-sm transition-colors">{label}</p>
+                    <p className="font-mono text-xs text-zinc-600">{sub}</p>
+                  </div>
+                  <ArrowUpRight size={12} className="text-zinc-700 group-hover:text-lime-400 transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ══════════════════════════════════════════
+            ROW 4 — Full-width CTA split banner
+        ══════════════════════════════════════════ */}
+        <div className="bg-zinc-950 border border-zinc-800 rounded-2xl overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-2">
+
+            {/* Left — message */}
+            <div className="p-8 md:p-12 flex flex-col justify-between gap-8 border-b lg:border-b-0 lg:border-r border-zinc-900">
+              <div>
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="h-px w-8 bg-lime-400" />
+                  <span className="font-mono text-xs text-zinc-600 uppercase tracking-widest">Start a Conversation</span>
+                </div>
+                <h3 className="font-black tracking-tighter leading-tight text-white text-3xl sm:text-4xl mb-4">
+                  Have a project<br />
+                  <span className="text-lime-400">in mind?</span>
+                </h3>
+                <p className="text-zinc-500 text-sm leading-7 max-w-sm">
+                  Whether it's an ML system, a full-stack product, or a tough engineering
+                  problem — I'm ready to dig in. Let's talk through it.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <a href="mailto:codeml862@gmail.com"
+                  className="group flex items-center gap-2 bg-lime-400 hover:bg-lime-300 text-black font-bold text-sm px-6 py-3 rounded-xl transition-all duration-200 hover:-translate-y-px hover:shadow-xl hover:shadow-lime-400/25">
+                  <Mail size={14} />
+                  Send an Email
+                  <ArrowUpRight size={13} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </a>
+                <a href="https://wa.me/917093221536" target="_blank" rel="noreferrer"
+                  className="group flex items-center gap-2 border border-zinc-800 hover:border-zinc-600 text-zinc-300 hover:text-white text-sm font-medium px-6 py-3 rounded-xl transition-all duration-200 hover:bg-zinc-900">
+                  <MessageCircle size={14} className="text-zinc-600 group-hover:text-emerald-400 transition-colors" />
+                  WhatsApp
+                </a>
+              </div>
+            </div>
+
+            {/* Right — quick facts */}
+            <div className="p-8 md:p-12 flex flex-col justify-center">
+              <span className="font-mono text-xs text-zinc-600 uppercase tracking-widest mb-6">What to expect</span>
+              <div className="space-y-3">
+                {[
+                  "Reply within 24 hours — always",
+                  "Clear communication from day one",
+                  "I ask the right questions upfront",
+                  "Honest about timelines and trade-offs",
+                  "You'll see work before the deadline",
+                  "No ghost, no ghost revisions",
+                  "Available across time zones",
+                  "Code you can read, extend & maintain",
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3 group">
+                    <div className="w-5 h-5 rounded-md bg-lime-400/10 border border-lime-500/25 flex items-center justify-center shrink-0 transition-colors group-hover:bg-lime-400/20">
+                      <CheckCircle size={11} className="text-lime-400" />
+                    </div>
+                    <span className="text-zinc-500 group-hover:text-zinc-200 text-sm transition-colors">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
   );
 }

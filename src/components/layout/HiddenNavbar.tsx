@@ -1,482 +1,391 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from "react";
 import {
-    Home,
-    User,
-    GraduationCap,
-    Brain,
-    FolderKanban,
-    BookOpen,
-    Award,
-    Mail,
-    Menu,
-    X,
-    Maximize2,
-    Minimize2,
-    ChevronRight,
-    Grid3x3,
-    Layers
-} from 'lucide-react';
-import { useRouter } from 'next/navigation';
+  Home, User, Brain, FolderKanban, Award,
+  Mail, GraduationCap, BookOpen, ArrowUpRight,
+  X, Menu, ChevronRight, Zap, Clock, Download
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface NavItem {
-    id: string;
-    name: string;
-    icon: React.ElementType;
-    link: string;
-    badge?: string;
-    color?: string;
+  id:     string;
+  label:  string;
+  icon:   React.ElementType;
+  href:   string;
+  badge?: string;
+  desc?:  string;
 }
 
-const HiddenNavbar: React.FC = () => {
-    const [activeItem, setActiveItem] = useState<string>('home');
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
-    const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
-    const [scrollProgress, setScrollProgress] = useState<number>(0);
-    const [currentTime, setCurrentTime] = useState<string>('');
-    const [isMenuExpanded, setIsMenuExpanded] = useState<boolean>(false);
-    const [showNavbar, setShowNavbar] = useState<boolean>(false);
-    const [showInitialMessage, setShowInitialMessage] = useState<boolean>(true);
-    const lastScrollY = useRef<number>(0);
-    const router = useRouter();
+// ─── Config ───────────────────────────────────────────────────────────────────
 
-    const navItems: NavItem[] = [
-        {
-            id: 'home',
-            name: 'Home',
-            icon: Home,
-            link: '/',
-            color: 'from-blue-500 to-cyan-500'
-        },
-        {
-            id: 'about',
-            name: 'Profile',
-            icon: User,
-            link: '#about',
-            color: 'from-purple-500 to-pink-500'
-        },
-        {
-            id: 'education',
-            name: 'Learning',
-            icon: GraduationCap,
-            link: '#education',
-            color: 'from-indigo-500 to-blue-500',
-            badge: '3'
-        },
-        {
-            id: 'skills',
-            name: 'Expertise',
-            icon: Brain,
-            link: '#skills',
-            color: 'from-green-500 to-emerald-500'
-        },
-        {
-            id: 'projects',
-            name: 'Portfolio',
-            icon: FolderKanban,
-            link: '#projects',
-            color: 'from-orange-500 to-red-500',
-            badge: '12'
-        },
-        {
-            id: 'blog',
-            name: 'Articles',
-            icon: BookOpen,
-            link: '#blog',
-            color: 'from-yellow-500 to-amber-500'
-        },
-        {
-            id: 'certifications',
-            name: 'Awards',
-            icon: Award,
-            link: '#certificates',
-            color: 'from-pink-500 to-rose-500',
-            badge: '5'
-        },
-        {
-            id: 'contact',
-            name: 'Connect',
-            icon: Mail,
-            link: '#contact',
-            color: 'from-teal-500 to-cyan-500'
-        },
-    ];
+const NAV: NavItem[] = [
+  { id: "home",           label: "Home",          icon: Home,          href: "/",             desc: "Back to top"          },
+  { id: "about",          label: "About",         icon: User,          href: "#about",        desc: "Who I am"             },
+  { id: "education",      label: "Education",     icon: GraduationCap, href: "#education",    desc: "Academic background"  },
+  { id: "skills",         label: "Skills",        icon: Brain,         href: "#skills",       desc: "Tech stack"           },
+  { id: "projects",       label: "Projects",      icon: FolderKanban,  href: "#projects",     desc: "Things I built",      badge: "15+" },
+  { id: "blog",           label: "Articles",      icon: BookOpen,      href: "#blog",         desc: "Dev writing"          },
+  { id: "certifications", label: "Certs",         icon: Award,         href: "#certificates", desc: "Verified learning",   badge: "11"  },
+  { id: "contact",        label: "Contact",       icon: Mail,          href: "#contact",      desc: "Let's talk"           },
+];
 
-    // Handle scroll behavior
-    useEffect(() => {
-        const handleScroll = () => {
-            const currentScrollY = window.scrollY;
-            const scrollTop = currentScrollY;
-            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const progress = (scrollTop / docHeight) * 100;
-            setScrollProgress(Math.min(100, Math.max(0, progress)));
+// ─── Helper ───────────────────────────────────────────────────────────────────
 
-            // Hide initial message after scrolling starts
-            if (currentScrollY > 50) {
-                setShowInitialMessage(false);
-            }
+function smoothNav(href: string, router: ReturnType<typeof useRouter>) {
+  if (href === "/") { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+  if (href.startsWith("#")) { document.querySelector(href)?.scrollIntoView({ behavior: "smooth" }); return; }
+  router.push(href);
+}
 
-            // Show navbar when scrolling starts (up or down), keep it visible
-            if (currentScrollY > 10) {
-                setShowNavbar(true);
-            }
-        };
+// ─── Component ────────────────────────────────────────────────────────────────
 
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+export default function Navbar() {
+  const [active,      setActive]     = useState("home");
+  const [scrollPct,   setScrollPct]  = useState(0);
+  const [scrolled,    setScrolled]   = useState(false);
+  const [mobileOpen,  setMobileOpen] = useState(false);
+  const [clock,       setClock]      = useState("");
+  const [greeting,    setGreeting]   = useState(true);
+  const router = useRouter();
 
-    // Update current time
-    useEffect(() => {
-        const updateTime = () => {
-            const now = new Date();
-            const time = now.toLocaleTimeString('en-US', {
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            setCurrentTime(time);
-        };
+  // Scroll tracker
+  useEffect(() => {
+    const fn = () => {
+      const top    = window.scrollY;
+      const height = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollPct(height > 0 ? Math.min(100, (top / height) * 100) : 0);
+      setScrolled(top > 60);
+      if (top > 80) setGreeting(false);
 
-        updateTime();
-        const interval = setInterval(updateTime, 1000);
-        return () => clearInterval(interval);
-    }, []);
+      // Auto-detect active section
+      const sections = NAV
+        .filter(n => n.href.startsWith("#"))
+        .map(n => ({ id: n.id, el: document.querySelector(n.href) }))
+        .filter(s => s.el);
 
-    // Handle fullscreen change
-    useEffect(() => {
-        const handleFullscreenChange = () => {
-            setIsFullscreen(!!document.fullscreenElement);
-        };
-
-        document.addEventListener('fullscreenchange', handleFullscreenChange);
-        return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
-    }, []);
-
-    // Set active item based on current URL
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const currentPath = window.location.pathname;
-            const hash = window.location.hash;
-
-            if (hash) {
-                const matchedItem = navItems.find(item => item.link === hash);
-                if (matchedItem) {
-                    setActiveItem(matchedItem.id);
-                    return;
-                }
-            }
-
-            const matchedItem = navItems.find(item =>
-                item.link === currentPath ||
-                (currentPath !== '/' && item.link !== '/' && currentPath.includes(item.link))
-            );
-
-            if (matchedItem) {
-                setActiveItem(matchedItem.id);
-            }
+      for (let i = sections.length - 1; i >= 0; i--) {
+        if (sections[i].el!.getBoundingClientRect().top <= 120) {
+          setActive(sections[i].id);
+          break;
         }
-    }, []);
-
-    const toggleFullscreen = async () => {
-        try {
-            if (!document.fullscreenElement) {
-                await document.documentElement.requestFullscreen();
-            } else {
-                await document.exitFullscreen();
-            }
-        } catch (error) {
-            console.error('Fullscreen toggle failed:', error);
-        }
+      }
     };
+    window.addEventListener("scroll", fn, { passive: true });
+    fn();
+    return () => window.removeEventListener("scroll", fn);
+  }, []);
 
-    const handleNavigation = (item: NavItem) => {
-        setActiveItem(item.id);
-        setIsMobileMenuOpen(false);
+  // IST clock
+  useEffect(() => {
+    const tick = () =>
+      setClock(new Date().toLocaleTimeString("en-IN", {
+        hour12: false, hour: "2-digit", minute: "2-digit",
+        timeZone: "Asia/Kolkata",
+      }));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
 
-        if (item.link.startsWith('#')) {
-            const element = document.querySelector(item.link);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
-            }
-        } else {
-            router.push(item.link);
-        }
-    };
+  const navigate = useCallback((item: NavItem) => {
+    setActive(item.id);
+    setMobileOpen(false);
+    smoothNav(item.href, router);
+  }, [router]);
 
-    const toggleMobileMenu = () => {
-        setIsMobileMenuOpen(!isMobileMenuOpen);
-    };
+  // Lock body scroll when mobile drawer is open
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
 
-    const toggleMenuExpansion = () => {
-        setIsMenuExpanded(!isMenuExpanded);
-    };
+  return (
+    <>
+      {/* ── SCROLL PROGRESS ─────────────────────────────── */}
+      {/* <div className="fixed top-0 inset-x-0 z-[60] h-0.5 bg-zinc-900">
+        <div
+          className="h-full bg-lime-400 transition-all duration-150 ease-out"
+          style={{ width: `${scrollPct}%` }}
+        />
+      </div> */}
 
-    return (
-        <>
-            {/* Initial Welcome Message */}
-            {showInitialMessage && (
-                <div className="fixed top-0 left-0 right-0 z-40 bg-black transition-all duration-500">
-                <div className="max-w-7xl py-4 sm:py-5">
+      {/* ── GREETING BANNER ─────────────────────────────── */}
+      <div className={`bg-black fixed inset-x-0 z-50 transition-all duration-500 overflow-hidden ${
+        greeting ? "top-0.5 opacity-100" : "top-0.5 opacity-0 pointer-events-none"
+      }`}>
+        <div className="flex items-center justify-center gap-3 bg-zinc-950/95 backdrop-blur-sm border-b border-zinc-900 h-10">
+          <span className="relative flex h-1.5 w-1.5 shrink-0">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-400 opacity-60" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-lime-400" />
+          </span>
+          <span className="font-mono text-xs text-zinc-500 tracking-widest hidden sm:block">
+            Welcome to Rajaram's Portfolio · Have a great day 👋
+          </span>
+          <span className="font-mono text-xs text-zinc-500 sm:hidden">
+            Welcome 👋
+          </span>
+          <button
+            onClick={() => setGreeting(false)}
+            className="ml-2 text-zinc-700 hover:text-zinc-400 transition-colors"
+          >
+            <X size={11} />
+          </button>
+        </div>
+      </div>
 
-                    <div className="relative flex flex-col md:flex-row items-center justify-center gap-0 md:gap-10 text-center animate-scroll-left">
+      {/* ════════════════════════════════════════════════════
+          DESKTOP NAV  (md and above)
+      ════════════════════════════════════════════════════ */}
+      <nav className={`bg-black hidden md:block fixed inset-x-0 z-50 transition-all duration-500 ${
+        scrolled ? "top-0.5" : greeting ? "top-10" : "top-0.5"
+      }`}>
+        <div className={`mx-auto max-w-screen-xl px-6 lg:px-14 transition-all duration-300 ${
+          scrolled ? "py-2" : "py-3"
+        }`}>
+          <div className={`flex items-center justify-between gap-4 px-4 lg:px-6 rounded-2xl h-14 transition-all duration-300 ${
+            scrolled
+              ? "bg-black/90 backdrop-blur-xl border border-zinc-800/80 shadow-2xl shadow-black/50"
+              : "bg-zinc-950/80 backdrop-blur-sm border border-zinc-900"
+          }`}>
 
-                    {/* Left Text – FULL WIDTH, NEVER CUT */}
-                    <h1
-                        className="w-full md:w-auto text-base sm:text-xl md:text-2xl lg:text-3xl font-semibold
-                        bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 to-green-400
-                        bg-clip-text text-transparent
-                        drop-shadow-md
-                        animate-gradient-shift
-                        text-center md:text-left"
-                    >
-                        Thank you for visiting Rajaram&apos;s Portfolio
-                    </h1>
+            {/* Logo */}
+            <button onClick={() => navigate(NAV[0])} className="group flex items-center gap-3 shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-lime-400 group-hover:bg-lime-300 flex items-center justify-center transition-all duration-200 group-hover:-translate-y-px group-hover:shadow-lg group-hover:shadow-lime-400/30">
+                <span className="font-black text-black text-xs">LR</span>
+              </div>
+              <div className="hidden lg:block">
+                <p className="font-black text-white text-sm leading-none tracking-tight">Lavudya Rajaram</p>
+                <p className="font-mono text-xs text-zinc-600 mt-0.5">ML Eng. · Full-Stack</p>
+              </div>
+            </button>
 
-                    {/* Center Hand + Line (ABSOLUTE, DESKTOP ONLY) */}
-                    {/* {!isMenuExpanded && (
-                        <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2 flex-col items-center">
-                        <span className="text-xl animate-bounce">👉</span>
-                        <span
-                            className="mt-0.5 h-[2px] w-12 rounded-full
-                            bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400
-                            shadow-md"
-                        />
-                        </div>
-                    )} */}
-
-                    {/* Right Text */}
-                    <p
-                        className=" md:w-auto text-base sm:text-xl md:text-2xl lg:text-3xl font-semibold
-                        bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 to-green-400
-                        bg-clip-text text-transparent
-                        drop-shadow-md
-                        animate-gradient-shift
-                        text-center "
-                    >
-                        Have a nice day
-                    </p>
-                    </div>
-                </div>
-                </div>
-            )}
-
-            {/* Progress Bar - Always visible */}
-            <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-gray-800">
-                <div
-                    className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300"
-                    style={{ width: `${scrollProgress}%` }}
-                />
+            {/* Pill nav */}
+            <div className="flex items-center gap-0.5 bg-zinc-900/60 border border-zinc-800/60 rounded-xl px-1.5 py-1.5 overflow-x-auto scrollbar-hide">
+              {NAV.map((item) => {
+                const Icon  = item.icon;
+                const isAct = active === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => navigate(item)}
+                    title={item.label}
+                    className={`group relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-xs tracking-wide transition-all duration-200 whitespace-nowrap shrink-0 ${
+                      isAct
+                        ? "bg-lime-400 text-black font-bold shadow-md shadow-lime-400/20"
+                        : "text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800/70"
+                    }`}
+                  >
+                    <Icon size={12} className={isAct ? "text-black" : "text-zinc-700 group-hover:text-zinc-400 transition-colors"} />
+                    <span className="hidden lg:inline">{item.label}</span>
+                    {item.badge && (
+                      <span className={`font-bold text-xs px-1 py-px rounded-md leading-none ${
+                        isAct ? "bg-black/20 text-black" : "bg-zinc-700 text-zinc-400 group-hover:bg-zinc-600"
+                      }`}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
 
-            {/* Hidden Navigation - Appears on scroll */}
-            <nav className={`
-        fixed top-0 left-0 right-0 z-50 transition-all duration-500 transform
-        ${showNavbar
-                    ? 'translate-y-0 opacity-100'
-                    : '-translate-y-full opacity-0'
-                }
-      `}>
+            {/* Right */}
+            <div className="flex items-center gap-2 shrink-0">
+              <div className="hidden xl:flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-1.5">
+                <Clock size={10} className="text-zinc-700" />
+                <span className="font-mono text-xs text-zinc-500 tabular-nums">{clock}</span>
+              </div>
+              <a href="/Rajaram-resume.pdf" download
+                className="hidden lg:flex items-center gap-1.5 border border-zinc-800 hover:border-zinc-600 text-zinc-400 hover:text-white font-mono text-xs px-3 py-2 rounded-xl transition-all duration-200 hover:bg-zinc-900">
+                <Download size={11} /><span>Resume</span>
+              </a>
+              <Link href="/hireme"
+                className="group flex items-center gap-1.5 bg-lime-400 hover:bg-lime-300 text-black font-bold text-xs px-4 py-2 rounded-xl transition-all duration-200 hover:-translate-y-px hover:shadow-lg hover:shadow-lime-400/25">
+                <Zap size={11} />Hire Me
+                <ArrowUpRight size={11} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
 
-                {/* Top Utility Bar */}
-                <div className="bg-black/90 border-b border-gray-800 px-4 py-2 text-xs font-mono text-gray-400">
-                    <div className="max-w-7xl mx-auto flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                            <span className="flex items-center space-x-1">
-                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                                <span>System Online</span>
-                            </span>
-                            <span>|</span>
-                            <span>{currentTime}</span>
-                            <span>|</span>
-                            <span>Scroll: {Math.round(scrollProgress)}%</span>
-                        </div>
-                        <div className="flex items-center space-x-4">
-                            <span>{isFullscreen ? 'Fullscreen' : 'Windowed'}</span>
-                        </div>
+      {/* ════════════════════════════════════════════════════
+          MOBILE TOP BAR  (below md)
+      ════════════════════════════════════════════════════ */}
+      <div className={`md:hidden fixed inset-x-0 z-50 transition-all duration-300 ${
+        scrolled ? "top-0.5" : greeting ? "top-10" : "top-0.5"
+      }`}>
+        <div className={`flex items-center justify-between h-14 px-4 transition-all duration-300 ${
+          scrolled
+            ? "bg-black/95 backdrop-blur-xl border-b border-zinc-800"
+            : "bg-zinc-950/90 backdrop-blur-sm border-b border-zinc-900"
+        }`}>
+
+          {/* Logo */}
+          <button onClick={() => navigate(NAV[0])} className="group flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-lime-400 flex items-center justify-center">
+              <span className="font-black text-black text-xs">LR</span>
+            </div>
+            <div>
+              <p className="font-black text-white text-sm leading-none">Rajaram</p>
+              <p className="font-mono text-xs text-zinc-600 mt-0.5">ML · Dev</p>
+            </div>
+          </button>
+
+          {/* Right: Hire + Burger */}
+          <div className="flex items-center gap-2">
+            <Link href="/hireme"
+              className="flex items-center gap-1 bg-lime-400 hover:bg-lime-300 text-black font-bold text-xs px-3 py-1.5 rounded-xl transition-colors">
+              <Zap size={11} /> Hire
+            </Link>
+            <button
+              onClick={() => setMobileOpen(p => !p)}
+              className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-white transition-all duration-200"
+            >
+              {mobileOpen ? <X size={15} /> : <Menu size={15} />}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ════════════════════════════════════════════════════
+          MOBILE DRAWER
+      ════════════════════════════════════════════════════ */}
+      {/* Backdrop */}
+      <div
+        onClick={() => setMobileOpen(false)}
+        className={`md:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
+          mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+      />
+
+      {/* Sheet — slides up from bottom */}
+      <div className={`md:hidden fixed inset-x-0 bottom-0 z-50 transition-transform duration-300 ease-out ${
+        mobileOpen ? "translate-y-0" : "translate-y-full"
+      }`}>
+        <div className="bg-zinc-950 border-t border-zinc-800 rounded-t-3xl overflow-hidden">
+
+          {/* Handle */}
+          <div className="flex justify-center pt-3 pb-1">
+            <div className="w-10 h-1 rounded-full bg-zinc-700" />
+          </div>
+
+          {/* Sheet header */}
+          <div className="flex items-center justify-between px-5 pb-4 pt-2">
+            <div>
+              <p className="font-black text-white text-sm">Navigate</p>
+              <p className="font-mono text-xs text-zinc-600 mt-0.5">Where do you want to go?</p>
+            </div>
+            <div className="flex items-center gap-3">
+              {/* Online + clock */}
+              <div className="flex items-center gap-1.5">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-400 opacity-60" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-lime-400" />
+                </span>
+                <span className="font-mono text-xs text-zinc-600 tabular-nums">{clock}</span>
+              </div>
+              <button
+                onClick={() => setMobileOpen(false)}
+                className="w-8 h-8 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-white transition-colors"
+              >
+                <X size={13} />
+              </button>
+            </div>
+          </div>
+
+          {/* ── 2-column nav grid ── */}
+          <div className="px-4 pb-4 grid grid-cols-2 gap-2">
+            {NAV.map((item) => {
+              const Icon  = item.icon;
+              const isAct = active === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => navigate(item)}
+                  className={`group flex items-center gap-3 px-3.5 py-3.5 rounded-2xl border transition-all duration-200 text-left ${
+                    isAct
+                      ? "bg-lime-400/10 border-lime-500/25"
+                      : "bg-zinc-900/60 border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900"
+                  }`}
+                >
+                  {/* Icon box */}
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                    isAct ? "bg-lime-400/15" : "bg-zinc-800 group-hover:bg-zinc-700"
+                  }`}>
+                    <Icon size={15} className={isAct ? "text-lime-400" : "text-zinc-400 group-hover:text-zinc-200"} />
+                  </div>
+
+                  {/* Text */}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <p className={`font-semibold text-sm leading-none truncate ${
+                        isAct ? "text-lime-400" : "text-zinc-200 group-hover:text-white"
+                      }`}>
+                        {item.label}
+                      </p>
+                      {item.badge && (
+                        <span className={`font-mono text-xs px-1.5 py-px rounded-md leading-none shrink-0 ${
+                          isAct ? "bg-lime-400/20 text-lime-400" : "bg-zinc-700 text-zinc-400"
+                        }`}>
+                          {item.badge}
+                        </span>
+                      )}
                     </div>
-                </div>
+                    <p className={`font-mono text-xs mt-1 truncate ${
+                      isAct ? "text-lime-400/60" : "text-zinc-600"
+                    }`}>
+                      {item.desc}
+                    </p>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
 
-                {/* Main Navigation Content */}
-                <div className="bg-black border-b border-gray-800 shadow-lg">
-                    <div className="max-w-7xl mx-auto px-4">
-                        <div className="flex items-center justify-between h-16">
+          {/* ── CTA row ── */}
+          <div className="px-4 pb-4 grid grid-cols-3 gap-2">
+            <Link href="/hireme"
+              className="col-span-1 flex items-center justify-center gap-1.5 py-3 bg-lime-400 hover:bg-lime-300 text-black font-bold text-xs rounded-2xl transition-all duration-200">
+              <Zap size={12} /> Hire Me
+            </Link>
+            <a href="mailto:codeml862@gmail.com"
+              className="col-span-1 flex items-center justify-center gap-1.5 py-3 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white text-xs font-medium rounded-2xl transition-all duration-200">
+              <Mail size={12} /> Email
+            </a>
+            <a href="/Rajaram-resume.pdf" download
+              className="col-span-1 flex items-center justify-center gap-1.5 py-3 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white text-xs font-medium rounded-2xl transition-all duration-200">
+              <Download size={12} /> CV
+            </a>
+          </div>
 
-                            {/* Logo Section */}
-                            <div className="flex items-center space-x-4">
-                                <button
-                                    onClick={() => handleNavigation(navItems[0])}
-                                    className="group flex items-center space-x-3"
-                                >
-                                    <div className="relative">
-                                        <div className="w-10 h-10 bg-gray-800 rounded-xl flex items-center justify-center group-hover:bg-gray-700 transition-all duration-300">
-                                            <Grid3x3 className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors duration-300" />
-                                        </div>
-                                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
-                                    </div>
-                                    <div className="hidden md:block">
-                                        <div className="text-lg font-bold text-white">
-                                            Portfolio
-                                        </div>
-                                        <div className="text-xs font-mono text-gray-500">
-                                            Professional
-                                        </div>
-                                    </div>
-                                </button>
+          {/* ── Read progress ── */}
+          <div className="px-4 pb-6">
+            <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-2xl px-4 py-3">
+              <span className="font-mono text-xs text-zinc-600">Read</span>
+              <div className="flex-1 h-1 bg-zinc-800 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-lime-400 rounded-full transition-all duration-300"
+                  style={{ width: `${scrollPct}%` }}
+                />
+              </div>
+              <span className="font-mono text-xs text-zinc-500 tabular-nums w-8 text-right">
+                {Math.round(scrollPct)}%
+              </span>
+            </div>
+          </div>
 
-                                {/* Expand/Collapse Button */}
-                                <button
-                                        onClick={toggleMenuExpansion}
-                                        className="hidden lg:flex items-center px-3 py-1.5 rounded-lg
-                                                    bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400
-                                                    bg-clip-text text-transparent
-                                                    hover:from-cyan-400 hover:via-blue-400 hover:to-green-400
-                                                    transition-all duration-300"
-                                        title="Toggle Navigation"
-                                        >
-                                        View
-                                        </button>  
-                                   </div>
+        </div>
+      </div>
 
-                            {/* Center Navigation */}
-                            <div className={`
-                hidden lg:flex items-center space-x-1 transition-all duration-300
-                ${isMenuExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'}
-              `}>
-                                {navItems.map((item) => {
-                                    const Icon = item.icon;
-                                    const isActive = activeItem === item.id;
-
-                                    return (
-                                        <button
-                                            key={item.id}
-                                            onClick={() => handleNavigation(item)}
-                                            className={`
-                        relative flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 group
-                        ${isActive
-                                                    ? 'bg-gradient-to-r ' + item.color + ' text-white shadow-lg'
-                                                    : 'text-gray-400 hover:bg-gray-800 hover:text-white'
-                                                }
-                      `}
-                                        >
-                                            <Icon className="w-4 h-4" />
-                                            <span className="text-sm font-medium">{item.name}</span>
-
-                                            {item.badge && (
-                                                <span className={`
-                          px-1.5 py-0.5 text-xs rounded-full font-bold
-                          ${isActive
-                                                        ? 'bg-black text-white'
-                                                        : 'bg-gray-700 text-gray-300'
-                                                    }
-                        `}>
-                                                    {item.badge}
-                                                </span>
-                                            )}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-
-                            {/* Right Controls */}
-                            <div className="flex items-center space-x-2">
-                                {/* Fullscreen Toggle */}
-                                <button
-                                    onClick={toggleFullscreen}
-                                    className="w-10 h-10 rounded-xl bg-gray-800 hover:bg-gray-700 text-blue-400 flex items-center justify-center transition-all duration-200"
-                                >
-                                    {isFullscreen ? (
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
-                                        </svg>
-                                    ) : (
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                                        </svg>
-                                    )}
-                                </button>
-
-                                {/* Mobile Menu Toggle */}
-                                <button
-                                    onClick={toggleMobileMenu}
-                                    className="lg:hidden w-10 h-10 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-400 flex items-center justify-center transition-all duration-200"
-                                >
-                                    {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Mobile Navigation */}
-                <div className={`
-          lg:hidden transition-all duration-300 bg-black border-t border-gray-800
-          ${isMobileMenuOpen
-                        ? 'max-h-96 opacity-100'
-                        : 'max-h-0 opacity-0 overflow-hidden'
-                    }
-        `}>
-                    <div className="px-4 py-4">
-                        <div className="grid grid-cols-2 gap-2">
-                            {navItems.map((item) => {
-                                const Icon = item.icon;
-                                const isActive = activeItem === item.id;
-
-                                return (
-                                    <button
-                                        key={item.id}
-                                        onClick={() => handleNavigation(item)}
-                                        className={`
-                      relative p-3 rounded-xl flex flex-col items-center space-y-2 transition-all duration-200
-                      ${isActive
-                                                ? 'bg-gradient-to-r ' + item.color + ' text-white'
-                                                : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'
-                                            }
-                    `}
-                                    >
-                                        <Icon className="w-6 h-6" />
-                                        <span className="text-xs font-medium">{item.name}</span>
-
-                                        {item.badge && (
-                                            <span className="absolute top-2 right-2 px-1.5 py-0.5 text-xs rounded-full font-bold bg-black">
-                                                {item.badge}
-                                            </span>
-                                        )}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
-            {/* Custom Animations */}
-            <style>{`
-        @keyframes scroll-left {
-          0% { transform: translateX(100%); opacity: 0; }
-          20% { opacity: 1; }
-          80% { opacity: 1; }
-          100% { transform: translateX(-100%); opacity: 0; }
-        }
-        
-        @keyframes gradient-shift {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-        
-        .animate-scroll-left { 
-          animation: scroll-left 12s ease-in-out infinite; 
-        }
-        
-        .animate-gradient-shift {
-          background-size: 200% 200%;
-          animation: gradient-shift 4s ease infinite;
-        }
-      `}</style>
-        </>
-    );
-};
-
-export default HiddenNavbar;
+      {/* ── Desktop spacer ── */}
+      <div className={`bg-black hidden md:block transition-all duration-500 ${greeting ? "h-24" : "h-20"}`} />
+      {/* ── Mobile spacer (just for the top bar) ── */}
+      <div className="md:hidden h-14" />
+    </>
+  );
+}

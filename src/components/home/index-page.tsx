@@ -12,7 +12,7 @@ import Education from '@/components/home/education/Education'
 import ContactCTA from '@/components/home/contact/ContactCTA'
 import Testimonials from '@/components/home/testimonials/Testimonials'
 import Footer from '@/components/layout/footer';
-import Chatbot from '@/components/ui/Chatbot';
+import Chatbot from '@/components/home/chatbot/Chatbot';
 
 export default function HomePage() {
   const [showFullAbout, setShowFullAbout] = useState(false);
@@ -20,10 +20,10 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="pt-16">
+      <main className="pt-0">
         <Hero />
         <div id="about">
-            <AboutPreview onExpand={() => setShowFullAbout(true)} />
+            <AboutPreview />
         </div>
 
         <div id="education">

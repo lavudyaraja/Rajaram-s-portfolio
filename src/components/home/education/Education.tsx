@@ -1,286 +1,266 @@
 "use client";
 
-import { GraduationCap, Calendar, MapPin, Award, BookOpen, University, Building, School } from "lucide-react";
-import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import {
+  GraduationCap, MapPin, Calendar, Award,
+  BookOpen, University, Building, School,
+  ChevronRight, Star, Code2, Brain, ArrowUpRight
+} from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+
+// ─── Data ─────────────────────────────────────────────────────────────────────
+
+const EDUCATION = [
+  {
+    id: "btech",
+    degree: "B.Tech Computer Science & Engineering",
+    institution: "Central University of Haryana",
+    location: "Haryana, India",
+    period: "2022 – 2026",
+    status: "Pursuing",
+    score: "In Progress",
+    icon: University,
+    accent: { text: "text-sky-400", border: "border-sky-500/20", bg: "bg-sky-500/8", dot: "bg-sky-400" },
+    achievements: [
+      "Advanced algorithms & data structures",
+      "Machine Learning concentration",
+      "Full-stack web development track",
+      "Software engineering principles",
+    ],
+    coursework: [
+      "Data Structures & Algorithms",
+      "Machine Learning",
+      "Web Development",
+      "Database Management Systems",
+      "Software Engineering",
+      "Computer Networks",
+      "Artificial Intelligence",
+    ],
+  },
+  {
+    id: "intermediate",
+    degree: "Intermediate — MPC",
+    institution: "TTWREIS COE Boys Narsapur",
+    location: "Narsapur, India",
+    period: "2019 – 2021",
+    status: "Completed",
+    score: "91%",
+    icon: Building,
+    accent: { text: "text-violet-400", border: "border-violet-500/20", bg: "bg-violet-500/8", dot: "bg-violet-400" },
+    achievements: [
+      "Strong foundation in Mathematics",
+      "Physics and Chemistry focus",
+      "Analytical thinking development",
+      "Problem-solving excellence",
+    ],
+    coursework: [
+      "Mathematics",
+      "Physics",
+      "Chemistry",
+      "Computer Science",
+      "English Communication",
+    ],
+  },
+  {
+    id: "ssc",
+    degree: "Secondary School Certificate",
+    institution: "ZPHS Boys No-2 Pargi",
+    location: "Pargi, Telangana, India",
+    period: "2018 – 2019",
+    status: "Completed",
+    score: "83%",
+    icon: School,
+    accent: { text: "text-lime-400", border: "border-lime-500/20", bg: "bg-lime-500/8", dot: "bg-lime-400" },
+    achievements: [
+      "SSC Board of Secondary Education",
+      "Strong academic foundation",
+      "Excellence in Mathematics & Science",
+    ],
+    coursework: [
+      "Mathematics",
+      "Science",
+      "Social Studies",
+      "English",
+      "Telugu",
+      "Hindi",
+    ],
+  },
+];
+
+const STATS = [
+  { value: "3",    label: "Levels"     },
+  { value: "20+",  label: "Courses"    },
+  { value: "91%",  label: "Best Score" },
+  { value: "4",    label: "Years"      },
+];
+
+// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function Education() {
-  const [isVisible, setIsVisible] = useState(false);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const pathname = usePathname();
-  const isEducationPage = pathname === "/education";
+  const [active, setActive] = useState<string>("btech");
+  const [ready, setReady]   = useState(false);
+  const sectionRef          = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (isEducationPage) {
-      setIsVisible(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-          }
-        });
-      },
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) setReady(true); },
       { threshold: 0.1 }
     );
+    if (sectionRef.current) obs.observe(sectionRef.current);
+    return () => obs.disconnect();
+  }, []);
 
-    const element = document.getElementById('education-section');
-    if (element) {
-      observer.observe(element);
-    }
-
-    return () => {
-      if (element) {
-        observer.unobserve(element);
-      }
-    };
-  }, [isEducationPage]);
-
-  const education = [
-    {
-      degree: "BTech Computer Science and Engineering",
-      institution: "Central University Of Haryana",
-      location: "Haryana, India",
-      period: "2022 - 2026",
-      gpa: "Pursuing",
-      percentage: "In Progress",
-      type: "university",
-      icon: <University className="w-6 h-6" />,
-      color: "blue",
-      achievements: [
-        "Focused on advanced algorithms",
-        "Web development specialization", 
-        "Software engineering",
-        "Machine Learning concentration"
-      ],
-      coursework: [
-        "Data Structures & Algorithms",
-        "Machine Learning",
-        "Web Development",
-        "Database Management Systems",
-        "Software Engineering",
-        "Computer Networks",
-        "Artificial Intelligence"
-      ]
-    },
-    {
-      degree: "Intermediate (MPC)",
-      institution: "TTWREIS COE BOYS Narsapur",
-      location: "Narsapur, India",
-      period: "2019 - 2021",
-      gpa: "Completed",
-      percentage: "91%",
-      type: "college",
-      icon: <Building className="w-6 h-6" />,
-      color: "purple",
-      achievements: [
-        "Strong foundation in Mathematics",
-        "Physics and Chemistry focus",
-        "Analytical thinking development",
-        "Problem-solving skills enhancement"
-      ],
-      coursework: [
-        "Mathematics",
-        "Physics",
-        "Chemistry",
-        "Computer Science",
-        "English Communication"
-      ]
-    },
-    {
-      degree: "School of Secondary Certification",
-      institution: "ZPHS Boys No-2 Pargi",
-      location: "Pargi, Telangana, India",
-      period: "2018 - 2019",
-      gpa: "83%",
-      percentage: "83%",
-      type: "school",
-      icon: <School className="w-6 h-6" />,
-      color: "green",
-      achievements: [
-        "SSC Board of Secondary Education",
-        "Strong academic foundation",
-        "Excellence in Mathematics and Science"
-      ],
-      coursework: [
-        "Mathematics",
-        "Science",
-        "Social Studies",
-        "English Language",
-        "Telugu Language",
-        "Hindi Language"
-      ]
-    }
-  ];
-
-  const getColorClasses = (color: string) => {
-    const colorMap: { [key: string]: { bg: string; border: string; text: string; light: string; accent: string; gradient: string } } = {
-      blue: {
-        bg: "bg-blue-500/10",
-        border: "border-blue-500/30",
-        text: "text-blue-400",
-        light: "bg-blue-500/20",
-        accent: "border-blue-500",
-        gradient: "from-blue-500 to-cyan-500"
-      },
-      purple: {
-        bg: "bg-purple-500/10",
-        border: "border-purple-500/30",
-        text: "text-purple-400",
-        light: "bg-purple-500/20",
-        accent: "border-purple-500",
-        gradient: "from-purple-500 to-pink-500"
-      },
-      green: {
-        bg: "bg-green-500/10",
-        border: "border-green-500/30",
-        text: "text-green-400",
-        light: "bg-green-500/20",
-        accent: "border-green-500",
-        gradient: "from-green-500 to-emerald-500"
-      }
-    };
-    return colorMap[color] || colorMap.blue;
-  };
+  const current = EDUCATION.find(e => e.id === active)!;
+  const { accent } = current;
 
   return (
-    <section id={isEducationPage ? undefined : 'education-section'} className="relative py-12 sm:py-16 lg:py-20 bg-black overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 right-1/3 w-80 h-80 bg-green-500/5 rounded-full blur-3xl" />
-      </div>
+    <section id="education" ref={sectionRef} className="bg-black text-white">
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Section Header */}
-        <div className="text-center mb-12 sm:mb-16 lg:mb-20">
-          <div className="inline-flex items-center gap-2 mb-6">
-            <div className="w-8 h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-transparent"></div>
-            <div className="relative">
-              <GraduationCap className="w-6 h-6 text-blue-400" />
+      <div className={`max-w-screen-xl mx-auto px-6 md:px-14 py-12 space-y-5 transition-all duration-700 ${ready ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+
+        {/* ══ HEADER ROW ══ */}
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-8 border-b border-zinc-900">
+          <div>
+            <div className="flex items-center gap-3 mb-5">
+              <div className="h-px w-8 bg-lime-400" />
+              <span className="font-mono text-xs text-zinc-600 tracking-widest uppercase">02 — Education</span>
             </div>
-            <div className="w-8 h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-transparent"></div>
+            <h2 className="font-black tracking-tighter leading-none text-white text-5xl sm:text-6xl xl:text-7xl">
+              Academic
+            </h2>
+            <h2 className="font-black tracking-tighter leading-none text-lime-400 text-5xl sm:text-6xl xl:text-7xl">
+              Journey.
+            </h2>
           </div>
-          
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-green-400 bg-clip-text text-transparent bg-300% leading-tight">
-            Education Journey
-          </h2>
-          
-          <p className="text-gray-400 max-w-2xl mx-auto text-base sm:text-lg">
-            Academic excellence and continuous learning in computer science
-          </p>
+
+          {/* Stat strip */}
+          <div className="flex gap-3 flex-wrap lg:flex-nowrap shrink-0">
+            {STATS.map(({ value, label }) => (
+              <div key={label} className="bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-center min-w-[80px]">
+                <p className="font-black text-white text-2xl leading-none">{value}</p>
+                <p className="font-mono text-xs text-zinc-600 mt-1">{label}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Education Timeline */}
-        <div className="space-y-8">
-          {education.map((edu, index) => {
-            const colors = getColorClasses(edu.color);
-            
-            return (
-              <div key={index} className="relative">
-                {/* Timeline line */}
-                {index < education.length - 1 && (
-                  <div className="absolute left-6 sm:left-8 top-16 sm:top-24 bottom-0 w-0.5 bg-gradient-to-b from-blue-500/30 via-purple-500/30 to-green-500/30" />
-                )}
-                
-                <div className="flex gap-4 sm:gap-6">
-                  {/* Icon circle */}
-                  <div className="flex-shrink-0">
-                    <div className={`w-12 h-12 sm:w-16 sm:h-16 ${colors.bg} border-2 ${colors.accent} rounded-full flex items-center justify-center backdrop-blur-sm`}>
-                      <div className={`${colors.text} w-5 h-5 sm:w-6 sm:h-6`}>
-                        {edu.icon}
-                      </div>
+        {/* ══ MAIN BENTO ══ */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+          {/* Left — tab selector + timeline */}
+          <div className="lg:col-span-1 flex flex-col gap-3">
+            {EDUCATION.map((edu, i) => {
+              const Ic = edu.icon;
+              const isActive = active === edu.id;
+              return (
+                <button key={edu.id}
+                  onClick={() => setActive(edu.id)}
+                  className={`group w-full bg-zinc-950 border rounded-2xl p-5 text-left transition-all duration-200 hover:-translate-y-px ${
+                    isActive
+                      ? `${edu.accent.border} ${edu.accent.bg}`
+                      : "border-zinc-800 hover:border-zinc-700"
+                  }`}>
+                  <div className="flex items-start gap-3">
+                    {/* Timeline dot + line */}
+                    <div className="flex flex-col items-center gap-1 shrink-0 pt-0.5">
+                      <div className={`w-2.5 h-2.5 rounded-full transition-colors ${isActive ? edu.accent.dot : "bg-zinc-700"}`} />
+                      {i < EDUCATION.length - 1 && (
+                        <div className="w-px flex-1 min-h-[24px] bg-zinc-800" />
+                      )}
                     </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Ic size={12} className={isActive ? edu.accent.text : "text-zinc-600"} />
+                        <span className={`font-mono text-xs ${isActive ? edu.accent.text : "text-zinc-600"}`}>{edu.period}</span>
+                      </div>
+                      <p className={`font-bold text-sm leading-tight transition-colors ${isActive ? "text-white" : "text-zinc-400 group-hover:text-zinc-200"}`}>
+                        {edu.degree}
+                      </p>
+                      <p className="font-mono text-xs text-zinc-600 mt-1 truncate">{edu.institution}</p>
+                    </div>
+
+                    <ChevronRight size={12}
+                      className={`shrink-0 mt-1 transition-all duration-200 ${isActive ? `${edu.accent.text} translate-x-0.5` : "text-zinc-800 group-hover:text-zinc-600"}`} />
                   </div>
-                  
-                  {/* Content card */}
-                  <div className={`flex-1 p-4 sm:p-6 ${colors.bg} border ${colors.border} rounded-2xl backdrop-blur-sm hover:border-${edu.color}-500/50 transition-all duration-300`}>
-                    <div className="flex flex-col gap-3 mb-4">
-                      <div>
-                        <h3 className="text-lg sm:text-xl sm:text-2xl font-bold text-white mb-1">{edu.degree}</h3>
-                        <p className={`${colors.text} font-semibold text-base sm:text-lg`}>{edu.institution}</p>
-                      </div>
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-gray-400 text-sm">
-                        <div className="flex items-center gap-1">
-                          <MapPin className="w-4 h-4" />
-                          <span>{edu.location}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          <span>{edu.period}</span>
-                        </div>
-                      </div>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Right — detail panel */}
+          <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+            {/* Header card */}
+            <div className={`sm:col-span-2 bg-zinc-950 border ${accent.border} ${accent.bg} rounded-2xl p-7`}>
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className={`w-8 h-8 rounded-xl ${accent.bg} border ${accent.border} flex items-center justify-center`}>
+                      {(() => { const Ic = current.icon; return <Ic size={14} className={accent.text} />; })()}
                     </div>
-                    
-                    <div className="flex gap-3">
-                      <div className={`px-3 py-2 ${colors.light} rounded-lg border ${colors.border}`}>
-                        <div className={`text-xs ${colors.text} font-medium mb-1`}>Status</div>
-                        <div className="text-white font-bold text-sm">{edu.gpa}</div>
-                      </div>
-                      <div className="px-3 py-2 bg-yellow-500/10 rounded-lg border border-yellow-500/30">
-                        <div className="text-xs text-yellow-400 font-medium mb-1">Score</div>
-                        <div className="text-yellow-400 font-bold text-sm">{edu.percentage}</div>
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-                      <div>
-                        <h4 className="text-white font-semibold text-sm mb-2 lg:mb-3 flex items-center gap-2">
-                          <Award className="w-4 h-4 text-yellow-400" />
-                          Key Achievements
-                        </h4>
-                        <ul className="space-y-1 lg:space-y-2">
-                          {edu.achievements.map((achievement, achIndex) => (
-                            <li key={achIndex} className="text-gray-300 text-xs sm:text-sm flex items-start gap-2">
-                              <span className="text-blue-400 mt-1 text-xs">•</span>
-                              <span className="leading-relaxed">{achievement}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                      
-                      <div>
-                        <h4 className="text-white font-semibold text-sm mb-2 lg:mb-3 flex items-center gap-2">
-                          <BookOpen className="w-4 h-4 text-green-400" />
-                          Core Coursework
-                        </h4>
-                        <div className="flex flex-wrap gap-1 lg:gap-2">
-                          {edu.coursework.map((course, courseIndex) => (
-                            <span key={courseIndex} className={`px-2 lg:px-3 py-1 ${colors.bg} border ${colors.border} rounded-full text-xs text-gray-300`}>
-                              {course}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
+                    <span className={`font-mono text-xs uppercase tracking-widest ${accent.text}`}>{current.status}</span>
+                  </div>
+                  <h3 className="font-black text-white text-xl sm:text-2xl leading-tight tracking-tight mb-2">
+                    {current.degree}
+                  </h3>
+                  <p className={`font-bold text-sm ${accent.text}`}>{current.institution}</p>
+                </div>
+
+                <div className="flex gap-3 shrink-0">
+                  <div className={`text-center bg-zinc-950 border ${accent.border} rounded-xl px-4 py-3`}>
+                    <p className={`font-black text-lg leading-none ${accent.text}`}>{current.score}</p>
+                    <p className="font-mono text-xs text-zinc-600 mt-1">Score</p>
+                  </div>
+                  <div className="text-center bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3">
+                    <p className="font-black text-lg leading-none text-white">{current.period.split("–")[0].trim()}</p>
+                    <p className="font-mono text-xs text-zinc-600 mt-1">Start</p>
                   </div>
                 </div>
               </div>
-            );
-          })}
-        </div>
 
-        {/* Bottom Stats */}
-        <div className="mt-16">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <div className="text-center p-6 bg-gradient-to-br from-gray-900/50 to-blue-900/20 border border-blue-500/20 rounded-lg hover:border-blue-500/40 transition-all duration-300 backdrop-blur-sm">
-              <div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">{education.length}</div>
-              <div className="text-gray-400 text-sm">Education Levels</div>
+              <div className="flex items-center gap-2 mt-4 pt-4 border-t border-zinc-900">
+                <MapPin size={11} className="text-zinc-700" />
+                <span className="font-mono text-xs text-zinc-600">{current.location}</span>
+                <div className="flex-1" />
+                <Calendar size={11} className="text-zinc-700" />
+                <span className="font-mono text-xs text-zinc-600">{current.period}</span>
+              </div>
             </div>
-            <div className="text-center p-6 bg-gradient-to-br from-gray-900/50 to-purple-900/20 border border-purple-500/20 rounded-lg hover:border-purple-500/40 transition-all duration-300 backdrop-blur-sm">
-              <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">20+</div>
-              <div className="text-gray-400 text-sm">Key Courses</div>
+
+            {/* Achievements */}
+            <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-px w-4 bg-lime-400" />
+                <span className="font-mono text-xs text-zinc-600 uppercase tracking-widest">Achievements</span>
+              </div>
+              <div className="space-y-2.5">
+                {current.achievements.map((a, i) => (
+                  <div key={i} className="flex items-start gap-2.5">
+                    <Star size={10} className={`${accent.text} shrink-0 mt-0.5`} />
+                    <span className="text-zinc-400 text-xs leading-5">{a}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="text-center p-6 bg-gradient-to-br from-gray-900/50 to-green-900/20 border border-green-500/20 rounded-lg hover:border-green-500/40 transition-all duration-300 backdrop-blur-sm">
-              <div className="text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent mb-2">A+</div>
-              <div className="text-gray-400 text-sm">Performance</div>
+
+            {/* Coursework */}
+            <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-px w-4 bg-lime-400" />
+                <span className="font-mono text-xs text-zinc-600 uppercase tracking-widest">Coursework</span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {current.coursework.map(c => (
+                  <span key={c}
+                    className={`font-mono text-xs px-2.5 py-1 rounded-lg border ${accent.bg} ${accent.border} ${accent.text}`}>
+                    {c}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
+
       </div>
     </section>
   );

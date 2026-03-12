@@ -69,7 +69,7 @@ export default function TestimonialsCarousel() {
   const currentGradient = neonColors[currentTestimonial.color];
 
   return (
-    <section className="py-20 px-4 bg-gray-900 text-white">
+    <section className="py-12 0 px-4 bg-gray-900 text-white">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-400 bg-clip-text text-transparent">

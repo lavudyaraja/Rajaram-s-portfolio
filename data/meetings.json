@@ -1,0 +1,22 @@
+[
+  {
+    "id": "MTG-MMN2WU28",
+    "name": "Kanna Ram",
+    "email": "lavudyaraja12345@gmail.com",
+    "title": "Discussing with ML",
+    "slot": "Mon–Fri, 2 PM–5 PM IST",
+    "message": "Taking an interview regarding ML",
+    "createdAt": "2026-03-12T06:20:34.736Z",
+    "status": "pending"
+  },
+  {
+    "id": "MTG-MMN329OH",
+    "name": "raja",
+    "email": "lavudyaraja12345@gmail.com",
+    "title": "asdfdg",
+    "slot": "Sat, 10 AM–1 PM IST",
+    "message": "akjwehfawiu",
+    "createdAt": "2026-03-12T06:24:48.257Z",
+    "status": "pending"
+  }
+]

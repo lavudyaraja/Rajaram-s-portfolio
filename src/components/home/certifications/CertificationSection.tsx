@@ -1,410 +1,376 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { 
-  ExternalLink, 
-  Award, 
-  Calendar, 
-  Building2, 
-  // ChevronLeft, 
-  // ChevronRight, 
-  Play, 
-  Pause,
-  Eye,
-  CheckCircle
-} from 'lucide-react';
+import {
+  Award, Calendar, Building2, ExternalLink,
+  Eye, CheckCircle, Play, Pause, ChevronRight,
+  ArrowUpRight, Star, Code2, Layers, Zap
+} from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
 
-interface Certificate {
-  id: number;
-  title: string;
-  description: string;
-  organization: string;
-  date: string;
-  link: string;
-  image: string;
-  color: string;
-  category: string;
-  skills: string[];
-}
+// ─── Data ─────────────────────────────────────────────────────────────────────
 
-const EnhancedCertificationSection: React.FC = () => {
-  const certificates: Certificate[] = [
-    {
-      id: 1,
-      title: "Frontend Developer (React)",
-      description: "A certification from HackerRank proving proficiency in React.js, focusing on frontend development skills like component-based architecture, state management, and JSX",
-      organization: "HackerRank",
-      date: "April 2024",
-      link: "https://www.hackerrank.com/certificates/iframe/ca23b67f365c",
-      image: "/certificate/React.png",
-      color: "from-blue-500 to-cyan-500",
-      category: "Frontend Development",
-      skills: ["React.js", "JSX", "State Management", "Components"]
-    },
-    {
-      id: 2,
-      title: "JavaScript (Intermediate)",
-      description: "A HackerRank certification that demonstrates intermediate-level understanding of JavaScript, including ES6 features, asynchronous programming, and DOM manipulation.",
-      organization: "HackerRank",
-      date: "March 2025",
-      link: "https://www.hackerrank.com/certificates/iframe/213b85bf036d",
-      image: "/certificate/Javascript.png",
-      color: "from-yellow-500 to-orange-500",
-      category: "Programming Languages",
-      skills: ["JavaScript", "ES6", "DOM", "Async Programming"]
-    },
-    {
-      id: 3,
-      title: "Problem Solving (Basic)",
-      description: "Problem Solving certification covering basic algorithm and data structure concepts, helping to strengthen analytical thinking and coding problem-solving skills.",
-      organization: "HackerRank",
-      date: "March 2025",
-      link: "https://www.hackerrank.com/certificates/iframe/3c156fb5a40b",
-      image: "/certificate/ProblemSolving.png",
-      color: "from-green-500 to-emerald-500",
-      category: "Problem Solving",
-      skills: ["Algorithms", "Data Structures", "Logic", "Analysis"]
-    },
-    {
-      id: 4,
-      title: "Python (Basic)",
-      description: "A certificate from HackerRank validating fundamental Python programming skills such as syntax, data types, functions, and basic file handling",
-      organization: "HackerRank",
-      date: "March 2025",
-      link: "https://www.hackerrank.com/certificates/iframe/25449949909c",
-      image: "/certificate/Python.png",
-      color: "from-purple-500 to-pink-500",
-      category: "Programming Languages",
-      skills: ["Python", "Syntax", "Functions", "Data Types"]
-    },
-    {
-      id: 6,
-      title: "C++",
-      description: "A certificate from Udemy covering the essentials of C++ programming, including object-oriented programming, memory management, and data structures",
-      organization: "Udemy",
-      date: "March 2025",
-      link: "https://www.udemy.com/certificate/UC-82ca3cf6-9b2f-4a62-ad66-54301b2a2744/",
-      image: "/certificate/c++.png",
-      color: "from-red-500 to-rose-500",
-      category: "Programming Languages",
-      skills: ["C++", "OOP", "Memory Management", "Data Structures"]
-    },
-    {
-      id: 7,
-      title: "HTML, Javascript",
-      description: "A Udemy certification demonstrating proficiency in HTML5 and JavaScript, covering webpage structure, interactive elements, and client-side scripting",
-      organization: "Udemy",
-      date: "March 2024",
-      link: "https://www.udemy.com/certificate/UC-778af9ca-4661-44f1-ba0d-4f0d4b6f9509/",
-      image: "/certificate/HTML.png",
-      color: "from-cyan-500 to-blue-500",
-      category: "Web Development",
-      skills: ["HTML5", "JavaScript", "Web Structure", "DOM"]
-    },
-    {
-      id: 8,
-      title: "Java and Python",
-      description: "A certificate from Udemy showcasing fundamental knowledge of both Java and Python programming languages, covering object-oriented programming and core language features",
-      organization: "Udemy",
-      date: "March 2025",
-      link: "https://www.udemy.com/certificate/UC-e5168811-562b-41df-b3a9-e0cea633d7f7/",
-      image: "/certificate/pythonJava.png",
-      color: "from-teal-500 to-green-500",
-      category: "Programming Languages",
-      skills: ["Java", "Python", "OOP", "Core Features"]
-    },
-    {
-      id: 9,
-      title: "Java and Spring Boot",
-      description: "Udemy certification focusing on Java and the Spring Boot framework for building backend applications, covering core concepts like dependency injection, RESTful APIs, and database integration",
-      organization: "Udemy",
-      date: "September 2024",
-      link: "https://www.udemy.com/certificate/UC-f739e0a2-d800-4b98-9f97-e7a6726f08d2/",
-      image: "/certificate/SpringBoot.png",
-      color: "from-indigo-500 to-purple-500",
-      category: "Backend Development",
-      skills: ["Spring Boot", "REST APIs", "Java", "Database"]
-    },
-    {
-      id: 10,
-      title: "Machine Learning",
-      description: "A certificate from Udemy demonstrating knowledge of machine learning fundamentals, including supervised and unsupervised learning, data preprocessing, and popular machine learning algorithms",
-      organization: "Udemy",
-      date: "March 2025",
-      link: "https://www.udemy.com/certificate/UC-7b2923c5-93b7-4f9e-b7e8-a5dde2e548df/",
-      image: "/certificate/LinearRegression.png",
-      color: "from-violet-500 to-purple-500",
-      category: "Machine Learning",
-      skills: ["ML Algorithms", "Data Processing", "Supervised Learning", "Analysis"]
-    },
-    {
-      id: 11,
-      title: "Software Architecture",
-      description: "A certification from Udemy covering essential software architecture principles, including design patterns, scalability, and building maintainable software systems",
-      organization: "Udemy",
-      date: "March 2025",
-      link: "https://www.udemy.com/certificate/UC-b0e4c14c-0b1d-46d3-b3d3-41dd2164a538/",
-      image: "/certificate/Software.png",
-      color: "from-amber-500 to-yellow-500",
-      category: "Software Design",
-      skills: ["Design Patterns", "Scalability", "Architecture", "Systems"]
-    }
-  ];
+const CERTS = [
+  {
+    id: 1,
+    title: "Frontend Developer (React)",
+    org: "HackerRank",
+    date: "April 2024",
+    category: "Frontend",
+    link: "https://www.hackerrank.com/certificates/iframe/ca23b67f365c",
+    image: "/certificate/React.png",
+    accent: { text: "text-sky-400", border: "border-sky-500/20", bg: "bg-sky-500/8", dot: "bg-sky-400" },
+    skills: ["React.js", "JSX", "State Management", "Components"],
+    description: "Proficiency in React.js, focusing on component-based architecture, state management, and JSX.",
+  },
+  {
+    id: 2,
+    title: "JavaScript (Intermediate)",
+    org: "HackerRank",
+    date: "March 2025",
+    category: "Programming",
+    link: "https://www.hackerrank.com/certificates/iframe/213b85bf036d",
+    image: "/certificate/Javascript.png",
+    accent: { text: "text-yellow-400", border: "border-yellow-500/20", bg: "bg-yellow-500/8", dot: "bg-yellow-400" },
+    skills: ["JavaScript", "ES6+", "Async Programming", "DOM"],
+    description: "Intermediate-level JavaScript — ES6 features, asynchronous programming, and DOM manipulation.",
+  },
+  {
+    id: 3,
+    title: "Problem Solving (Basic)",
+    org: "HackerRank",
+    date: "March 2025",
+    category: "Algorithms",
+    link: "https://www.hackerrank.com/certificates/iframe/3c156fb5a40b",
+    image: "/certificate/ProblemSolving.png",
+    accent: { text: "text-lime-400", border: "border-lime-500/20", bg: "bg-lime-500/8", dot: "bg-lime-400" },
+    skills: ["Algorithms", "Data Structures", "Logic", "Analysis"],
+    description: "Algorithm and data structure concepts that strengthen analytical thinking and problem-solving.",
+  },
+  {
+    id: 4,
+    title: "Python (Basic)",
+    org: "HackerRank",
+    date: "March 2025",
+    category: "Programming",
+    link: "https://www.hackerrank.com/certificates/iframe/25449949909c",
+    image: "/certificate/Python.png",
+    accent: { text: "text-violet-400", border: "border-violet-500/20", bg: "bg-violet-500/8", dot: "bg-violet-400" },
+    skills: ["Python", "Syntax", "Functions", "Data Types"],
+    description: "Fundamental Python programming skills — syntax, data types, functions, and file handling.",
+  },
+  // {
+  //   id: 5,
+  //   title: "SQL (Basic)",
+  //   org: "HackerRank",
+  //   date: "March 2025",
+  //   category: "Database",
+  //   link: "https://www.hackerrank.com/certificates/",
+  //   image: "/certificate/SQL.png",
+  //   accent: { text: "text-orange-400", border: "border-orange-500/20", bg: "bg-orange-500/8", dot: "bg-orange-400" },
+  //   skills: ["SQL", "Queries", "Joins", "Aggregations"],
+  //   description: "Basic SQL knowledge covering queries, filtering, joins, and aggregate functions.",
+  // },
+  {
+    id: 6,
+    title: "C++",
+    org: "Udemy",
+    date: "March 2025",
+    category: "Programming",
+    link: "https://www.udemy.com/certificate/UC-82ca3cf6-9b2f-4a62-ad66-54301b2a2744/",
+    image: "/certificate/c++.png",
+    accent: { text: "text-red-400", border: "border-red-500/20", bg: "bg-red-500/8", dot: "bg-red-400" },
+    skills: ["C++", "OOP", "Memory Management", "Data Structures"],
+    description: "Essentials of C++ — object-oriented programming, memory management, and data structures.",
+  },
+  {
+    id: 7,
+    title: "HTML & JavaScript",
+    org: "Udemy",
+    date: "March 2024",
+    category: "Web Dev",
+    link: "https://www.udemy.com/certificate/UC-778af9ca-4661-44f1-ba0d-4f0d4b6f9509/",
+    image: "/certificate/HTML.png",
+    accent: { text: "text-cyan-400", border: "border-cyan-500/20", bg: "bg-cyan-500/8", dot: "bg-cyan-400" },
+    skills: ["HTML5", "JavaScript", "DOM", "Web Structure"],
+    description: "Proficiency in HTML5 and JavaScript — webpage structure, interactive elements, client-side scripting.",
+  },
+  {
+    id: 8,
+    title: "Java & Python",
+    org: "Udemy",
+    date: "March 2025",
+    category: "Programming",
+    link: "https://www.udemy.com/certificate/UC-e5168811-562b-41df-b3a9-e0cea633d7f7/",
+    image: "/certificate/pythonJava.png",
+    accent: { text: "text-emerald-400", border: "border-emerald-500/20", bg: "bg-emerald-500/8", dot: "bg-emerald-400" },
+    skills: ["Java", "Python", "OOP", "Core Features"],
+    description: "Fundamental knowledge of Java and Python — OOP and core language features across both.",
+  },
+  {
+    id: 9,
+    title: "Java & Spring Boot",
+    org: "Udemy",
+    date: "September 2024",
+    category: "Backend",
+    link: "https://www.udemy.com/certificate/UC-f739e0a2-d800-4b98-9f97-e7a6726f08d2/",
+    image: "/certificate/SpringBoot.png",
+    accent: { text: "text-indigo-400", border: "border-indigo-500/20", bg: "bg-indigo-500/8", dot: "bg-indigo-400" },
+    skills: ["Spring Boot", "REST APIs", "Java", "Database Integration"],
+    description: "Spring Boot framework for backend apps — dependency injection, RESTful APIs, and database integration.",
+  },
+  {
+    id: 10,
+    title: "Machine Learning",
+    org: "Udemy",
+    date: "March 2025",
+    category: "AI / ML",
+    link: "https://www.udemy.com/certificate/UC-7b2923c5-93b7-4f9e-b7e8-a5dde2e548df/",
+    image: "/certificate/LinearRegression.png",
+    accent: { text: "text-purple-400", border: "border-purple-500/20", bg: "bg-purple-500/8", dot: "bg-purple-400" },
+    skills: ["ML Algorithms", "Data Processing", "Supervised Learning", "Model Evaluation"],
+    description: "Machine learning fundamentals — supervised & unsupervised learning, data preprocessing, and key algorithms.",
+  },
+  {
+    id: 11,
+    title: "Software Architecture",
+    org: "Udemy",
+    date: "March 2025",
+    category: "Design",
+    link: "https://www.udemy.com/certificate/UC-b0e4c14c-0b1d-46d3-b3d3-41dd2164a538/",
+    image: "/certificate/Software.png",
+    accent: { text: "text-amber-400", border: "border-amber-500/20", bg: "bg-amber-500/8", dot: "bg-amber-400" },
+    skills: ["Design Patterns", "Scalability", "Architecture", "Maintainability"],
+    description: "Software architecture principles — design patterns, scalability, and building maintainable systems.",
+  },
+];
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+const ORG_STYLE: Record<string, string> = {
+  HackerRank: "bg-lime-500/10  text-lime-400  border-lime-500/25",
+  Udemy:      "bg-violet-500/10 text-violet-400 border-violet-500/25",
+};
 
-  const nextSlide = useCallback(() => {
-    setCurrentIndex(prev => (prev + 1) % certificates.length);
-  }, [certificates.length]);
+// ─── Component ────────────────────────────────────────────────────────────────
 
-  const prevSlide = useCallback(() => {
-    setCurrentIndex(prev => (prev - 1 + certificates.length) % certificates.length);
-  }, [certificates.length]);
+export default function Certifications() {
+  const [active,      setActive]      = useState(0);
+  const [autoPlay,    setAutoPlay]    = useState(true);
+  const [imgError,    setImgError]    = useState<Record<number, boolean>>({});
 
-  const goToSlide = useCallback((index: number) => {
-    setCurrentIndex(index);
-  }, []);
-
-  const toggleAutoPlay = useCallback(() => {
-    setIsAutoPlaying(prev => !prev);
-  }, []);
+  const next = useCallback(() => setActive(p => (p + 1) % CERTS.length), []);
 
   useEffect(() => {
-    if (!isAutoPlaying) return;
-    const interval = setInterval(nextSlide, 4000);
-    return () => clearInterval(interval);
-  }, [isAutoPlaying, nextSlide]);
+    if (!autoPlay) return;
+    const id = setInterval(next, 4000);
+    return () => clearInterval(id);
+  }, [autoPlay, next]);
 
-  const currentCertificate = certificates[currentIndex];
+  const cert = CERTS[active];
+  const { accent } = cert;
 
   return (
-    <div className="bg-black py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      
-      {/* Background Effects */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl animate-pulse delay-500"></div>
-      </div>
+    <section id="certificates" className="bg-black text-white">
+      <div className="max-w-screen-xl mx-auto px-6 md:px-14 py-12 space-y-5">
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        
-        {/* Header Section */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full mb-6">
-            <Award className="w-5 h-5 text-blue-400 mr-2" />
-            <span className="text-blue-400 font-medium">Professional Certifications</span>
+        {/* ══ HEADER ══ */}
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-8 border-b border-zinc-900">
+          <div>
+            <div className="flex items-center gap-3 mb-5">
+              <div className="h-px w-8 bg-lime-400" />
+              <span className="font-mono text-xs text-zinc-600 tracking-widest uppercase">06 — Certifications</span>
+            </div>
+            <h2 className="font-black tracking-tighter leading-none text-white text-5xl sm:text-6xl xl:text-7xl">
+              Proof of
+            </h2>
+            <h2 className="font-black tracking-tighter leading-none text-lime-400 text-5xl sm:text-6xl xl:text-7xl">
+              Learning.
+            </h2>
           </div>
-          
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">
-              My Achievements
-            </span>
-          </h1>
-          
-          <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
-            A comprehensive collection of my professional certifications and continuous learning journey 
-            in technology and software development.
-          </p>
 
           {/* Stats */}
-          <div className="flex justify-center space-x-8 mt-8">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-blue-400">{certificates.length}</div>
-              <div className="text-slate-400 text-sm">Certifications</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-purple-400">5+</div>
-              <div className="text-slate-400 text-sm">Categories</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-cyan-400">2024-2025</div>
-              <div className="text-slate-400 text-sm">Years</div>
-            </div>
+          <div className="flex gap-3 shrink-0 flex-wrap">
+            {[
+              { v: "11",       l: "Certs"      },
+              { v: "5+",       l: "Categories" },
+              { v: "2",        l: "Platforms"  },
+              { v: "2024–25",  l: "Period"     },
+            ].map(({ v, l }) => (
+              <div key={l} className="bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-center min-w-[80px]">
+                <p className="font-black text-white text-xl leading-none">{v}</p>
+                <p className="font-mono text-xs text-zinc-600 mt-1">{l}</p>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Main Certificate Showcase */}
-        <div className="mb-16">
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-12 shadow-2xl hover:bg-white/10 transition-all duration-500">
-            
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 xl:gap-12 items-center">
-              
-              {/* Certificate Image */}
-              <div className="relative group order-2 xl:order-1">
-                <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-cyan-500/20 rounded-3xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-500"></div>
-                <div className="relative bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                  <div className="aspect-[4/3] rounded-xl overflow-hidden bg-slate-800/50">
-                    <img 
-                      src={currentCertificate.image} 
-                      alt={`${currentCertificate.title} Certificate`}
-                      className="w-full h-full object-cover rounded-xl hover:scale-105 transition-transform duration-500"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJhIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMzMzIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjNjY2Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9InVybCgjYSkiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSIxMjAiIHI9IjQwIiBmaWxsPSIjOTk5IiBvcGFjaXR5PSIwLjciLz48cmVjdCB4PSIxMzAiIHk9IjE4MCIgd2lkdGg9IjE0MCIgaGVpZ2h0PSIxMiIgZmlsbD0iIzk5OSIgb3BhY2l0eT0iMC41Ii8+PHJlY3QgeD0iMTUwIiB5PSIyMDAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTIiIGZpbGw9IiM5OTkiIG9wYWNpdHk9IjAuNSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOTk5IiBmb250LXNpemU9IjE0IiBmb250LWZhbWlseT0iQXJpYWwiPkNlcnRpZmljYXRlIEltYWdlPC90ZXh0Pjwvc3ZnPg==';
-                      }}
-                    />
-                  </div>
-                  <div className="absolute top-3 right-3">
-                    <div className={`px-3 py-1 bg-gradient-to-r ${currentCertificate.color} rounded-full text-white text-xs font-medium shadow-lg`}>
-                      {currentCertificate.category}
-                    </div>
-                  </div>
-                </div>
+        {/* ══ MAIN BENTO ══ */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+          {/* ── LEFT: cert list ── */}
+          <div className="lg:col-span-1 bg-zinc-950 border border-zinc-800 rounded-2xl overflow-hidden flex flex-col">
+
+            {/* autoplay toggle */}
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-zinc-900">
+              <div className="flex items-center gap-2">
+                <div className="h-px w-4 bg-lime-400" />
+                <span className="font-mono text-xs text-zinc-600 uppercase tracking-widest">All Certificates</span>
               </div>
+              <button onClick={() => setAutoPlay(p => !p)}
+                className={`flex items-center gap-1.5 h-7 px-3 rounded-lg border font-mono text-xs transition-all duration-200 ${
+                  autoPlay
+                    ? "bg-lime-400/10 border-lime-500/25 text-lime-400"
+                    : "bg-zinc-900 border-zinc-800 text-zinc-500 hover:text-zinc-200"
+                }`}>
+                {autoPlay ? <Pause size={10} /> : <Play size={10} />}
+                {autoPlay ? "Pause" : "Play"}
+              </button>
+            </div>
 
-              {/* Certificate Details */}
-              <div className="space-y-8 order-1 xl:order-2">
-                
-                {/* Header */}
-                <div className="space-y-6">
-                  <div className="flex items-center space-x-3">
-                    <Building2 className="w-5 h-5 text-slate-400" />
-                    <span className="text-slate-300 font-medium text-lg">{currentCertificate.organization}</span>
-                    <div className="flex items-center space-x-2 text-slate-400">
-                      <Calendar className="w-4 h-4" />
-                      <span className="text-sm">{currentCertificate.date}</span>
-                    </div>
+            {/* scrollable list */}
+            <div className="flex-1 overflow-y-auto" style={{ maxHeight: 480 }}>
+              {CERTS.map((c, i) => (
+                <button key={c.id} onClick={() => { setActive(i); setAutoPlay(false); }}
+                  className={`group w-full flex items-center gap-3 px-5 py-3.5 border-b border-zinc-900 text-left transition-all duration-200 ${
+                    active === i ? `${c.accent.bg}` : "hover:bg-zinc-900/40"
+                  }`}>
+                  {/* index */}
+                  <span className={`font-mono text-xs shrink-0 w-5 ${active === i ? c.accent.text : "text-zinc-700"}`}>
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+
+                  {/* dot */}
+                  <div className={`w-1.5 h-1.5 rounded-full shrink-0 transition-colors ${active === i ? c.accent.dot : "bg-zinc-700"}`} />
+
+                  <div className="flex-1 min-w-0">
+                    <p className={`font-bold text-xs leading-tight truncate transition-colors ${active === i ? "text-white" : "text-zinc-500 group-hover:text-zinc-300"}`}>
+                      {c.title}
+                    </p>
+                    <p className="font-mono text-xs text-zinc-700 mt-0.5">{c.org} · {c.date}</p>
                   </div>
-                  
-                  <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">
-                    {currentCertificate.title}
-                  </h2>
-                </div>
 
-                {/* Description */}
-                <p className="text-slate-300 text-lg leading-relaxed">
-                  {currentCertificate.description}
-                </p>
+                  <ChevronRight size={11}
+                    className={`shrink-0 transition-all duration-200 ${active === i ? `${c.accent.text} translate-x-0.5` : "text-zinc-800 group-hover:text-zinc-600"}`} />
+                </button>
+              ))}
+            </div>
 
-                {/* Skills Tags */}
-                <div className="space-y-3">
-                  <h4 className="text-white font-semibold flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-400 mr-2" />
-                    Skills Covered
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {currentCertificate.skills.map((skill, index) => (
-                      <span 
-                        key={index}
-                        className="px-3 py-1 bg-white/10 border border-white/20 rounded-lg text-slate-200 text-sm font-medium hover:bg-white/20 transition-colors duration-300"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Action Button */}
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <button
-                    onClick={() => window.open(currentCertificate.link, '_blank')}
-                    className={`group flex items-center justify-center px-8 py-4 bg-gradient-to-r ${currentCertificate.color} text-white font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300`}
-                  >
-                    <Eye className="w-5 h-5 mr-3 group-hover:scale-110 transition-transform duration-300" />
-                    <span>View Certificate</span>
-                    <ExternalLink className="w-4 h-4 ml-3 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
-                  </button>
-                </div>
-              </div>
+            {/* progress bar */}
+            <div className="h-1 bg-zinc-900">
+              <div className="h-full bg-lime-400 transition-all duration-300"
+                style={{ width: `${((active + 1) / CERTS.length) * 100}%` }} />
             </div>
           </div>
-        </div>
 
-        {/* Navigation Controls */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-8 mb-12">
-          
-          {/* Navigation Arrows */}
-          {/* <div className="flex items-center space-x-4">
-            <button
-              onClick={prevSlide}
-              className="w-12 h-12 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl flex items-center justify-center text-white hover:text-blue-400 transition-all duration-300 group"
-            >
-              <ChevronLeft className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-            </button>
-            
-            <div className="text-slate-300 font-medium px-4">
-              {currentIndex + 1} of {certificates.length}
-            </div>
-            
-            <button
-              onClick={nextSlide}
-              className="w-12 h-12 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl flex items-center justify-center text-white hover:text-blue-400 transition-all duration-300 group"
-            >
-              <ChevronRight className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-            </button>
-          </div> */}
+          {/* ── RIGHT: detail view ── */}
+          <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-5">
 
-          {/* Auto-play Toggle */}
-          <button
-            onClick={toggleAutoPlay}
-            className="flex items-center space-x-3 px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-white hover:text-cyan-400 transition-all duration-300 group"
-          >
-            {isAutoPlaying ? (
-              <Pause className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
-            ) : (
-              <Play className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
-            )}
-            <span className="font-medium">{isAutoPlaying ? 'Pause' : 'Play'}</span>
-          </button>
-        </div>
+            {/* Certificate image card */}
+            <div className={`sm:row-span-2 bg-zinc-950 border ${accent.border} ${accent.bg} rounded-2xl overflow-hidden flex flex-col`}>
+              <div className="p-5 pb-3 flex items-center justify-between">
+                <span className={`font-mono text-xs uppercase tracking-widest ${accent.text}`}>{cert.category}</span>
+                <span className={`font-mono text-xs px-2.5 py-1 rounded-full border ${ORG_STYLE[cert.org] ?? "bg-zinc-900 border-zinc-800 text-zinc-500"}`}>
+                  {cert.org}
+                </span>
+              </div>
 
-        {/* Progress Indicators */}
-        <div className="flex justify-center space-x-2 mb-8">
-          {certificates.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`transition-all duration-300 rounded-full ${
-                index === currentIndex
-                  ? `w-8 h-2 bg-gradient-to-r ${currentCertificate.color}`
-                  : 'w-2 h-2 bg-white/30 hover:bg-white/50'
-              }`}
-              aria-label={`Go to certificate ${index + 1}`}
-            />
-          ))}
-        </div>
-
-        {/* Certificate Grid Preview */}
-        {/* <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 md:p-8">
-          <h3 className="text-2xl font-bold text-white mb-6 text-center">All Certifications</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {certificates.map((cert, index) => (
-              <button
-                key={cert.id}
-                onClick={() => goToSlide(index)}
-                onMouseEnter={() => setHoveredCard(index)}
-                onMouseLeave={() => setHoveredCard(null)}
-                className={`group relative aspect-square rounded-xl overflow-hidden border-2 transition-all duration-300 ${
-                  index === currentIndex
-                    ? 'border-blue-400 shadow-lg shadow-blue-500/25 scale-105'
-                    : 'border-white/20 hover:border-white/40 hover:scale-105'
-                }`}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900"></div>
-                <div className="relative p-3 h-full flex flex-col items-center justify-center">
-                  <div className={`w-8 h-8 rounded-lg bg-gradient-to-r ${cert.color} flex items-center justify-center mb-2`}>
-                    <Award className="w-4 h-4 text-white" />
+              {/* Image */}
+              <div className="flex-1 mx-5 mb-3 rounded-xl overflow-hidden border border-zinc-800 bg-white flex items-center justify-center min-h-[220px]">
+                {imgError[cert.id] ? (
+                  <div className="w-full h-full min-h-[220px] flex flex-col items-center justify-center gap-3 bg-zinc-900">
+                    <Award size={32} className={accent.text} />
+                    <span className="font-mono text-xs text-zinc-600 text-center px-4">{cert.title}</span>
                   </div>
-                  <div className="text-xs font-medium text-white text-center leading-tight">
-                    {cert.title.split(' ').slice(0, 2).join(' ')}
-                  </div>
-                  <div className="text-xs text-slate-400 mt-1">
-                    {cert.organization}
-                  </div>
-                </div>
-                {index === currentIndex && (
-                  <div className="absolute inset-0 bg-blue-500/20 border-2 border-blue-400 rounded-xl animate-pulse"></div>
+                ) : (
+                  <img
+                    src={cert.image}
+                    alt={cert.title}
+                    className="w-full h-full object-contain max-h-[340px] transition-transform duration-500 hover:scale-105 p-2"
+                    onError={() => setImgError(p => ({ ...p, [cert.id]: true }))}
+                  />
                 )}
+              </div>
+
+              {/* Pip dots */}
+              <div className="flex items-center justify-center gap-1.5 pb-5">
+                {CERTS.map((_, i) => (
+                  <button key={i} onClick={() => { setActive(i); setAutoPlay(false); }}
+                    className={`h-1 rounded-full transition-all duration-300 ${
+                      i === active ? "w-5 bg-lime-400" : "w-1.5 bg-zinc-700 hover:bg-zinc-500"
+                    }`} />
+                ))}
+              </div>
+            </div>
+
+            {/* Title + meta */}
+            <div className={`bg-zinc-950 border ${accent.border} ${accent.bg} rounded-2xl p-6 flex flex-col gap-4`}>
+              <div className="flex items-center gap-2">
+                <Building2 size={12} className="text-zinc-600" />
+                <span className="font-mono text-xs text-zinc-500">{cert.org}</span>
+                <div className="flex-1" />
+                <Calendar size={11} className="text-zinc-700" />
+                <span className="font-mono text-xs text-zinc-600">{cert.date}</span>
+              </div>
+
+              <h3 className={`font-black text-white text-xl leading-tight tracking-tight`}>
+                {cert.title}
+              </h3>
+
+              <p className="text-zinc-500 text-xs leading-6 flex-1">{cert.description}</p>
+
+              <a href={cert.link} target="_blank" rel="noreferrer"
+                className="group flex items-center justify-center gap-2 h-10 bg-lime-400 hover:bg-lime-300 text-black text-xs font-bold rounded-xl transition-all duration-200 hover:-translate-y-px hover:shadow-lg hover:shadow-lime-400/25">
+                <Eye size={13} />
+                View Certificate
+                <ArrowUpRight size={12} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </a>
+            </div>
+
+            {/* Skills */}
+            <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-px w-4 bg-lime-400" />
+                <span className="font-mono text-xs text-zinc-600 uppercase tracking-widest">Skills Covered</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {cert.skills.map(s => (
+                  <span key={s}
+                    className={`flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-xl border ${accent.bg} ${accent.border} ${accent.text}`}>
+                    <CheckCircle size={9} />
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ══ GRID OVERVIEW ══ */}
+        <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="h-px w-8 bg-lime-400" />
+            <span className="font-mono text-xs text-zinc-600 uppercase tracking-widest">All 11 Certifications</span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            {CERTS.map((c, i) => (
+              <button key={c.id} onClick={() => { setActive(i); setAutoPlay(false); }}
+                className={`group flex flex-col items-center gap-2.5 bg-zinc-900 border rounded-2xl p-4 text-center transition-all duration-200 hover:-translate-y-0.5 ${
+                  active === i
+                    ? `${c.accent.border} ${c.accent.bg}`
+                    : "border-zinc-800 hover:border-zinc-700"
+                }`}>
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${c.accent.bg} border ${c.accent.border}`}>
+                  <Award size={14} className={c.accent.text} />
+                </div>
+                <p className={`font-bold text-xs leading-tight text-center transition-colors ${active === i ? "text-white" : "text-zinc-500 group-hover:text-zinc-300"}`}>
+                  {c.title.length > 16 ? c.title.slice(0, 15) + "…" : c.title}
+                </p>
+                <span className={`font-mono text-xs ${c.accent.text} opacity-70`}>{c.org}</span>
               </button>
             ))}
           </div>
-        </div> */}
-      </div>
-    </div>
-  );
-};
+        </div>
 
-export default EnhancedCertificationSection;
+      </div>
+    </section>
+  );
+}

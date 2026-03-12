@@ -1,620 +1,480 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
-import { Calendar, PenTool, Code, BookOpen, ArrowRight, Clock, TrendingUp, Star, Filter, Search, Bookmark, Share2, Heart, MessageCircle, Eye, Zap, Layers, Grid3x3, List, ChevronDown } from 'lucide-react';
-import Link from 'next/link';
-import { getRealIconUrl } from '@/utils/realTechIcons';
+import {
+  PenTool, Code2, BookOpen, Calendar, Clock,
+  Eye, Heart, MessageCircle, ArrowUpRight,
+  Search, Star, Filter, X, ChevronRight,
+  Zap, Layers, Grid3x3, List, Tag
+} from "lucide-react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { getRealIconUrl } from "@/utils/realTechIcons";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface BlogPost {
   id: string;
   title: string;
   preview: string;
-  content?: string;
   publishDate: string;
   tags: string[];
-  icon: 'pen' | 'code' | 'book';
+  icon: "pen" | "code" | "book";
   readTime: string;
   featured?: boolean;
   views?: number;
   likes?: number;
   comments?: number;
   category?: string;
-  difficulty?: 'beginner' | 'intermediate' | 'advanced';
-  image?: string;
+  difficulty?: "beginner" | "intermediate" | "advanced";
 }
 
-const blogPosts: BlogPost[] = [
+// ─── Data ─────────────────────────────────────────────────────────────────────
+
+const POSTS: BlogPost[] = [
   {
-    id: '1',
-    title: 'Building Scalable React Applications with TypeScript',
-    preview: 'Explore advanced patterns and best practices for creating maintainable React applications using TypeScript. Learn about proper component architecture, state management, and performance optimization techniques.',
-    content: 'Deep dive into TypeScript patterns for React applications...',
-    publishDate: '2024-07-15',
-    tags: ['React', 'TypeScript', 'Architecture'],
-    icon: 'code',
-    readTime: '8 min read',
+    id: "1",
+    title: "Building Scalable React Applications with TypeScript",
+    preview: "Advanced patterns and best practices for maintainable React apps using TypeScript — proper component architecture, state management, and performance optimization.",
+    publishDate: "2024-07-15",
+    tags: ["React", "TypeScript", "Architecture"],
+    icon: "code",
+    readTime: "8 min",
     featured: true,
     views: 15420,
     likes: 342,
     comments: 28,
-    category: 'Frontend',
-    difficulty: 'advanced',
-    image: '/blog/react-typescript.jpg'
+    category: "Frontend",
+    difficulty: "advanced",
   },
   {
-    id: '2',
-    title: 'The Art of Clean Code: Principles Every Developer Should Know',
-    preview: 'Dive deep into the fundamental principles of writing clean, readable code. Discover how proper naming conventions, function design, and code organization can transform your development workflow.',
-    publishDate: '2024-07-08',
-    tags: ['Best Practices', 'Clean Code', 'Software Engineering'],
-    icon: 'pen',
-    readTime: '12 min read',
+    id: "2",
+    title: "The Art of Clean Code: Principles Every Developer Should Know",
+    preview: "Fundamental principles of writing clean, readable code — naming conventions, function design, and code organization that transforms your workflow.",
+    publishDate: "2024-07-08",
+    tags: ["Best Practices", "Clean Code", "Software Engineering"],
+    icon: "pen",
+    readTime: "12 min",
     featured: true,
     views: 12350,
     likes: 289,
     comments: 41,
-    category: 'Best Practices',
-    difficulty: 'intermediate'
+    category: "Best Practices",
+    difficulty: "intermediate",
   },
   {
-    id: '3',
-    title: 'Modern CSS Techniques: From Grid to Container Queries',
-    preview: 'Master the latest CSS features that are revolutionizing web design. Learn about CSS Grid, Flexbox, Container Queries, and how to create responsive layouts without media queries.',
-    publishDate: '2024-06-28',
-    tags: ['CSS', 'Web Design', 'Responsive'],
-    icon: 'book',
-    readTime: '10 min read',
+    id: "3",
+    title: "Modern CSS Techniques: From Grid to Container Queries",
+    preview: "Master the latest CSS features — Grid, Flexbox, Container Queries, and building responsive layouts without media queries.",
+    publishDate: "2024-06-28",
+    tags: ["CSS", "Web Design", "Responsive"],
+    icon: "book",
+    readTime: "10 min",
     views: 9870,
     likes: 198,
     comments: 15,
-    category: 'CSS',
-    difficulty: 'intermediate'
+    category: "CSS",
+    difficulty: "intermediate",
   },
   {
-    id: '4',
-    title: 'Mastering Git Workflows for Team Collaboration',
-    preview: 'Learn advanced Git techniques and workflows that streamline team collaboration. Explore branching strategies, conflict resolution, and automation tools that boost productivity.',
-    publishDate: '2024-06-20',
-    tags: ['Git', 'DevOps', 'Collaboration'],
-    icon: 'code',
-    readTime: '15 min read',
+    id: "4",
+    title: "Mastering Git Workflows for Team Collaboration",
+    preview: "Advanced Git techniques and workflows that streamline team collaboration — branching strategies, conflict resolution, and automation tools.",
+    publishDate: "2024-06-20",
+    tags: ["Git", "DevOps", "Collaboration"],
+    icon: "code",
+    readTime: "15 min",
     views: 7650,
     likes: 156,
     comments: 22,
-    category: 'DevOps',
-    difficulty: 'advanced'
+    category: "DevOps",
+    difficulty: "advanced",
   },
   {
-    id: '5',
-    title: 'Performance Optimization in Modern Web Applications',
-    preview: 'Uncover the secrets of building lightning-fast web applications. From bundle optimization to lazy loading, discover techniques that significantly improve user experience.',
-    publishDate: '2024-06-12',
-    tags: ['Performance', 'Optimization', 'Web Vitals'],
-    icon: 'book',
-    readTime: '14 min read',
+    id: "5",
+    title: "Performance Optimization in Modern Web Applications",
+    preview: "Secrets of building lightning-fast web apps — bundle optimization, lazy loading, and techniques that significantly improve user experience.",
+    publishDate: "2024-06-12",
+    tags: ["Performance", "Optimization", "Web Vitals"],
+    icon: "book",
+    readTime: "14 min",
     views: 11200,
     likes: 267,
     comments: 33,
-    category: 'Performance',
-    difficulty: 'advanced'
+    category: "Performance",
+    difficulty: "advanced",
   },
   {
-    id: '6',
-    title: 'The Future of Frontend Development: Trends to Watch',
-    preview: 'Stay ahead of the curve with insights into emerging frontend technologies and methodologies. Explore what the next generation of web development looks like.',
-    publishDate: '2024-06-05',
-    tags: ['Frontend', 'Trends', 'Future Tech'],
-    icon: 'pen',
-    readTime: '11 min read',
+    id: "6",
+    title: "The Future of Frontend Development: Trends to Watch",
+    preview: "Emerging frontend technologies and methodologies — what the next generation of web development looks like.",
+    publishDate: "2024-06-05",
+    tags: ["Frontend", "Trends", "Future Tech"],
+    icon: "pen",
+    readTime: "11 min",
     views: 18900,
     likes: 423,
     comments: 67,
-    category: 'Trends',
-    difficulty: 'beginner'
-  }
+    category: "Trends",
+    difficulty: "beginner",
+  },
 ];
 
-const categories = ['All', 'Frontend', 'Backend', 'DevOps', 'CSS', 'Performance', 'Best Practices', 'Trends'];
-const difficulties = ['All', 'beginner', 'intermediate', 'advanced'];
+const CATEGORIES = ["All", "Frontend", "Backend", "DevOps", "CSS", "Performance", "Best Practices", "Trends"];
+const DIFFICULTIES = ["All", "beginner", "intermediate", "advanced"];
 
-const getIcon = (iconType: string) => {
-  switch (iconType) {
-    case 'pen':
-      return <PenTool className="w-5 h-5" />;
-    case 'code':
-      return <Code className="w-5 h-5" />;
-    case 'book':
-      return <BookOpen className="w-5 h-5" />;
-    default:
-      return <PenTool className="w-5 h-5" />;
-  }
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+const ICON_MAP = { pen: PenTool, code: Code2, book: BookOpen };
+
+const fmt = (d: string) =>
+  new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+
+const DIFF_STYLE: Record<string, string> = {
+  beginner:     "bg-lime-500/10  text-lime-400   border-lime-500/25",
+  intermediate: "bg-sky-500/10   text-sky-400    border-sky-500/25",
+  advanced:     "bg-violet-500/10 text-violet-400 border-violet-500/25",
 };
 
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-};
+// ─── Sub-components ───────────────────────────────────────────────────────────
 
-const getDifficultyColor = (difficulty?: string) => {
-  switch (difficulty) {
-    case 'beginner':
-      return 'bg-green-500/20 text-green-400 border-green-500/30';
-    case 'intermediate':
-      return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-    case 'advanced':
-      return 'bg-red-500/20 text-red-400 border-red-500/30';
-    default:
-      return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
-  }
-};
+function PostIcon({ type }: { type: BlogPost["icon"] }) {
+  const Ic = ICON_MAP[type];
+  return <Ic size={14} />;
+}
 
-const FeaturedPostCard = ({ post }: { post: BlogPost }) => (
-  <article className="group relative bg-gray-900 rounded-3xl overflow-hidden border border-gray-700 hover:border-cyan-500/30 transition-all duration-500 hover:transform hover:scale-[1.02]">
-    {/* Featured Badge */}
-    <div className="absolute top-6 left-6 z-20">
-      <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 backdrop-blur-sm border border-yellow-500/30 rounded-full">
-        <Star className="w-3 h-3 text-yellow-400" />
-        <span className="text-xs font-medium text-yellow-400">Featured</span>
-      </div>
-    </div>
+function FeaturedCard({ post }: { post: BlogPost }) {
+  const diffCls = DIFF_STYLE[post.difficulty ?? "beginner"];
+  return (
+    <Link href={`/blog/${post.id}`}
+      className="group relative bg-zinc-950 border border-zinc-800 hover:border-lime-500/30 rounded-2xl p-8 flex flex-col gap-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/40 overflow-hidden">
+      {/* hover glow */}
+      <div className="absolute inset-0 bg-gradient-to-br from-lime-500/0 via-lime-500/4 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none" />
 
-    {/* Image Background */}
-    <div className="absolute inset-0 overflow-hidden">
-      <div className="absolute inset-0 bg-black/40" />
-    </div>
-
-    <div className="relative z-10 p-8 md:p-12">
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* Content */}
-        <div className="flex-1">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="p-3 rounded-xl bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-cyan-400">
-              {getIcon(post.icon)}
-            </div>
-            <div className="flex items-center gap-3 text-gray-400 text-sm">
-              <Calendar className="w-4 h-4" />
-              <span>{formatDate(post.publishDate)}</span>
-              <span className="text-gray-600">•</span>
-              <Clock className="w-4 h-4" />
-              <span>{post.readTime}</span>
-            </div>
-          </div>
-
-          <div className="mb-4">
-            <span className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full border ${getDifficultyColor(post.difficulty)}`}>
-              <Zap className="w-3 h-3" />
-              {post.difficulty}
-            </span>
-          </div>
-
-          <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight group-hover:text-cyan-300 transition-colors duration-300">
-            {post.title}
-          </h3>
-          
-          <p className="text-gray-300 text-lg leading-relaxed mb-6 line-clamp-3">
-            {post.preview}
-          </p>
-
-          {/* Tags */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            {post.tags.map((tag) => (
-              <span
-                key={tag}
-                className="flex items-center gap-1 px-3 py-1 text-xs font-medium bg-white/10 text-gray-300 rounded-full border border-white/10 hover:border-cyan-400/50 hover:text-cyan-300 transition-all duration-300"
-              >
-                <img
-                  src={getRealIconUrl(tag)}
-                  alt={tag}
-                  className="w-3 h-3"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.style.display = 'none';
-                  }}
-                />
-                {tag}
-              </span>
-            ))}
-          </div>
-          {/* Stats */}
-          <div className="flex items-center gap-6 mb-6 text-gray-400 text-sm">
-            <div className="flex items-center gap-1">
-              <Eye className="w-4 h-4" />
-              <span>{post.views?.toLocaleString()}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Heart className="w-4 h-4" />
-              <span>{post.likes}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <MessageCircle className="w-4 h-4" />
-              <span>{post.comments}</span>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="flex items-center gap-4">
-            <Link 
-              href={`/blog/${post.id}`} 
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white rounded-xl font-medium transition-all duration-300 group/btn"
-            >
-              <span>Read Article</span>
-              <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-300" />
-            </Link>
-            
-            <div className="flex items-center gap-2">
-              <button className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white transition-all duration-300">
-                <Bookmark className="w-4 h-4" />
-              </button>
-              <button className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-gray-300 hover:text-white transition-all duration-300">
-                <Share2 className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </article>
-);
-
-const StandardPostCard = ({ post, index }: { post: BlogPost; index: number }) => (
-  <article
-    className="group relative bg-gray-900 rounded-2xl overflow-hidden border border-gray-700 hover:border-cyan-500/30 transition-all duration-500 hover:transform hover:scale-[1.02]"
-    style={{
-      animationDelay: `${index * 0.1}s`
-    }}
-  >
-    <div className="relative z-10 p-6">
-      {/* Header */}
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-cyan-400">
-            {getIcon(post.icon)}
-          </div>
-          <div className="flex items-center gap-2 text-gray-400 text-sm">
-            <Calendar className="w-3 h-3" />
-            <span>{formatDate(post.publishDate)}</span>
-            <span className="text-gray-600">•</span>
-            <Clock className="w-3 h-3" />
-            <span>{post.readTime}</span>
-          </div>
+      {/* badges row */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-1.5 bg-yellow-500/10 border border-yellow-500/25 px-2.5 py-1 rounded-full">
+          <Star size={9} className="text-yellow-400 fill-yellow-400" />
+          <span className="font-mono text-xs text-yellow-400">Featured</span>
         </div>
         {post.difficulty && (
-          <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getDifficultyColor(post.difficulty)}`}>
+          <span className={`font-mono text-xs px-2.5 py-1 rounded-full border ${diffCls}`}>
+            {post.difficulty}
+          </span>
+        )}
+        {post.category && (
+          <span className="font-mono text-xs px-2.5 py-1 rounded-full border border-zinc-800 text-zinc-500">
+            {post.category}
+          </span>
+        )}
+      </div>
+
+      {/* title */}
+      <h3 className="font-black text-white text-xl sm:text-2xl leading-tight tracking-tight group-hover:text-lime-400 transition-colors">
+        {post.title}
+      </h3>
+
+      <p className="text-zinc-500 text-sm leading-7 flex-1">{post.preview}</p>
+
+      {/* tags */}
+      <div className="flex flex-wrap gap-1.5">
+        {post.tags.map(t => (
+          <span key={t}
+            className="flex items-center gap-1 font-mono text-xs text-zinc-500 bg-zinc-900 border border-zinc-800 px-2.5 py-1 rounded-md">
+            <img src={getRealIconUrl(t)} alt={t} className="w-3 h-3"
+              onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
+            {t}
+          </span>
+        ))}
+      </div>
+
+      {/* footer */}
+      <div className="flex items-center justify-between pt-4 border-t border-zinc-900">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1.5 text-zinc-600">
+            <PostIcon type={post.icon} />
+            <span className="font-mono text-xs">{fmt(post.publishDate)}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Clock size={11} className="text-zinc-700" />
+            <span className="font-mono text-xs text-zinc-600">{post.readTime}</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 text-zinc-600 font-mono text-xs">
+          <span className="flex items-center gap-1"><Eye size={11} />{post.views?.toLocaleString()}</span>
+          <span className="flex items-center gap-1"><Heart size={11} />{post.likes}</span>
+          <span className="flex items-center gap-1"><MessageCircle size={11} />{post.comments}</span>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-1.5 font-mono text-xs text-lime-400 font-bold">
+        Read article
+        <ArrowUpRight size={12} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+      </div>
+    </Link>
+  );
+}
+
+function StandardCard({ post }: { post: BlogPost }) {
+  const diffCls = DIFF_STYLE[post.difficulty ?? "beginner"];
+  return (
+    <Link href={`/blog/${post.id}`}
+      className="group bg-zinc-950 border border-zinc-800 hover:border-zinc-700 rounded-2xl p-6 flex flex-col gap-4 transition-all duration-200 hover:-translate-y-1">
+
+      {/* meta */}
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <div className="flex items-center gap-2 text-zinc-600">
+          <PostIcon type={post.icon} />
+          <span className="font-mono text-xs">{fmt(post.publishDate)}</span>
+          <span className="font-mono text-xs">· {post.readTime}</span>
+        </div>
+        {post.difficulty && (
+          <span className={`font-mono text-xs px-2.5 py-0.5 rounded-full border ${diffCls}`}>
             {post.difficulty}
           </span>
         )}
       </div>
 
-      {/* Content */}
-      <h3 className="text-xl font-bold text-white mb-3 leading-tight group-hover:text-cyan-300 transition-colors duration-300">
+      <h3 className="font-bold text-white text-sm leading-tight group-hover:text-lime-400 transition-colors flex-1">
         {post.title}
       </h3>
-      
-      <p className="text-gray-400 text-sm leading-relaxed mb-4 line-clamp-2">
-        {post.preview}
-      </p>
 
-      {/* Tags */}
-      <div className="flex flex-wrap gap-1.5 mb-4">
-        {post.tags.slice(0, 3).map((tag) => (
-          <span
-            key={tag}
-            className="flex items-center gap-1 px-2 py-1 text-xs font-medium bg-white/10 text-gray-300 rounded-full border border-white/10 hover:border-cyan-400/50 hover:text-cyan-300 transition-all duration-300"
-          >
-            <img
-              src={getRealIconUrl(tag)}
-              alt={tag}
-              className="w-2.5 h-2.5"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-              }}
-            />
-            {tag}
+      <p className="text-zinc-600 text-xs leading-6 line-clamp-2">{post.preview}</p>
+
+      {/* tags */}
+      <div className="flex flex-wrap gap-1.5">
+        {post.tags.slice(0, 3).map(t => (
+          <span key={t}
+            className="flex items-center gap-1 font-mono text-xs text-zinc-600 bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded-md">
+            <img src={getRealIconUrl(t)} alt={t} className="w-2.5 h-2.5"
+              onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
+            {t}
           </span>
         ))}
         {post.tags.length > 3 && (
-          <span className="px-2 py-1 text-xs font-medium bg-white/5 text-gray-400 rounded-full">
+          <span className="font-mono text-xs text-zinc-700 bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded-md">
             +{post.tags.length - 3}
           </span>
         )}
       </div>
 
-      {/* Footer */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4 text-gray-400 text-xs">
-          <div className="flex items-center gap-1">
-            <Eye className="w-3 h-3" />
-            <span>{post.views?.toLocaleString()}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Heart className="w-3 h-3" />
-            <span>{post.likes}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <MessageCircle className="w-3 h-3" />
-            <span>{post.comments}</span>
-          </div>
+      {/* footer */}
+      <div className="flex items-center justify-between pt-3 border-t border-zinc-900">
+        <div className="flex items-center gap-3 text-zinc-700 font-mono text-xs">
+          <span className="flex items-center gap-1"><Eye size={10} />{post.views?.toLocaleString()}</span>
+          <span className="flex items-center gap-1"><Heart size={10} />{post.likes}</span>
         </div>
-
-        <Link 
-          href={`/blog/${post.id}`} 
-          className="inline-flex items-center gap-1 px-4 py-2 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 hover:from-cyan-500/30 hover:to-purple-500/30 text-cyan-300 rounded-lg font-medium text-sm transition-all duration-300 group/btn backdrop-blur-sm border border-cyan-500/30 hover:border-cyan-400/50"
-        >
-          <span>Read</span>
-          <ArrowRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform duration-300" />
-        </Link>
+        <span className="flex items-center gap-1 font-mono text-xs text-lime-400">
+          Read <ChevronRight size={10} />
+        </span>
       </div>
-    </div>
-  </article>
-);
+    </Link>
+  );
+}
 
-const CompactPostCard = ({ post }: { post: BlogPost }) => (
-  <article className="group relative bg-gray-900 rounded-xl p-4 border border-gray-700 hover:border-cyan-500/30 transition-all duration-300 hover:transform hover:translate-x-2">
-    <div className="flex items-center gap-4">
-      <div className="p-2 rounded-lg bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-cyan-400 flex-shrink-0">
-        {getIcon(post.icon)}
+function CompactCard({ post }: { post: BlogPost }) {
+  return (
+    <Link href={`/blog/${post.id}`}
+      className="group flex items-center gap-4 bg-zinc-950 border border-zinc-800 hover:border-zinc-700 rounded-xl px-5 py-3.5 transition-all duration-200 hover:bg-zinc-900/50">
+      <div className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0 text-zinc-600 group-hover:text-lime-400 group-hover:border-lime-500/25 transition-colors">
+        <PostIcon type={post.icon} />
       </div>
-      
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-xs text-gray-400">{formatDate(post.publishDate)}</span>
-          <span className="text-gray-600">•</span>
-          <span className="text-xs text-gray-400">{post.readTime}</span>
-          {post.difficulty && (
-            <>
-              <span className="text-gray-600">•</span>
-              <span className={`text-xs font-medium ${getDifficultyColor(post.difficulty).split(' ')[0]}`}>
-                {post.difficulty}
-              </span>
-            </>
-          )}
-        </div>
-        
-        <h3 className="text-sm font-semibold text-white mb-1 leading-tight group-hover:text-cyan-300 transition-colors duration-300 truncate">
-          {post.title}
-        </h3>
-        
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1 text-gray-400 text-xs">
-            <Eye className="w-3 h-3" />
-            <span>{post.views?.toLocaleString()}</span>
-          </div>
-          <div className="flex items-center gap-1 text-gray-400 text-xs">
-            <Heart className="w-3 h-3" />
-            <span>{post.likes}</span>
-          </div>
+        <p className="font-bold text-xs text-zinc-300 group-hover:text-white truncate transition-colors">{post.title}</p>
+        <div className="flex items-center gap-2 mt-0.5">
+          <span className="font-mono text-xs text-zinc-700">{fmt(post.publishDate)}</span>
+          <span className="font-mono text-xs text-zinc-700">· {post.readTime}</span>
+          <span className="flex items-center gap-0.5 font-mono text-xs text-zinc-700 ml-1">
+            <Eye size={9} />{post.views?.toLocaleString()}
+          </span>
         </div>
       </div>
-      
-      <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-cyan-400 transition-colors duration-300 flex-shrink-0" />
-    </div>
-  </article>
-);
+      <ArrowUpRight size={12} className="text-zinc-700 group-hover:text-lime-400 shrink-0 transition-colors" />
+    </Link>
+  );
+}
+
+// ─── Main ─────────────────────────────────────────────────────────────────────
+
+type View = "grid" | "list" | "compact";
 
 export default function BlogSection() {
-  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'compact'>('grid');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedDifficulty, setSelectedDifficulty] = useState('All');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
-  const [filteredPosts, setFilteredPosts] = useState(blogPosts);
+  const [view,       setView]       = useState<View>("grid");
+  const [category,   setCategory]   = useState("All");
+  const [difficulty, setDifficulty] = useState("All");
+  const [search,     setSearch]     = useState("");
+  const [showFilter, setShowFilter] = useState(false);
 
-  useEffect(() => {
-    let filtered = blogPosts;
+  const filtered = POSTS.filter(p => {
+    const catOk  = category   === "All" || p.category   === category;
+    const diffOk = difficulty === "All" || p.difficulty === difficulty;
+    const q      = search.toLowerCase();
+    const srcOk  = !q || p.title.toLowerCase().includes(q) || p.preview.toLowerCase().includes(q) || p.tags.some(t => t.toLowerCase().includes(q));
+    return catOk && diffOk && srcOk;
+  });
 
-    // Filter by category
-    if (selectedCategory !== 'All') {
-      filtered = filtered.filter(post => post.category === selectedCategory);
-    }
-
-    // Filter by difficulty
-    if (selectedDifficulty !== 'All') {
-      filtered = filtered.filter(post => post.difficulty === selectedDifficulty);
-    }
-
-    // Filter by search
-    if (searchTerm) {
-      filtered = filtered.filter(post => 
-        post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.preview.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    }
-
-    setFilteredPosts(filtered);
-  }, [selectedCategory, selectedDifficulty, searchTerm]);
-
-  const featuredPost = filteredPosts.find(post => post.featured);
-  const regularPosts = filteredPosts.filter(post => !post.featured);
+  const featured = filtered.filter(p => p.featured);
+  const regular  = filtered.filter(p => !p.featured);
+  const anyFilter = category !== "All" || difficulty !== "All" || search !== "";
 
   return (
-    <section className="relative bg-black overflow-hidden font-sans">
-      {/* Simple Black Background */}
-      <div className="absolute inset-0 bg-black" />
+    <section id="blog" className="bg-black text-white">
+      <div className="max-w-screen-xl mx-auto px-6 md:px-14 py-12 space-y-5">
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-20">
-        {/* Advanced Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 mb-6">
-            <PenTool className="w-4 h-4 text-cyan-400" />
-            <span className="text-gray-300 text-sm font-medium">Latest Articles</span>
-            <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
+        {/* ══ HEADER ══ */}
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-8 border-b border-zinc-900">
+          <div>
+            <div className="flex items-center gap-3 mb-5">
+              <div className="h-px w-8 bg-lime-400" />
+              <span className="font-mono text-xs text-zinc-600 tracking-widest uppercase">04 — Articles</span>
+            </div>
+            <h2 className="font-black tracking-tighter leading-none text-white text-5xl sm:text-6xl xl:text-7xl">
+              Dev Blog &
+            </h2>
+            <h2 className="font-black tracking-tighter leading-none text-lime-400 text-5xl sm:text-6xl xl:text-7xl">
+              Insights.
+            </h2>
           </div>
-          
-          <h2 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-            Developer
-            <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"> Blog</span>
-          </h2>
-          
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed mb-8">
-            Insights, tutorials, and thoughts on modern web development, clean code practices, and emerging technologies.
-          </p>
 
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto mb-8">
+          {/* Search + view toggle */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+            {/* Search */}
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search articles, tags, or topics..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400/50 focus:bg-white/10 transition-all duration-300"
-              />
-            </div>
-          </div>
-
-          {/* Advanced Controls */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-            {/* View Mode Toggle */}
-            <div className="flex items-center gap-2 p-1 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                  viewMode === 'grid' 
-                    ? 'bg-cyan-500/20 text-cyan-400' 
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                <Grid3x3 className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setViewMode('list')}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                  viewMode === 'list' 
-                    ? 'bg-cyan-500/20 text-cyan-400' 
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                <List className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setViewMode('compact')}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                  viewMode === 'compact' 
-                    ? 'bg-cyan-500/20 text-cyan-400' 
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                <Layers className="w-4 h-4" />
-              </button>
+              <Search size={12} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-600 pointer-events-none" />
+              <input type="text" value={search} onChange={e => setSearch(e.target.value)}
+                placeholder="Search articles…"
+                className="h-10 pl-9 pr-4 bg-zinc-950 border border-zinc-800 hover:border-zinc-700 focus:border-lime-500/50 focus:outline-none rounded-xl font-mono text-xs text-white placeholder-zinc-600 transition-colors w-60" />
+              {search && (
+                <button onClick={() => setSearch("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-600 hover:text-white">
+                  <X size={11} />
+                </button>
+              )}
             </div>
 
-            {/* Filter Toggle */}
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-300"
-            >
-              <Filter className="w-4 h-4" />
-              <span className="text-sm font-medium">Filters</span>
-              <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${showFilters ? 'rotate-180' : ''}`} />
+            {/* View toggle */}
+            <div className="flex items-center gap-1 bg-zinc-950 border border-zinc-800 rounded-xl p-1">
+              {([["grid", Grid3x3], ["list", List], ["compact", Layers]] as [View, React.ElementType][]).map(([v, Ic]) => (
+                <button key={v} onClick={() => setView(v)}
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${
+                    view === v ? "bg-lime-400/10 text-lime-400 border border-lime-500/25" : "text-zinc-600 hover:text-zinc-300"
+                  }`}>
+                  <Ic size={13} />
+                </button>
+              ))}
+            </div>
+
+            {/* Filter toggle */}
+            <button onClick={() => setShowFilter(p => !p)}
+              className={`flex items-center gap-2 h-10 px-4 border rounded-xl font-mono text-xs transition-all duration-200 ${
+                showFilter || anyFilter
+                  ? "bg-lime-400/10 border-lime-500/25 text-lime-400"
+                  : "bg-zinc-950 border-zinc-800 text-zinc-500 hover:text-zinc-200 hover:border-zinc-700"
+              }`}>
+              <Filter size={12} />
+              Filters
+              {anyFilter && <span className="w-1.5 h-1.5 rounded-full bg-lime-400" />}
             </button>
           </div>
+        </div>
 
-          {/* Filters Panel */}
-          {showFilters && (
-            <div className="max-w-4xl mx-auto mb-8 p-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10">
-              <div className="grid md:grid-cols-2 gap-6">
-                {/* Category Filter */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-3">Category</label>
-                  <div className="flex flex-wrap gap-2">
-                    {categories.map((category) => (
-                      <button
-                        key={category}
-                        onClick={() => setSelectedCategory(category)}
-                        className={`px-3 py-1 text-sm font-medium rounded-lg border transition-all duration-300 ${
-                          selectedCategory === category
-                            ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30'
-                            : 'bg-white/5 text-gray-400 border-white/10 hover:text-white hover:bg-white/10'
-                        }`}
-                      >
-                        {category}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Difficulty Filter */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-3">Difficulty</label>
-                  <div className="flex flex-wrap gap-2">
-                    {difficulties.map((difficulty) => (
-                      <button
-                        key={difficulty}
-                        onClick={() => setSelectedDifficulty(difficulty)}
-                        className={`px-3 py-1 text-sm font-medium rounded-lg border transition-all duration-300 ${
-                          selectedDifficulty === difficulty
-                            ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30'
-                            : 'bg-white/5 text-gray-400 border-white/10 hover:text-white hover:bg-white/10'
-                        }`}
-                      >
-                        {difficulty}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+        {/* ══ FILTER PANEL ══ */}
+        {showFilter && (
+          <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <span className="font-mono text-xs text-zinc-600 uppercase tracking-widest block mb-3">Category</span>
+              <div className="flex flex-wrap gap-2">
+                {CATEGORIES.map(c => (
+                  <button key={c} onClick={() => setCategory(c)}
+                    className={`font-mono text-xs px-3 py-1.5 rounded-xl border transition-all duration-200 ${
+                      category === c
+                        ? "bg-lime-400/10 border-lime-500/25 text-lime-400"
+                        : "bg-zinc-900 border-zinc-800 text-zinc-500 hover:text-zinc-200 hover:border-zinc-700"
+                    }`}>{c}</button>
+                ))}
               </div>
             </div>
-          )}
-
-          {/* Results Count */}
-          <div className="text-center text-gray-400 text-sm">
-            Showing {filteredPosts.length} {filteredPosts.length === 1 ? 'article' : 'articles'}
-            {searchTerm && ` for "${searchTerm}"`}
+            <div>
+              <span className="font-mono text-xs text-zinc-600 uppercase tracking-widest block mb-3">Difficulty</span>
+              <div className="flex flex-wrap gap-2">
+                {DIFFICULTIES.map(d => (
+                  <button key={d} onClick={() => setDifficulty(d)}
+                    className={`font-mono text-xs px-3 py-1.5 rounded-xl border transition-all duration-200 ${
+                      difficulty === d
+                        ? "bg-lime-400/10 border-lime-500/25 text-lime-400"
+                        : "bg-zinc-900 border-zinc-800 text-zinc-500 hover:text-zinc-200 hover:border-zinc-700"
+                    }`}>{d}</button>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Blog Content */}
-        <div className="space-y-8">
-          {/* Featured Post */}
-          {featuredPost && viewMode === 'grid' && (
-            <div className="mb-12">
-              <FeaturedPostCard post={featuredPost} />
-            </div>
-          )}
-
-          {/* Regular Posts Grid/List */}
-          {viewMode === 'grid' && (
-            <div className="grid md:grid-cols-2 gap-8">
-              {regularPosts.map((post, index) => (
-                <StandardPostCard key={post.id} post={post} index={index} />
-              ))}
-            </div>
-          )}
-
-          {viewMode === 'list' && (
-            <div className="space-y-6">
-              {filteredPosts.map((post, index) => (
-                <StandardPostCard key={post.id} post={post} index={index} />
-              ))}
-            </div>
-          )}
-
-          {viewMode === 'compact' && (
-            <div className="space-y-3">
-              {filteredPosts.map((post) => (
-                <CompactPostCard key={post.id} post={post} />
-              ))}
-            </div>
+        {/* ══ RESULTS META ══ */}
+        <div className="flex items-center gap-3">
+          <span className="font-mono text-xs text-zinc-700">
+            {filtered.length} article{filtered.length !== 1 ? "s" : ""}
+            {search && ` matching "${search}"`}
+          </span>
+          {anyFilter && (
+            <button onClick={() => { setCategory("All"); setDifficulty("All"); setSearch(""); }}
+              className="flex items-center gap-1 font-mono text-xs text-zinc-600 hover:text-lime-400 transition-colors">
+              <X size={10} /> Clear filters
+            </button>
           )}
         </div>
 
-        {/* View All Button */}
-        <div className="text-center mt-16">
-          <Link 
-            href="/blog" 
-            className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 hover:from-cyan-500/30 hover:to-purple-500/30 backdrop-blur-sm text-cyan-300 rounded-2xl font-medium border border-cyan-500/30 hover:border-cyan-400/50 transition-all duration-300 group/all"
-          >
-            <span className="text-lg">View All Articles</span>
-            <ArrowRight className="w-5 h-5" />
+        {/* ══ CONTENT ══ */}
+        {filtered.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-24 gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-zinc-950 border border-zinc-800 flex items-center justify-center">
+              <Search size={20} className="text-zinc-700" />
+            </div>
+            <p className="font-mono text-sm text-zinc-600">No articles match your filters</p>
+            <button onClick={() => { setCategory("All"); setDifficulty("All"); setSearch(""); }}
+              className="bg-lime-400 hover:bg-lime-300 text-black text-xs font-bold px-5 py-2.5 rounded-xl transition-all duration-200">
+              Clear Filters
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-5">
+
+            {/* Featured — only in grid mode */}
+            {view === "grid" && featured.length > 0 && (
+              <div className={`grid gap-5 ${featured.length === 1 ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-2"}`}>
+                {featured.map(p => <FeaturedCard key={p.id} post={p} />)}
+              </div>
+            )}
+
+            {/* Regular posts */}
+            {view === "grid" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {(featured.length > 0 ? regular : filtered).map(p => <StandardCard key={p.id} post={p} />)}
+              </div>
+            )}
+
+            {view === "list" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {filtered.map(p => <StandardCard key={p.id} post={p} />)}
+              </div>
+            )}
+
+            {view === "compact" && (
+              <div className="space-y-2">
+                {filtered.map(p => <CompactCard key={p.id} post={p} />)}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ══ CTA ══ */}
+        <div className="flex justify-center pt-4">
+          <Link href="/blog"
+            className="group flex items-center gap-2.5 bg-zinc-950 border border-zinc-800 hover:border-lime-500/30 hover:bg-lime-500/5 text-zinc-400 hover:text-lime-400 font-mono text-xs font-bold px-6 py-3 rounded-xl transition-all duration-200 hover:-translate-y-px">
+            View all articles
+            <ArrowUpRight size={13} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
         </div>
+
       </div>
     </section>
   );
